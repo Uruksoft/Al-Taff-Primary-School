@@ -1,0 +1,221 @@
+/* style.css */
+
+/* الإعدادات العامة والمتغيرات المودرن */
+:root {
+    --primary: #2c3e50;    /* أزرق ليلي داكن للجدية */
+    --accent: #3498db;     /* أزرق سماوي عصري */
+    --accent-dark: #2980b9; 
+    --bg-light: #f8fafc;   /* خلفية فاتحة جداً مريحة */
+    --text-main: #334155;   /* رمادي غامق للنصوص */
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* ظل ناعم */
+    --radius: 12px;       /* حواف منحنية عصرية */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Cairo', sans-serif; /* خط عربي نظيف ومودرن */
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 🏠 الشريط العلوي (Navbar) */
+.main-header {
+    background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    position: sticky; /* يبقى ثابتاً عند النزول */
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.school-logo {
+    width: 40px; /* اضبط حجم الشعار */
+    height: 40px;
+    margin-left: 10px;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.sub-title {
+    font-weight: 400;
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover, .main-nav a.active {
+    background-color: #e3f2fd;
+    color: var(--accent);
+}
+
+.btn-login {
+    background-color: var(--accent);
+    color: #fff !important;
+}
+
+.btn-login:hover {
+    background-color: var(--accent-dark);
+}
+
+/* القسم البطولي (Hero Section) */
+.hero {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.hero-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* شبكة المحتوى الرئيسي (Grid) */
+.main-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* قسم كبير للأخبار، وقسم أصغر للإعلانات */
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* الكروت المودرن (Card Style) */
+.card {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* تأثير ارتفاع بسيط */
+}
+
+.card h3 {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.card .icon {
+    margin-left: 10px;
+}
+
+/* تنسيقات الأقسام المحددة */
+.latest-news .news-item {
+    border-bottom: 1px solid #edf2f7;
+    padding: 15px 0;
+}
+
+.latest-news .news-item:last-child {
+    border-bottom: none;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.exam-schedule ul {
+    list-style: none;
+}
+
+.exam-schedule li {
+    background-color: #f1f5f9;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.accent-card {
+    background-color: #fff3cd; /* لون تنبيهي ملفت */
+    border-right: 5px solid #ffca28;
+}
+
+.accent-card h3 {
+    color: #856404;
+}
+
+/* أفضل الطلاب (Grid داخل كارت) */
+.best-students .students-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    text-align: center;
+}
+
+.student-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+    border: 3px solid #e3f2fd;
+}
+
+.best-students p {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* الفوتر */
+.main-footer {
+    background-color: var(--primary);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.9rem;
+}

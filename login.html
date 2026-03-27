@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول الكادر - مدرسة الطف</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2c3e50">
+<link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f8fafc; --text: #333; }
+        
+        /* الوضع الليلي */
+        body.dark-mode { --bg: #121212; --text: #e0e0e0; }
+        body.dark-mode header { background: rgba(30, 30, 30, 0.8) !important; }
+        body.dark-mode .login-box { background: #1e1e1e; color: white; border: 1px solid #333; }
+        body.dark-mode .login-header h2, body.dark-mode .input-group label { color: white; }
+        body.dark-mode header img { filter: invert(1) brightness(0.8); }
+
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; color: var(--text); transition: 0.3s; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* الهيدر الزجاجي */
+        header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 15px 0; box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .container { width: 95%; max-width: 1100px; margin: auto; display: flex; align-items: center; justify-content: flex-end; gap: 15px; }
+        .btn-return { background: #7f8c8d; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; }
+        .btn-theme { background: var(--accent); color: white; padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; }
+        
+        /* تصميم صندوق تسجيل الدخول */
+        .login-container { flex: 1; display: flex; justify-content: center; align-items: center; background: linear-gradient(45deg, var(--primary), var(--accent)); padding-top: 80px; }
+        .login-box { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        .login-header h2 { color: var(--primary); margin-bottom: 10px; }
+        .login-header p { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 30px; }
+        
+        /* حقول الإدخال */
+        .input-group { text-align: right; margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #34495e; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; outline: none; transition: 0.3s; box-sizing: border-box; }
+        .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(52, 152, 219, 0.2); }
+        
+        /* الأزرار */
+        .btn-login-submit { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-login-submit:hover { background: #2980b9; }
+        .btn-login-submit:disabled { background: #7f8c8d; cursor: not-allowed; }
+        
+        /* التذييل وحالة التحميل */
+        .login-footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+        .login-footer a { color: #7f8c8d; text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 10px; transition: 0.3s; }
+        .login-footer a:hover { color: var(--accent); }
+        
+        #loading-ui { display: none; padding: 30px 0; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <button class="btn-theme" onclick="toggleTheme()">🌙 المظهر</button>
+        <a href="index.html" class="btn-return">العودة للرئيسية 🔙</a>
+        <div style="display:flex; align-items:center; gap:15px; margin-right:auto;">
+            <img src="https://b.top4top.io/p_3738g1q971.png" alt="شعار مدرسة الطف" style="height:60px; width:auto;">
+            <h1 style="margin:0; font-size: 1.3rem;">مدرسة الطف الابتدائية للبنين</h1>
+        </div>
+    </div>
+</header>
+
+<div class="login-container">
+    <div class="login-box">
+        
+        <div id="loading-ui">
+            <div class="loader"></div>
+            <h3 style="color:var(--primary);">مرحباً بعودتك!</h3>
+            <p style="color:#7f8c8d;">يتم توجيهك إلى لوحة التحكم...</p>
+            <a href="#" id="forceLogout" style="color:#e74c3c; font-size:0.8rem; text-decoration:none; margin-top:15px; display:inline-block;">إلغاء وتسجيل الدخول بحساب مختلف</a>
+        </div>
+
+        <div id="login-ui">
+            <div class="login-header">
+                <h2>دخول الكادر 👨‍🏫</h2>
+                <p>يرجى إدخال بيانات الدخول المعتمدة لنظام الإدارة.</p>
+            </div>
+            <div class="input-group">
+                <label>البريد الإلكتروني:</label>
+                <input type="email" id="email" placeholder="example@email.com" autocomplete="email">
+            </div>
+            <div class="input-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            
+            <p id="msg" style="color:#e74c3c; display:none; font-size:0.85rem; font-weight:bold; margin-bottom:10px;">خطأ في البيانات!</p>
+            <button class="btn-login-submit" id="loginBtn">دخول للنظام</button>
+            
+            <div class="login-footer">
+                <a href="index.html">العودة للصفحة الرئيسية للمدرسة</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
+        authDomain: "al-taf-1.firebaseapp.com",
+        projectId: "al-taf-1",
+        storageBucket: "al-taf-1.firebasestorage.app",
+        messagingSenderId: "242834897966",
+        appId: "1:242834897966:web:b5cd3bae396f9d978c73bf"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // إدارة المظهر (الوضع الليلي)
+    const applyTheme = (theme) => {
+        document.body.classList.toggle('dark-mode', theme === 'dark');
+        localStorage.setItem('theme', theme);
+    };
+    window.toggleTheme = () => applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    applyTheme(localStorage.getItem('theme') || 'light');
+
+    // عناصر الواجهة
+    const loginUi = document.getElementById('login-ui');
+    const loadingUi = document.getElementById('loading-ui');
+    const loginBtn = document.getElementById('loginBtn');
+    const msg = document.getElementById('msg');
+
+    // فحص حالة الجلسة عند فتح الصفحة (التحديث الجديد: توجيه ذكي)
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            loginUi.style.display = "none";
+            loadingUi.style.display = "block";
+            
+            const adminEmail = "admin1@altaf.com"; // البريد الخاص بالمدير
+            
+            setTimeout(() => {
+                if (user.email === adminEmail) {
+                    window.location.href = "admin.html"; // توجيه للمدير
+                } else {
+                    window.location.href = "dashboard.html"; // توجيه للمعلم
+                }
+            }, 1500);
+        } else {
+            loginUi.style.display = "block";
+            loadingUi.style.display = "none";
+        }
+    });
+
+    // زر لتسجيل الخروج الإجباري
+    document.getElementById('forceLogout').onclick = (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            window.location.reload();
+        });
+    };
+
+    // دالة تسجيل الدخول
+    const handleLogin = () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+
+        if (!email || !pass) {
+            msg.innerText = "يرجى إدخال البريد الإلكتروني وكلمة المرور!";
+            msg.style.display = "block";
+            return;
+        }
+
+        loginBtn.innerText = "جاري التحقق... ⏳";
+        loginBtn.disabled = true;
+        msg.style.display = "none";
+
+        signInWithEmailAndPassword(auth, email, pass)
+            .catch((error) => {
+                loginBtn.innerText = "دخول للنظام";
+                loginBtn.disabled = false;
+                msg.innerText = "عذراً، البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+                msg.style.display = "block";
+            });
+    };
+
+    loginBtn.onclick = handleLogin;
+    document.getElementById('pass').addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
+</script>
+</body>
+</html>
