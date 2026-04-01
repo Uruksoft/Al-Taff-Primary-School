@@ -10,14 +10,15 @@
 <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #f4f7f6; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; display: flex; min-height: 100vh; }
+        html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
+        * { box-sizing: border-box; }
         
         .sidebar { width: 260px; background: var(--primary); color: white; position: fixed; height: 100%; padding: 20px; box-sizing: border-box; z-index: 100; overflow-y: auto;}
         .sidebar h2 { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .nav-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; background: none; color: #bdc3c7; text-align: right; cursor: pointer; font-family: 'Cairo'; font-size: 1rem; border-radius: 8px; transition: 0.3s; }
+        .nav-btn { width: 100%; padding: 12px; margin-bottom: 8px; border: none; background: none; color: #bdc3c7; text-align: right; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; border-radius: 8px; transition: 0.3s; display: flex; justify-content: space-between; align-items: center;}
         .nav-btn.active, .nav-btn:hover { background: var(--accent); color: white; }
         
-        .main { margin-right: 260px; padding: 30px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+        .main { margin-right: 260px; padding: 30px; width: calc(100% - 260px); box-sizing: border-box; display: flex; flex-direction: column; }
         .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
         
         .stats-container { display: flex; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
@@ -29,8 +30,8 @@
         .tab-content.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;}
-        label { display: block; margin-top: 15px; font-weight: bold; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; width: 100%;}
+        label { display: block; margin-top: 15px; font-weight: bold; color: var(--primary); }
         input, textarea, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Cairo'; box-sizing: border-box; }
         .btn-pub { background: var(--success); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 1rem; transition: 0.3s; }
         .btn-pub:hover { filter: brightness(0.9); }
@@ -39,13 +40,14 @@
         .del-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
         .edit-btn { background: #f39c12; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; margin-left: 5px; }
 
-        /* الإشعار المخصص من الأعلى */
+        .fab-support { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; border-radius: 50px; padding: 15px 25px; font-family: 'Cairo'; font-size: 1rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .fab-support:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6); }
+
+        .badge-num { background: #e74c3c; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
+
         #custom-toast { visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
-        /* ========================================= */
-        /* النوافذ المنبثقة المخصصة (Modal) بدلاً من المتصفح */
-        /* ========================================= */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -53,15 +55,14 @@
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
         .btn-modal-yes { color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
         .btn-modal-no { background: #bdc3c7; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
-        .btn-modal-yes:hover, .btn-modal-no:hover { filter: brightness(0.9); }
 
         @media (max-width: 850px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; position: relative; height: auto; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
             .sidebar h2 { width: 100%; font-size: 1.2rem; margin-bottom: 5px; padding-bottom: 5px; }
-            .nav-btn { width: 45%; margin-bottom: 5px; font-size: 0.8rem; padding: 10px; text-align: center; }
+            .nav-btn { width: 48%; margin-bottom: 5px; font-size: 0.8rem; padding: 10px;}
             .logout-btn { width: 100%; text-align: center; margin-top: 10px !important; }
-            .main { margin-right: 0; padding: 15px; }
+            .main { margin-right: 0; padding: 15px; width: 100%; }
             .header { flex-direction: column; text-align: center; gap: 10px; }
             .post-item { flex-direction: column; align-items: flex-start; gap: 10px; text-align: right; }
             .post-item div { width: 100%; display: flex; justify-content: space-between; }
@@ -70,7 +71,11 @@
 </head>
 <body>
 
+    <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
     <div id="custom-toast"></div>
+
+    <a href="https://wa.me/009647815202022" class="fab-support" target="_blank">📞 الدعم الفني السريع</a>
 
     <div class="modal-overlay" id="custom-confirm">
         <div class="modal-box">
@@ -81,7 +86,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal-overlay" id="custom-prompt">
         <div class="modal-box">
             <h3 id="prompt-msg">تعديل النص</h3>
@@ -97,13 +101,25 @@
         <h2>لوحة المعلم 🏫</h2>
         <div id="teacher-name" style="text-align: center; color: var(--accent); margin-bottom: 20px; font-weight: bold; font-size: 0.9rem;"></div>
         
-        <button class="nav-btn active" onclick="openTab('tab-hw')">📝 نشر واجب / نشاط</button>
-        <button class="nav-btn" onclick="openTab('tab-exam')">📅 موعد امتحان</button>
-        <button class="nav-btn" onclick="openTab('tab-news')">📢 نشر إعلان</button>
-        <button class="nav-btn" onclick="openTab('tab-story')" style="color: #e1306c;">📸 نشر قصة (Story)</button>
-        <button class="nav-btn" onclick="openTab('tab-manage')" id="loadPosts">🛠 إدارة منشوراتي</button>
+        <button class="nav-btn active" onclick="openTab('tab-hw')"><span>📝 نشر واجب</span></button>
+        <button class="nav-btn" onclick="openTab('tab-exam')"><span>📅 موعد امتحان</span></button>
+        <button class="nav-btn" onclick="openTab('tab-news')"><span>📢 إعلان عام</span></button>
+        <button class="nav-btn" onclick="openTab('tab-story')" style="color: #e1306c;"><span>📸 قصة (Story)</span></button>
         
-        <a href="index.html" style="color:var(--danger); text-decoration:none; display:block; margin-top:30px; text-align: center; font-weight:bold;">العودة للرئيسية</a>
+        <hr style="opacity: 0.2; margin: 10px 0;">
+        <button class="nav-btn" onclick="openTab('tab-chat')" style="color: #e84393;">
+            <span>💬 توجيهات الإدارة</span> 
+            <span id="chat-badge" class="badge-num">0</span>
+        </button>
+
+        <button class="nav-btn" onclick="openTab('tab-badge')"><span>🌟 منح وسام شرف</span></button>
+        <button class="nav-btn" onclick="openTab('tab-lib')"><span>📚 رفع للمكتبة</span></button>
+        <button class="nav-btn" onclick="openTab('tab-attendance')" style="color: #e67e22;"><span>🙋‍♂️ سجل الغياب</span></button>
+        
+        <hr style="opacity: 0.2; margin: 10px 0;">
+        <button class="nav-btn" onclick="openTab('tab-manage')" id="loadPosts" style="justify-content: center;">🛠 إدارة منشوراتي</button>
+        
+        <a href="index.html" style="color:var(--danger); text-decoration:none; display:block; margin-top:20px; text-align: center; font-weight:bold;">العودة للرئيسية</a>
         <button class="logout-btn" id="logoutBtn" style="width: 100%; padding: 10px; margin-top: 10px; background: none; border: 1px solid var(--danger); color: var(--danger); border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold;">تسجيل الخروج</button>
     </div>
 
@@ -122,15 +138,9 @@
         <div id="tab-hw" class="tab-content active">
             <div class="card">
                 <h3>📝 نشر واجب بيتي جديد</h3>
-                <label>المادة</label>
-                <input type="text" id="hw-sub" placeholder="مثلاً: القراءة">
-                <label>الصف</label>
-                <select id="hw-cls">
-                    <option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option>
-                    <option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option>
-                </select>
-                <label>التفاصيل</label>
-                <textarea id="hw-det" rows="4" placeholder="اكتب نص الواجب..."></textarea>
+                <label>المادة</label><input type="text" id="hw-sub" placeholder="مثلاً: القراءة">
+                <label>الصف</label><select id="hw-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
+                <label>التفاصيل</label><textarea id="hw-det" rows="4" placeholder="اكتب نص الواجب..."></textarea>
                 <button class="btn-pub" onclick="sendToFirebase('homeworks', 'hw')" id="btn-hw">نشر الواجب</button>
             </div>
         </div>
@@ -138,10 +148,8 @@
         <div id="tab-news" class="tab-content">
             <div class="card">
                 <h3>📢 نشر إعلان عام للمدرسة</h3>
-                <label>عنوان الإعلان</label>
-                <input type="text" id="news-sub" placeholder="مثلاً: تنبيه هام">
-                <label>نص الإعلان</label>
-                <textarea id="news-det" rows="5" placeholder="اكتب الإعلان..."></textarea>
+                <label>عنوان الإعلان</label><input type="text" id="news-sub" placeholder="مثلاً: تنبيه هام">
+                <label>نص الإعلان</label><textarea id="news-det" rows="5" placeholder="اكتب الإعلان..."></textarea>
                 <input type="hidden" id="news-cls" value="عام">
                 <button class="btn-pub" style="background:var(--accent)" onclick="sendToFirebase('announcements', 'news')" id="btn-news">نشر الإعلان الآن</button>
             </div>
@@ -150,27 +158,66 @@
         <div id="tab-exam" class="tab-content">
             <div class="card">
                 <h3>📅 تحديد موعد امتحان</h3>
-                <label>المادة</label>
-                <input type="text" id="ex-sub" placeholder="مثلاً: الرياضيات">
-                <label>تاريخ ووقت الامتحان الدقيق</label>
-                <input type="datetime-local" id="ex-det" style="font-family: inherit;">
-                <label>الصف</label>
-                <select id="ex-cls">
-                    <option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option>
-                    <option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option>
-                </select>
+                <label>المادة</label><input type="text" id="ex-sub" placeholder="مثلاً: الرياضيات">
+                <label>تاريخ ووقت الامتحان الدقيق</label><input type="datetime-local" id="ex-det" style="font-family: inherit;">
+                <label>الصف</label><select id="ex-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
                 <button class="btn-pub" style="background:var(--primary)" onclick="sendToFirebase('exams', 'ex')" id="btn-ex">حفظ الموعد</button>
             </div>
         </div>
 
         <div id="tab-story" class="tab-content">
             <div class="card" style="border-top: 5px solid #e1306c;">
-                <h3 style="color: #e1306c;">📸 نشر قصة جديدة (Story) - تختفي بعد 24 ساعة</h3>
-                <label>رابط الصورة (URL) - اختياري إذا أردت نشر صورة</label>
-                <input type="url" id="story-url" placeholder="https://example.com/image.jpg" dir="ltr">
-                <label>أو اكتب نص القصة (سيظهر كخلفية ملونة إذا لم تضع صورة)</label>
-                <textarea id="story-text" rows="3" placeholder="ماذا تريد أن تخبر الطلاب اليوم؟"></textarea>
+                <h3 style="color: #e1306c;">📸 نشر قصة جديدة (Story)</h3>
+                <label>رابط الصورة (URL)</label><input type="url" id="story-url" placeholder="https://example.com/image.jpg" dir="ltr">
+                <label>أو اكتب نص القصة</label><textarea id="story-text" rows="3" placeholder="ماذا تريد أن تخبر الطلاب اليوم؟"></textarea>
                 <button class="btn-pub" style="background: linear-gradient(45deg, #f58529, #dd2a7b);" onclick="publishStory()" id="btn-story">نشر القصة الآن</button>
+            </div>
+        </div>
+
+        <div id="tab-chat" class="tab-content">
+            <div class="card" style="border-top: 5px solid #e84393;">
+                <h3 style="color:#e84393;">💬 توجيهات وتعميمات السيد المدير</h3>
+                <p style="color:gray; font-size:0.85rem;">هنا تصلك الرسائل والتوجيهات الإدارية الهامة بشكل مباشر.</p>
+                <div id="teacher-chat-list" style="margin-top: 20px;">
+                    </div>
+            </div>
+        </div>
+
+        <div id="tab-badge" class="tab-content">
+            <div class="card" style="border-top: 5px solid #f1c40f;">
+                <h3 style="color: #f1c40f;">🌟 منح وسام شرف لطالب</h3>
+                <label>اسم الطالب المتميز</label><input type="text" id="badge-name" placeholder="اسم الطالب">
+                <label>الصف</label><select id="badge-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
+                <label>نوع الوسام (يظهر بجانب اسمه بالرئيسية)</label>
+                <select id="badge-type">
+                    <option value="نجم الأسبوع">🌟 نجم الأسبوع</option>
+                    <option value="بطل الواجبات">📝 بطل الواجبات</option>
+                    <option value="المبدع">💡 المبدع</option>
+                    <option value="صديق البيئة">🌿 صديق البيئة</option>
+                </select>
+                <button class="btn-pub" style="background:#f1c40f; color:#333;" onclick="grantBadge()" id="btn-badge">منح الوسام ورفعه للوحة الشرف</button>
+            </div>
+        </div>
+
+        <div id="tab-lib" class="tab-content">
+            <div class="card" style="border-top: 5px solid #34495e;">
+                <h3 style="color: #34495e;">📚 رفع ملزمة للمكتبة الرقمية</h3>
+                <label>اسم الملزمة أو الملخص</label><input type="text" id="lib-sub" placeholder="مثال: ملخص علوم نصف السنة">
+                <label>الصف</label><select id="lib-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
+                <label>رابط ملف (PDF / Google Drive)</label><input type="url" id="lib-url" placeholder="https://..." dir="ltr">
+                <textarea id="lib-det" style="display:none;">ملف مكتبة</textarea>
+                <button class="btn-pub" style="background:#34495e;" onclick="publishLibrary()" id="btn-lib">رفع للمكتبة</button>
+            </div>
+        </div>
+
+        <div id="tab-attendance" class="tab-content">
+            <div class="card" style="border-top: 5px solid #e67e22;">
+                <h3 style="color: #e67e22;">🙋‍♂️ رفع سجل الغياب اليومي للمدرسة</h3>
+                <p style="font-size:0.85rem; color:gray;">سيظهر هذا السجل في الصفحة الرئيسية لمدة 24 ساعة.</p>
+                <label>الصف والشعبة</label><input type="text" id="att-cls" placeholder="مثال: الخامس (أ)">
+                <label>أسماء التلاميذ الغائبين اليوم</label>
+                <textarea id="att-names" rows="5" placeholder="أحمد محمد, علي حسين..."></textarea>
+                <button class="btn-pub" style="background:#e67e22;" onclick="submitAttendance()" id="btn-att">إرسال سجل الغياب</button>
             </div>
         </div>
 
@@ -188,7 +235,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, getCountFromServer, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, getCountFromServer, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -204,31 +251,21 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // الإشعار العلوي (Toast)
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
-            toast.innerText = msg;
+            toast.innerText = msg; toast.style.backgroundColor = msg.includes('🔔') ? '#e84393' : '#3498db';
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         };
 
-        // النوافذ المنبثقة بدلاً من دوال المتصفح
         window.customConfirm = (msg, onYes) => {
-            const modal = document.getElementById('custom-confirm');
-            document.getElementById('confirm-msg').innerText = msg;
-            modal.style.display = 'flex';
-            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); };
-            document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
+            const modal = document.getElementById('custom-confirm'); document.getElementById('confirm-msg').innerText = msg; modal.style.display = 'flex';
+            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); }; document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
         };
 
         window.customPrompt = (msg, oldVal, onSave) => {
-            const modal = document.getElementById('custom-prompt');
-            document.getElementById('prompt-msg').innerText = msg;
-            const input = document.getElementById('prompt-input');
-            input.value = oldVal;
-            modal.style.display = 'flex';
-            document.getElementById('btn-prompt-yes').onclick = () => { modal.style.display = 'none'; onSave(input.value); };
-            document.getElementById('btn-prompt-no').onclick = () => { modal.style.display = 'none'; };
+            const modal = document.getElementById('custom-prompt'); document.getElementById('prompt-msg').innerText = msg; const input = document.getElementById('prompt-input'); input.value = oldVal; modal.style.display = 'flex';
+            document.getElementById('btn-prompt-yes').onclick = () => { modal.style.display = 'none'; onSave(input.value); }; document.getElementById('btn-prompt-no').onclick = () => { modal.style.display = 'none'; };
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -236,26 +273,60 @@
                 const userName = user.email.split('@')[0];
                 document.getElementById('teacher-name').innerText = "الحساب: " + user.email;
                 loadStatistics();
-                if(!sessionStorage.getItem('welcomed')) {
-                    alert("أهلاً بك في النظام يا أستاذ " + userName);
-                    sessionStorage.setItem('welcomed', 'true');
-                }
-            } else {
-                window.location.href = "login.html";
-            }
+                if(!sessionStorage.getItem('welcomed')) { alert("أهلاً بك في النظام يا أستاذ " + userName); sessionStorage.setItem('welcomed', 'true'); }
+            } else { window.location.href = "login.html"; }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth).then(() => { window.location.href = "login.html"; });
-        });
+        document.getElementById('logoutBtn').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "login.html"; }); });
 
         window.openTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
+            document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active');
+            
+            // إخفاء الـ Badge عند الدخول على الرسائل
+            if(id === 'tab-chat') document.getElementById('chat-badge').style.display = 'none';
             if(id === 'tab-manage') loadManageList();
         };
+
+        // استماع لرسائل الإدارة فقط (لا يوجد إرسال)
+        let initialTeacherChat = true;
+        onSnapshot(query(collection(db, "staff_messages"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('teacher-chat-list'); list.innerHTML = "";
+            let newCount = 0;
+            const badge = document.getElementById('chat-badge');
+
+            snap.docChanges().forEach(change => {
+                if(change.type === "added" && !initialTeacherChat) {
+                    const d = change.doc.data();
+                    if(d.sender === "الإدارة") {
+                        document.getElementById('notify-sound').play().catch(()=>{});
+                        alert(`🔔 تعميم إداري جديد من السيد المدير`);
+                        newCount++;
+                    }
+                }
+            });
+            initialTeacherChat = false;
+
+            if (snap.size > 0 && !document.getElementById('tab-chat').classList.contains('active')) {
+                badge.innerText = snap.size;
+                badge.style.display = 'inline-block';
+            }
+
+            if(snap.empty) { list.innerHTML = "<p>لا توجد توجيهات إدارية حالياً.</p>"; return; }
+            snap.forEach(doc => {
+                const d = doc.data(); 
+                // تظهر رسائل الإدارة بستايل مميز للقرائة فقط
+                if(d.sender === "الإدارة") {
+                    const imgHtml = d.imgUrl ? `<br><img src="${d.imgUrl}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : "";
+                    const timeStr = d.timestamp ? new Date(d.timestamp.seconds*1000).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
+                    list.innerHTML += `<div style="padding:15px; border-radius:8px; margin-bottom:15px; text-align:right; background:#fdf2f8; border-right:5px solid #e84393;">
+                        <b style="color:#d53f8c; font-size:1.1rem;">👑 الإدارة العامة</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br>
+                        <p style="margin:10px 0; font-weight:bold; font-size:1rem; color:#333;">${d.text}</p> ${imgHtml}
+                    </div>`;
+                }
+            });
+        });
 
         async function reportActivity(actionType, detail) {
             if(!auth.currentUser) return;
@@ -265,61 +336,76 @@
         async function loadStatistics() {
             if(!auth.currentUser) return;
             const uid = auth.currentUser.uid;
-            const hwCount = await getCountFromServer(query(collection(db, 'homeworks'), where("uid", "==", uid)));
-            document.getElementById('total-hw').innerText = hwCount.data().count;
-            const newsCount = await getCountFromServer(query(collection(db, 'announcements'), where("uid", "==", uid)));
-            document.getElementById('total-news').innerText = newsCount.data().count;
-            const exCount = await getCountFromServer(query(collection(db, 'exams'), where("uid", "==", uid)));
-            document.getElementById('total-ex').innerText = exCount.data().count;
+            const hwCount = await getCountFromServer(query(collection(db, 'homeworks'), where("uid", "==", uid))); document.getElementById('total-hw').innerText = hwCount.data().count;
+            const newsCount = await getCountFromServer(query(collection(db, 'announcements'), where("uid", "==", uid))); document.getElementById('total-news').innerText = newsCount.data().count;
+            const exCount = await getCountFromServer(query(collection(db, 'exams'), where("uid", "==", uid))); document.getElementById('total-ex').innerText = exCount.data().count;
         }
 
+        window.publishLibrary = async () => {
+            const sub = document.getElementById('lib-sub').value; const cls = document.getElementById('lib-cls').value; const url = document.getElementById('lib-url').value;
+            if(!sub || !url) return alert("أدخل اسم الملزمة والرابط!");
+            const btn = document.getElementById('btn-lib'); btn.innerText = "جاري الرفع..."; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "library"), { subject: sub, class: cls, url: url, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                reportActivity("رفع للمكتبة", "رفع ملزمة: " + sub); alert("تم الرفع للمكتبة الرقمية بنجاح!");
+                document.getElementById('lib-sub').value = ""; document.getElementById('lib-url').value = "";
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "رفع للمكتبة"; btn.disabled = false; }
+        };
+
+        window.grantBadge = async () => {
+            const n = document.getElementById('badge-name').value; const c = document.getElementById('badge-cls').value; const b = document.getElementById('badge-type').value;
+            if(!n) return alert("اكتب اسم الطالب المتميز!");
+            const btn = document.getElementById('btn-badge'); btn.innerText = "جاري المنح..."; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "honor_roll"), { name: n, class: c, badge: b, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                reportActivity("وسام شرف", `منح وسام (${b}) للطالب ${n}`); alert("تم رفع الطالب للوحة الشرف مع الوسام!");
+                document.getElementById('badge-name').value = "";
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "منح الوسام ورفعه للوحة الشرف"; btn.disabled = false; }
+        };
+
+        window.submitAttendance = async () => {
+            const c = document.getElementById('att-cls').value; const n = document.getElementById('att-names').value;
+            if(!c || !n) return alert("اكمل الصف وأسماء الغياب!");
+            const btn = document.getElementById('btn-att'); btn.innerText = "جاري الإرسال..."; btn.disabled = true;
+            try {
+                const today = new Date().toLocaleDateString('ar-IQ');
+                await addDoc(collection(db, "attendance"), { class: c, absentNames: n, date: today, teacher: auth.currentUser.email.split('@')[0], timestamp: serverTimestamp() });
+                reportActivity("سجل غياب", `رفع غياب لصف ${c}`); alert("تم رفع سجل الغياب للرئيسية.");
+                document.getElementById('att-cls').value = ""; document.getElementById('att-names').value = "";
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "إرسال سجل الغياب"; btn.disabled = false; }
+        };
+
         window.publishStory = async () => {
-            const url = document.getElementById('story-url').value;
-            const txt = document.getElementById('story-text').value;
+            const url = document.getElementById('story-url').value; const txt = document.getElementById('story-text').value;
             const btn = document.getElementById('btn-story');
             if(!url && !txt) return alert("الرجاء إدخال رابط الصورة أو كتابة نص القصة!");
-            
             btn.innerText = "جاري النشر..."; btn.disabled = true;
             try {
-                const publisherName = auth.currentUser ? auth.currentUser.email.split('@')[0] : "الكادر التدريسي";
-                await addDoc(collection(db, "stories"), { imageUrl: url, textContent: txt, publisher: publisherName, uid: auth.currentUser.uid, timestamp: serverTimestamp() });
-                reportActivity("نشر قصة", "قام بنشر قصة جديدة");
-                alert("تم نشر القصة بنجاح!");
+                await addDoc(collection(db, "stories"), { imageUrl: url, textContent: txt, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                reportActivity("نشر قصة", "قام بنشر قصة جديدة"); alert("تم نشر القصة بنجاح!");
                 document.getElementById('story-url').value = ""; document.getElementById('story-text').value = "";
-            } catch (e) { alert("فشل النشر، حاول مرة أخرى"); } 
-            finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
+            } catch (e) { alert("فشل النشر"); } finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
         };
 
         window.sendToFirebase = async (col, pre) => {
-            const subject = document.getElementById(pre+'-sub').value;
-            const details = document.getElementById(pre+'-det').value;
-            const classRoom = document.getElementById(pre+'-cls').value;
+            const subject = document.getElementById(pre+'-sub').value; const details = document.getElementById(pre+'-det').value; const classRoom = document.getElementById(pre+'-cls').value;
             const btn = document.getElementById('btn-'+pre);
-
             if(!subject || !details) return alert("الرجاء إكمال كافة الحقول قبل النشر!");
             btn.innerText = "جاري النشر... ⏳"; btn.disabled = true;
-
             try {
-                const publisherName = auth.currentUser ? auth.currentUser.email.split('@')[0] : "الكادر التدريسي";
-                const userUid = auth.currentUser.uid;
-                await addDoc(collection(db, col), { subject, details, class: classRoom, publisher: publisherName, uid: userUid, timestamp: serverTimestamp() });
-                
+                await addDoc(collection(db, col), { subject, details, class: classRoom, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
                 const typeAr = col === 'homeworks' ? "واجب" : (col === 'announcements' ? "إعلان" : "امتحان");
-                reportActivity("نشر جديد", `قام بنشر ${typeAr}: ${subject}`);
-                alert("تم النشر بنجاح على السيرفر!");
-                document.getElementById(pre+'-sub').value = ""; document.getElementById(pre+'-det').value = "";
-                loadStatistics();
-            } catch (e) { alert("فشل النشر! تأكد من اتصالك بالإنترنت."); } 
-            finally { btn.innerText = "نشر المحتوى"; btn.disabled = false; }
+                reportActivity("نشر جديد", `قام بنشر ${typeAr}: ${subject}`); alert("تم النشر بنجاح!");
+                document.getElementById(pre+'-sub').value = ""; document.getElementById(pre+'-det').value = ""; loadStatistics();
+            } catch (e) { alert("فشل النشر!"); } finally { btn.innerText = "نشر المحتوى"; btn.disabled = false; }
         };
 
         async function loadManageList() {
-            const container = document.getElementById('all-posts');
-            container.innerHTML = "جاري جلب المنشورات...";
+            const container = document.getElementById('all-posts'); container.innerHTML = "جاري جلب المنشورات...";
             const userUid = auth.currentUser ? auth.currentUser.uid : null;
-            if(!userUid) { container.innerHTML = "يجب تسجيل الدخول."; return; }
+            if(!userUid) return;
 
-            const collectionsToFetch = [{ id: 'homeworks', label: 'واجب' }, { id: 'announcements', label: 'إعلان' }, { id: 'exams', label: 'امتحان' }, { id: 'stories', label: 'قصة (Story)' }];
+            const collectionsToFetch = [{ id: 'homeworks', label: 'واجب' }, { id: 'announcements', label: 'إعلان' }, { id: 'exams', label: 'امتحان' }, { id: 'stories', label: 'قصة' }, { id: 'library', label: 'مكتبة' }];
             let allPosts = [];
 
             try {
@@ -335,44 +421,29 @@
 
                 allPosts.forEach(p => {
                     const dateStr = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleDateString('ar-EG') : 'غير معروف';
-                    const postTitle = p.subject || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة");
+                    const postTitle = p.subject || p.title || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
                     const postClass = p.class ? `(${p.class})` : "";
-                    
-                    const editBtnHtml = p.col !== 'stories' ? `<button class="edit-btn" onclick="editPost('${p.col}', '${p.id}', '${p.details}', '${postTitle}')">تعديل ✏️</button>` : "";
+                    const editBtnHtml = (p.col !== 'stories' && p.col !== 'library') ? `<button class="edit-btn" onclick="editPost('${p.col}', '${p.id}', '${p.details}', '${postTitle}')">تعديل ✏️</button>` : "";
 
                     container.innerHTML += `
                         <div class="post-item">
-                            <div>
-                                <span style="background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${p.typeLabel}</span>
-                                <b>${postTitle}</b> ${postClass}
-                                <br><small style="color:gray">التاريخ: ${dateStr}</small>
-                            </div>
-                            <div>
-                                ${editBtnHtml}
-                                <button class="del-btn" onclick="removePost('${p.col}', '${p.id}', '${postTitle}')">حذف 🗑️</button>
-                            </div>
+                            <div><span style="background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${p.typeLabel}</span> <b>${postTitle}</b> ${postClass} <br><small style="color:gray">التاريخ: ${dateStr}</small></div>
+                            <div>${editBtnHtml}<button class="del-btn" onclick="removePost('${p.col}', '${p.id}', '${postTitle}')">حذف 🗑️</button></div>
                         </div>`;
                 });
             } catch (e) { container.innerHTML = "حدث خطأ."; }
         }
 
-        // تم استبدال الحذف المزعج هنا
         window.removePost = (col, id, title) => {
             customConfirm("هل أنت متأكد من حذف هذا المنشور نهائياً؟", async () => {
-                await deleteDoc(doc(db, col, id)); 
-                reportActivity("حذف", `قام بحذف: ${title} من مجموعة ${col}`);
-                loadManageList(); loadStatistics();
-                alert("تم الحذف بنجاح");
+                await deleteDoc(doc(db, col, id)); reportActivity("حذف", `قام بحذف: ${title}`); loadManageList(); loadStatistics(); alert("تم الحذف بنجاح");
             });
         };
 
-        // تم استبدال التعديل المزعج هنا
         window.editPost = (col, id, oldTxt, title) => {
             customPrompt("تعديل تفاصيل المنشور:", oldTxt, async (newTxt) => {
                 if(newTxt && newTxt !== oldTxt) { 
-                    await updateDoc(doc(db, col, id), { details: newTxt }); 
-                    reportActivity("تعديل منشور", `عدل محتوى: ${title}`);
-                    alert("تم التعديل بنجاح"); loadManageList();
+                    await updateDoc(doc(db, col, id), { details: newTxt }); reportActivity("تعديل منشور", `عدل محتوى: ${title}`); alert("تم التعديل بنجاح"); loadManageList();
                 }
             });
         };

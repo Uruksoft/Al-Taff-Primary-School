@@ -13,8 +13,12 @@
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
     <style>
-        .search-container { margin-bottom: 30px; }
-        .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; box-sizing: border-box; }
+        /* إصلاح الهوامش ومنع التمرير الأفقي المزعج */
+        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; }
+        * { box-sizing: border-box; }
+
+        .search-container { margin-bottom: 20px; width: 100%; }
+        .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; }
         .search-box:focus { border-color: #3498db; }
         
         .announcement-details { display: none; padding-top: 15px; margin-top: 15px; border-top: 1px dashed #e2e8f0; color: #475569; }
@@ -26,7 +30,6 @@
         .done-btn { background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; transition: 0.3s; font-weight: bold; }
         .done-btn.active { background: #2ecc71; color: white; border-color: #2ecc71; }
         .whatsapp-share { color: #25D366; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .whatsapp-share:hover { filter: brightness(0.8); }
         
         .post-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 10px; flex-wrap: wrap; gap: 10px; }
         .exam-status { font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
@@ -37,28 +40,40 @@
         .honor-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; }
         .honor-badge { font-size: 1.5rem; }
 
-        .card.card-announce { background-color: #f0f9ff; border-right: 5px solid #3498db; }
-        .card.card-hw { background-color: #f4fdf8; border-right: 5px solid #2ecc71; }
+        .card { width: 100%; overflow: hidden; } /* لمنع خروج محتوى البطاقة */
+        .card.card-announce { background-color: #f0f9ff; border-right: 5px solid #3498db; margin-bottom: 15px;}
+        .card.card-hw { background-color: #f4fdf8; border-right: 5px solid #2ecc71; margin-bottom: 15px;}
         .card.accent-card { background-color: #fffbeb; border-right: 5px solid #f1c40f; }
         .exam-schedule li { border-right: 4px solid #e74c3c; background: #ffffff; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 12px; }
 
-        /* الوضع الليلي */
+        /* التوزيع الجديد (3 أعمدة) وتعديل الهوامش */
+        .main-layout { display: grid; grid-template-columns: 260px 1fr 260px; gap: 20px; align-items: start; width: 100%; }
+        .sidebar-right, .sidebar-left { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .primary-content { min-width: 0; width: 100%; }
+
+        /* أداة الطقس */
+        .weather-card { background: linear-gradient(135deg, #0284c7, #38bdf8); color: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; }
+        .weather-card h3 { margin: 0 0 5px 0; color: white; font-size: 1.1rem;}
+        .weather-temp { font-size: 2.5rem; font-weight: bold; margin: 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);}
+        
+        .btn-show-more { background: #f1f5f9; color: var(--accent); border: none; padding: 10px; width: 100%; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-show-more:hover { background: #e2e8f0; }
+
         body.dark-mode { --bg-light: #121212; --text-main: #e0e0e0; background-color: var(--bg-light); color: var(--text-main); }
         body.dark-mode .main-header { background-color: #1e1e1e; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         body.dark-mode .search-box { background-color: #1e1e1e; color: #fff; border-color: #333; }
         body.dark-mode .hero { background: linear-gradient(135deg, #1e293b, #0f172a); }
         body.dark-mode .announcement-details, body.dark-mode .post-meta { color: #cbd5e1; border-top-color: #333; }
-        body.dark-mode .school-logo { filter: brightness(0.9); }
         body.dark-mode .card { background-color: #1e1e1e; color: #e2e8f0; }
         body.dark-mode .card.card-announce { background-color: #0f172a; border-right-color: #3498db; }
         body.dark-mode .card.card-hw { background-color: #064e3b; border-right-color: #2ecc71; }
         body.dark-mode .card.accent-card { background-color: #422006; border-right-color: #f1c40f; }
-        body.dark-mode .card h3 { color: #fff; }
         body.dark-mode .exam-schedule li { background-color: #1c1917; border-right-color: #e74c3c; color: #e0e0e0; }
         body.dark-mode .honor-item { border-bottom-color: #333; }
+        body.dark-mode .lib-item { background: #0f172a; border-color: #333; }
+        body.dark-mode .btn-show-more { background: #333; color: #fff; }
 
-        /* القصص (Stories) المحدثة */
-        .stories-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-bottom: 20px; scrollbar-width: none; }
+        .stories-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-bottom: 20px; scrollbar-width: none; width: 100%; }
         .stories-wrapper::-webkit-scrollbar { display: none; }
         .story-circle { min-width: 75px; height: 75px; border-radius: 50%; border: 3px solid #e1306c; padding: 3px; cursor: pointer; flex-shrink: 0; background: white; position: relative; }
         .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
@@ -70,29 +85,63 @@
         .close-story { position: absolute; top: 20px; right: 25px; color: white; font-size: 40px; cursor: pointer; z-index: 100000; }
         .story-meta { position: absolute; top: 25px; left: 25px; color: white; text-align: left; z-index: 100000; font-family: 'Cairo'; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 
-        /* الإشعار المخصص في الأعلى */
         #custom-toast { visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
-        @media screen and (max-width: 850px) {
+        .lib-item { background: #f0f9ff; border-right: 4px solid #3498db; padding: 12px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .lib-link { background: #3498db; color: white; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+
+        .fab-contact { position: fixed; bottom: 20px; right: 20px; background: #e74c3c; color: white; border: none; border-radius: 50px; padding: 15px 25px; font-family: 'Cairo'; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .fab-contact:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; max-height: 85vh; overflow-y: auto; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box;}
+
+        /* إصلاح الفوضى على شاشات الموبايل والآيباد */
+        @media screen and (max-width: 950px) {
+            .main-layout { display: flex !important; flex-direction: column !important; gap: 15px !important; }
             .header-content { display: flex !important; flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px 10px !important; }
             .logo { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 10px !important; }
             .school-logo { margin: 0 auto !important; }
             .main-nav, .main-nav ul { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 15px !important; padding: 0 !important; margin: 0 !important; }
-            .main-layout { display: flex !important; flex-direction: column !important; gap: 20px !important; }
-            .primary-content, .sidebar-content { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; }
-            .container { width: 100% !important; padding: 0 15px !important; box-sizing: border-box !important; }
-            .search-box, .card { width: 100% !important; box-sizing: border-box !important; }
+            .primary-content, .sidebar-right, .sidebar-left { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .container { width: 100% !important; padding: 0 15px !important; box-sizing: border-box !important; overflow: hidden; }
+            .card { width: 100% !important; margin-bottom: 15px !important; box-sizing: border-box; }
             .card-actions { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
             .done-btn, .whatsapp-share { text-align: center !important; justify-content: center !important; padding: 10px !important; }
-            h1 { font-size: 1.4rem !important; }
-            .hero-content h2 { font-size: 1.2rem !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="custom-toast"></div>
+
+    <button class="fab-contact" onclick="document.getElementById('contact-modal').style.display='flex'">📩 تواصل مع الإدارة</button>
+
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-box" style="text-align: center;">
+            <h3 style="color: #e74c3c; margin-top:0;">إرسال رسالة للإدارة 🏫</h3>
+            <p style="font-size: 0.85rem; color: gray;">رسالتك ستصل مباشرة إلى مكتب السيد المدير.</p>
+            <input type="text" id="parent-name" placeholder="اسم ولي الأمر (أو الطالب)">
+            <input type="tel" id="parent-phone" placeholder="رقم الهاتف للتواصل">
+            <textarea id="parent-msg" rows="4" placeholder="اكتب استفسارك أو شكواك هنا..."></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="sendParentMsg()" style="background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1;">إرسال الرسالة</button>
+                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="list-modal">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 id="list-modal-title" style="margin: 0; color: var(--primary);">العنوان</h3>
+                <span style="font-size: 1.5rem; cursor: pointer; color: var(--danger);" onclick="document.getElementById('list-modal').style.display='none'">&times;</span>
+            </div>
+            <div id="list-modal-content"></div>
+        </div>
+    </div>
 
     <header class="main-header">
         <div class="container header-content">
@@ -135,26 +184,40 @@
         <div class="search-container">
             <input type="text" id="classSearch" class="search-box" placeholder="🔍 ابحث عن صفك أو مادتك بسرعة (مثلاً: الرابع)...">
         </div>
+        
+        <h2 style="color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">📢 إعلانات الإدارة</h2>
+        <div id="announcements-list" style="margin-bottom: 30px; width: 100%;"></div>
 
         <div class="main-layout">
-            <div class="primary-content">
-                <h2 style="color: #2c3e50; margin-bottom: 20px;">📢 إعلانات الإدارة</h2>
-                <div id="announcements-list"></div>
+            
+            <div class="sidebar-right">
+                <div class="weather-card">
+                    <h3>☀️ طقس النجف الأشرف</h3>
+                    <div class="weather-temp" id="weather-temp">--°C</div>
+                    <div style="font-size: 0.9rem;" id="weather-desc">جاري التحديث...</div>
+                </div>
 
-                <h2 style="color: #2c3e50; margin-bottom: 20px; margin-top: 40px;">📚 الواجبات البيتيّة</h2>
-                <div id="homeworks-list"></div>
-            </div>
-
-            <div class="sidebar-content">
-                <div class="card" style="text-align: center; background: #2c3e50; color: white;">
-                    <h3 style="color: white; margin-top: 0;">🕒 الوقت والتاريخ</h3>
-                    <div style="font-size: 2.5rem; font-weight: 700;" id="time">00:00:00</div>
-                    <div style="opacity: 0.8;" id="date-display">-- --- ----</div>
+                <div class="card" style="border-top: 5px solid #e67e22;">
+                    <h3 style="color: #e67e22; margin-top: 0;">🙋‍♂️ الغيابات اليومية</h3>
+                    <div id="attendance-list-public">جاري التحميل...</div>
                 </div>
 
                 <div class="card" style="border-top: 5px solid #f1c40f;">
-                    <h3 style="color: #f1c40f; margin-top: 0;"><span class="icon">🏆</span> لوحة المتفوقين</h3>
-                    <div id="honor-list">جاري تحميل أسماء الأبطال...</div>
+                    <h3 style="color: #f1c40f; margin-top: 0;"><span class="icon">🏆</span> لوحة الشرف</h3>
+                    <div id="honor-list">جاري التحميل...</div>
+                </div>
+            </div>
+
+            <div class="primary-content">
+                <h2 style="color: #2c3e50; margin-top: 0; margin-bottom: 20px;">📚 الواجبات البيتيّة الحديثة</h2>
+                <div id="homeworks-list"></div>
+            </div>
+
+            <div class="sidebar-left">
+                <div class="card" style="text-align: center; background: #2c3e50; color: white;">
+                    <h3 style="color: white; margin-top: 0;">🕒 الوقت والتاريخ</h3>
+                    <div style="font-size: 2.2rem; font-weight: 700;" id="time">00:00</div>
+                    <div style="opacity: 0.8; font-size:0.9rem;" id="date-display">-- --- ----</div>
                 </div>
 
                 <div class="card accent-card">
@@ -163,7 +226,14 @@
                         <ul style="padding: 0; list-style: none;"></ul>
                     </div>
                 </div>
+
+                <div class="card" style="border-top: 5px solid #3498db;">
+                    <h3 style="color: #3498db; margin-top: 0;">📚 المكتبة الرقمية</h3>
+                    <p style="font-size: 0.8rem; color: gray;">ملازم، ملخصات، أوراق عمل</p>
+                    <div id="library-list">جاري جلب الملفات...</div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -174,7 +244,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, limit, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
@@ -188,170 +258,198 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // التنبيه المخصص في الأعلى
+        // متغيرات حفظ البيانات لعرضها في النوافذ المنبثقة
+        window.appData = { attendance: [], honor: [], library: [], exams: [], homeworks: [] };
+
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
+            toast.innerText = msg; toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         };
 
-        // دالة حساب الوقت الماضي
+        async function fetchWeather() {
+            try {
+                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=32.0283&longitude=44.3411&current_weather=true");
+                const data = await res.json();
+                document.getElementById('weather-temp').innerText = Math.round(data.current_weather.temperature) + '°C';
+                document.getElementById('weather-desc').innerText = "النجف الأشرف";
+            } catch(e) { document.getElementById('weather-temp').innerText = "--"; }
+        }
+        fetchWeather();
+
+        // دالة عرض المزيد في المودل
+        window.openModalList = (type, title) => {
+            const modal = document.getElementById('list-modal');
+            document.getElementById('list-modal-title').innerText = title;
+            const content = document.getElementById('list-modal-content'); content.innerHTML = '';
+            const data = window.appData[type];
+            if(!data || data.length === 0) { content.innerHTML = "<p style='text-align:center;'>لا توجد بيانات.</p>"; return; }
+
+            data.forEach(d => {
+                if(type === 'attendance') {
+                    content.innerHTML += `<div style="background: #fffaf0; border-right: 4px solid #e67e22; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
+                        <div style="display:flex; justify-content:space-between;"><strong>الصف: ${d.class}</strong><span style="font-size:0.8rem; color:gray;">${timeAgo(d.timestamp?d.timestamp.toDate():new Date())}</span></div>
+                        <div style="color:#e53e3e; font-weight:bold; font-size:0.9rem; margin-top:5px;">الغياب: <span style="font-weight:normal; color:#475569;">${d.absentNames}</span></div></div>`;
+                } else if (type === 'honor') {
+                    let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
+                    content.innerHTML += `<div class="honor-item"><span class="honor-badge">${badgeIcon}</span><div><strong>${d.name}</strong> <span style="font-size:0.7rem; background:#f1c40f; color:#fff; padding:2px 5px; border-radius:4px;">${d.badge || 'متميز'}</span><br><small style="color:gray;">${d.class}</small></div></div>`;
+                } else if (type === 'library') {
+                    content.innerHTML += `<div class="lib-item"><div><strong style="color:var(--primary);">${d.subject}</strong><br><small style="color:gray;">${d.class}</small></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
+                } else if (type === 'exams') {
+                    const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
+                    let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
+                    content.innerHTML += `<div style="background:#fff; border-right:4px solid #e74c3c; padding:12px; margin-bottom:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:flex; justify-content:space-between;"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></div>`;
+                } else if (type === 'homeworks') {
+                    content.innerHTML += `<div class="card hw-item card-hw" style="margin-bottom:10px;">
+                        <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
+                        <p style="margin-top:10px; font-weight:600;">${d.details}</p>
+                        <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div></div>`;
+                }
+            });
+            modal.style.display = 'flex';
+        };
+
+        window.sendParentMsg = async () => {
+            const n = document.getElementById('parent-name').value; const p = document.getElementById('parent-phone').value; const m = document.getElementById('parent-msg').value;
+            if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة.");
+            try {
+                await addDoc(collection(db, "messages"), { name: n, phone: p, message: m, timestamp: serverTimestamp() });
+                alert("تم إرسال رسالتك للإدارة بنجاح."); document.getElementById('contact-modal').style.display = 'none';
+                document.getElementById('parent-name').value = ''; document.getElementById('parent-phone').value = ''; document.getElementById('parent-msg').value = '';
+            } catch (e) { alert("حدث خطأ!"); }
+        };
+
         function timeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            let interval = seconds / 3600;
-            if (interval >= 1) return Math.floor(interval) + " ساعة";
-            interval = seconds / 60;
-            if (interval >= 1) return Math.floor(interval) + " دقيقة";
-            return "لحظات";
+            const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 3600;
+            if (interval >= 1) return Math.floor(interval) + " ساعة"; interval = seconds / 60;
+            if (interval >= 1) return Math.floor(interval) + " دقيقة"; return "لحظات";
         }
 
-        // جلب القصص (Stories) بشرط ألا تتجاوز 24 ساعة
         window.openStory = (type, content, publisher, timeStr) => {
-            const viewer = document.getElementById('story-viewer');
-            const img = document.getElementById('story-img');
-            const txt = document.getElementById('story-text-container');
-            const meta = document.getElementById('story-meta-info');
-            
-            viewer.style.display = 'flex';
-            meta.innerHTML = `<span style="font-size:1.2rem; font-weight:bold;">${publisher}</span><br><span style="font-size:0.8rem; color:#ddd;">منذ ${timeStr}</span>`;
-            
-            if(type === 'image') {
-                img.src = content; img.style.display = 'block'; txt.style.display = 'none';
-            } else {
-                txt.innerText = content; txt.style.display = 'flex'; img.style.display = 'none';
-            }
+            const viewer = document.getElementById('story-viewer'); const img = document.getElementById('story-img'); const txt = document.getElementById('story-text-container'); const meta = document.getElementById('story-meta-info');
+            viewer.style.display = 'flex'; meta.innerHTML = `<span style="font-size:1.2rem; font-weight:bold;">${publisher}</span><br><span style="font-size:0.8rem; color:#ddd;">منذ ${timeStr}</span>`;
+            if(type === 'image') { img.src = content; img.style.display = 'block'; txt.style.display = 'none'; } else { txt.innerText = content; txt.style.display = 'flex'; img.style.display = 'none'; }
         };
 
         onSnapshot(query(collection(db, "stories"), orderBy("timestamp", "desc")), (snap) => {
-            const wrapper = document.getElementById('stories-wrapper');
-            wrapper.innerHTML = "";
-            const now = new Date();
-            const oneDay = 24 * 60 * 60 * 1000;
-
+            const wrapper = document.getElementById('stories-wrapper'); wrapper.innerHTML = ""; const now = new Date();
             snap.forEach(doc => {
-                const d = doc.data();
-                const storyDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                
-                // إخفاء القصة إذا مر عليها أكثر من 24 ساعة
-                if (now - storyDate > oneDay) return; 
-                
-                const timeStr = timeAgo(storyDate);
-                const isImage = !!d.imageUrl;
-                const content = isImage ? d.imageUrl : d.textContent;
-                const pub = d.publisher || "الإدارة";
-                
-                let previewHtml = isImage 
-                    ? `<img src="${d.imageUrl}" alt="قصة">` 
-                    : `<div class="text-preview">${d.textContent.substring(0, 15)}...</div>`;
-
-                wrapper.innerHTML += `
-                    <div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${content.replace(/'/g, "\\'")}', '${pub}', '${timeStr}')">
-                        ${previewHtml}
-                    </div>
-                `;
+                const d = doc.data(); const storyDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - storyDate) > 24 * 60 * 60 * 1000) return; 
+                const isImage = !!d.imageUrl; const content = isImage ? d.imageUrl : d.textContent;
+                let previewHtml = isImage ? `<img src="${d.imageUrl}">` : `<div class="text-preview">${d.textContent.substring(0, 15)}...</div>`;
+                wrapper.innerHTML += `<div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${content.replace(/'/g, "\\'")}', '${d.publisher||"الإدارة"}', '${timeAgo(storyDate)}')">${previewHtml}</div>`;
             });
         });
 
-        const applyTheme = (theme) => {
-            if(theme === 'dark') document.body.classList.add('dark-mode');
-            else document.body.classList.remove('dark-mode');
-            localStorage.setItem('theme', theme);
-        };
-        window.toggleTheme = (e) => {
-            e.preventDefault();
-            const isDark = document.body.classList.contains('dark-mode');
-            applyTheme(isDark ? 'light' : 'dark');
-        };
-        applyTheme(localStorage.getItem('theme') || 'light');
-
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        }, 1000);
-
-        const getFormattedDate = (ts) => {
-            if (!ts) return "...";
-            return new Intl.DateTimeFormat('ar-IQ', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }).format(ts.toDate());
-        };
-
-        window.toggleAnnounce = (id) => document.getElementById('ann-'+id).classList.toggle('open');
-        window.toggleDone = (id) => {
-            const btn = document.getElementById('btn-'+id);
-            const isDone = btn.classList.toggle('active');
-            btn.innerHTML = isDone ? "✅ منجز" : "🔘 حدد كمنجز";
-            localStorage.setItem('done-'+id, isDone);
-        };
-
-        onSnapshot(doc(db, "settings", "emergency_alert"), (doc) => {
-            const data = doc.data();
-            const banner = document.getElementById('emergency-banner');
-            const text = document.getElementById('emergency-text');
-            if (data && data.active && data.text) {
-                banner.style.display = "block";
-                text.innerText = "🚨 عاجل: " + data.text;
-            } else {
-                banner.style.display = "none";
+        onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.attendance = []; const now = new Date();
+            snap.forEach(doc => {
+                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - recordDate) <= 24 * 60 * 60 * 1000) window.appData.attendance.push(d);
+            });
+            const list = document.getElementById('attendance-list-public'); list.innerHTML = "";
+            if (window.appData.attendance.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray; font-size:0.85rem;'>لا غيابات مسجلة اليوم.</p>"; return; }
+            for(let i=0; i < Math.min(2, window.appData.attendance.length); i++) {
+                const d = window.appData.attendance[i]; const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                list.innerHTML += `<div style="background: #fffaf0; border-right: 4px solid #e67e22; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
+                    <div style="display:flex; justify-content:space-between;"><strong>الصف: ${d.class}</strong><span style="font-size:0.8rem; color:gray;">${timeAgo(recordDate)}</span></div>
+                    <div style="color:#e53e3e; font-weight:bold; font-size:0.9rem; margin-top:5px;">الغياب: <span style="font-weight:normal; color:#475569;">${d.absentNames}</span></div></div>`;
             }
+            if(window.appData.attendance.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('attendance', '🙋‍♂️ سجل الغيابات')">عرض المزيد (${window.appData.attendance.length - 2}+)</button>`;
         });
 
-        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc"), limit(5)), (snap) => {
-            const list = document.getElementById('honor-list'); list.innerHTML = "";
-            if (snap.empty) list.innerHTML = "قريباً سيتم إعلان الأوائل..";
+        // لوحة الشرف تبقى لـ 7 أيام
+        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.honor = []; const now = new Date();
             snap.forEach(doc => {
-                const d = doc.data();
-                list.innerHTML += `<div class="honor-item"><span class="honor-badge">⭐</span><div><strong>${d.name}</strong><br><small style="color:gray;">${d.class}</small></div></div>`;
+                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) window.appData.honor.push(d);
             });
+            const list = document.getElementById('honor-list'); list.innerHTML = "";
+            if (window.appData.honor.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray;'>لا يوجد أبطال لهذا الأسبوع..</p>"; return; }
+            for(let i=0; i < Math.min(2, window.appData.honor.length); i++) {
+                const d = window.appData.honor[i];
+                let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
+                list.innerHTML += `<div class="honor-item"><span class="honor-badge">${badgeIcon}</span><div><strong>${d.name}</strong> <span style="font-size:0.7rem; background:#f1c40f; color:#fff; padding:2px 5px; border-radius:4px;">${d.badge || 'متميز'}</span><br><small style="color:gray;">${d.class}</small></div></div>`;
+            }
+            if(window.appData.honor.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('honor', '🏆 لوحة الشرف')">عرض المزيد (${window.appData.honor.length - 2}+)</button>`;
+        });
+
+        onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.library = []; snap.forEach(doc => window.appData.library.push(doc.data()));
+            const list = document.getElementById('library-list'); list.innerHTML = "";
+            if (window.appData.library.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray; font-size:0.85rem;'>قيد التجهيز..</p>"; return; }
+            for(let i=0; i < Math.min(2, window.appData.library.length); i++) {
+                const d = window.appData.library[i];
+                list.innerHTML += `<div class="lib-item"><div><strong style="color:var(--primary);">${d.subject}</strong><br><small style="color:gray;">${d.class}</small></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
+            }
+            if(window.appData.library.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('library', '📚 المكتبة الرقمية')">عرض المزيد (${window.appData.library.length - 2}+)</button>`;
+        });
+
+        // الامتحانات تحذف بعد يومين من إجرائها
+        onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.exams = []; const now = new Date();
+            snap.forEach(doc => {
+                const d = doc.data(); const diffDays = (now - new Date(d.details)) / 864e5;
+                if (isNaN(diffDays) || diffDays <= 2) window.appData.exams.push(d);
+            });
+            const list = document.querySelector('#exams-list ul'); list.innerHTML = "";
+            for(let i=0; i < Math.min(2, window.appData.exams.length); i++) {
+                const d = window.appData.exams[i]; const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - now) / 864e5);
+                let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
+                list.innerHTML += `<li class="ex-item"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></li>`;
+            }
+            if(window.appData.exams.length > 2) list.parentElement.innerHTML += `<button class="btn-show-more" style="margin-top:0;" onclick="openModalList('exams', '📅 مواعيد الامتحانات')">عرض المزيد (${window.appData.exams.length - 2}+)</button>`;
+        });
+
+        // الواجبات (3 أيام فقط وتعرض أول 3)
+        onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.homeworks = []; const now = new Date();
+            snap.forEach(doc => {
+                const d = doc.data(); const dTime = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - dTime) <= 3 * 24 * 60 * 60 * 1000) window.appData.homeworks.push({id: doc.id, ...d});
+            });
+            const list = document.getElementById('homeworks-list'); list.innerHTML = "";
+            if(window.appData.homeworks.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray;'>لا توجد واجبات حديثة.</p>"; return; }
+            
+            for(let i=0; i < Math.min(3, window.appData.homeworks.length); i++) {
+                const d = window.appData.homeworks[i]; const id = d.id; const isSaved = localStorage.getItem('done-'+id) === 'true';
+                const waMessage = encodeURIComponent(`*📚 واجب بيتي*\nالمادة: ${d.subject}\nالصف: ${d.class}\nالتفاصيل: ${d.details}`);
+                list.innerHTML += `<div class="card hw-item card-hw">
+                    <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
+                    <p style="margin-top:15px; font-weight:600;">${d.details}</p>
+                    <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div>
+                    <div class="card-actions"><a href="https://wa.me/?text=${waMessage}" target="_blank" class="whatsapp-share">📤 مشاركة واتساب</a>
+                    <button id="btn-${id}" class="done-btn ${isSaved?'active':''}" onclick="toggleDone('${id}')">${isSaved?'✅ منجز':'🔘 حدد كمنجز'}</button></div></div>`;
+            }
+            if(window.appData.homeworks.length > 3) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('homeworks', '📚 جميع الواجبات')">عرض المزيد (${window.appData.homeworks.length - 3}+)</button>`;
         });
 
         onSnapshot(query(collection(db, "announcements"), orderBy("timestamp", "desc")), (snap) => {
             const list = document.getElementById('announcements-list'); list.innerHTML = "";
             snap.forEach(doc => {
                 const d = doc.data(); const id = doc.id;
-                list.innerHTML += `
-                <div class="card clickable card-announce" id="ann-${id}" onclick="toggleAnnounce('${id}')">
+                list.innerHTML += `<div class="card clickable card-announce" id="ann-${id}" onclick="document.getElementById('ann-${id}').classList.toggle('open')">
                     <h3 style="margin-bottom:0; color: #3498db;">📌 ${d.subject} <span style="font-size:0.8rem; color:#94a3b8; font-weight:normal;">(اضغط للقراءة)</span></h3>
                     <div class="announcement-details"><p>${d.details}</p><div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الإدارة</span></div></div>
                 </div>`;
             });
         });
 
-        onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc"), limit(15)), (snap) => {
-            const list = document.getElementById('homeworks-list'); list.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data(); const id = doc.id; const isSaved = localStorage.getItem('done-'+id) === 'true';
-                const waMessage = encodeURIComponent(`*📚 واجب بيتي جديد - مدرسة الطف*\n\nالمادة: ${d.subject}\nالصف: ${d.class}\nالتفاصيل: ${d.details}`);
-                list.innerHTML += `
-                <div class="card hw-item card-hw">
-                    <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
-                    <p style="margin-top:15px; font-weight:600;">${d.details}</p>
-                    <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div>
-                    <div class="card-actions">
-                        <a href="https://wa.me/?text=${waMessage}" target="_blank" class="whatsapp-share">📤 مشاركة واتساب</a>
-                        <button id="btn-${id}" class="done-btn ${isSaved?'active':''}" onclick="toggleDone('${id}')">${isSaved?'✅ منجز':'🔘 حدد كمنجز'}</button>
-                    </div>
-                </div>`;
-            });
-        });
+        window.toggleDone = (id) => { const btn = document.getElementById('btn-'+id); const isDone = btn.classList.toggle('active'); btn.innerHTML = isDone ? "✅ منجز" : "🔘 حدد كمنجز"; localStorage.setItem('done-'+id, isDone); };
+        const applyTheme = (theme) => { if(theme === 'dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); localStorage.setItem('theme', theme); };
+        window.toggleTheme = (e) => { e.preventDefault(); const isDark = document.body.classList.contains('dark-mode'); applyTheme(isDark ? 'light' : 'dark'); }; applyTheme(localStorage.getItem('theme') || 'light');
 
-        onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
-            const list = document.querySelector('#exams-list ul'); list.innerHTML = "";
+        setInterval(() => {
             const now = new Date();
-            snap.forEach(doc => {
-                const d = doc.data(); const examDate = new Date(d.details); const diffDays = (now - examDate) / 864e5;
-                if (isNaN(diffDays) || diffDays <= 2) {
-                    const daysLeft = Math.ceil((examDate - now) / 864e5);
-                    let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
-                    list.innerHTML += `<li class="ex-item"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:#e74c3c; font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></li>`;
-                }
-            });
-        });
+            document.getElementById('time').innerText = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: false });
+            document.getElementById('date-display').innerText = now.toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }, 1000);
 
-        document.getElementById('classSearch').onkeyup = () => {
-            let v = document.getElementById('classSearch').value.toLowerCase();
-            document.querySelectorAll('.hw-item, .ex-item, .clickable, .card-announce').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(v) ? "" : "none"; });
-        };
+        const getFormattedDate = (ts) => { if (!ts) return "..."; return new Intl.DateTimeFormat('ar-IQ', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }).format(ts.toDate()); };
+        onSnapshot(doc(db, "settings", "emergency_alert"), (doc) => { const data = doc.data(); const banner = document.getElementById('emergency-banner'); if (data && data.active && data.text) { banner.style.display = "block"; document.getElementById('emergency-text').innerText = "🚨 عاجل: " + data.text; } else { banner.style.display = "none"; } });
+        document.getElementById('classSearch').onkeyup = () => { let v = document.getElementById('classSearch').value.toLowerCase(); document.querySelectorAll('.hw-item, .ex-item, .clickable, .card-announce').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(v) ? "" : "none"; }); };
     </script>
 </body>
 </html>
