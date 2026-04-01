@@ -2,96 +2,132 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مدرسة الطف الابتدائية - المنصة الرقمية</title>
     <meta name="mobile-web-app-capable" content="yes">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2c3e50">
-<link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
     <style>
-        /* ستايلات إضافية للوظائف الديناميكية */
         .search-container { margin-bottom: 30px; }
-        .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: var(--radius); font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; }
-        .search-box:focus { border-color: var(--accent); }
+        .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; box-sizing: border-box; }
+        .search-box:focus { border-color: #3498db; }
         
         .announcement-details { display: none; padding-top: 15px; margin-top: 15px; border-top: 1px dashed #e2e8f0; color: #475569; }
         .card.open .announcement-details { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         
         .card.clickable { cursor: pointer; }
-        
-        /* أزرار الواجبات (منجز + واتساب) */
         .card-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 15px; align-items: center; }
         .done-btn { background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; transition: 0.3s; font-weight: bold; }
-        .done-btn.active { background: var(--success, #2ecc71); color: white; border-color: var(--success, #2ecc71); }
+        .done-btn.active { background: #2ecc71; color: white; border-color: #2ecc71; }
         .whatsapp-share { color: #25D366; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
         .whatsapp-share:hover { filter: brightness(0.8); }
         
         .post-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 10px; flex-wrap: wrap; gap: 10px; }
         .exam-status { font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
 
-        /* ستايل التنبيه العاجل */
-        #emergency-banner { display: none; background: #e74c3c; color: white; padding: 15px; border-radius: var(--radius); margin-bottom: 25px; border-right: 10px solid #f1c40f; animation: pulse 2s infinite; }
+        #emergency-banner { display: none; background: #e74c3c; color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; border-right: 10px solid #f1c40f; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
 
-        /* ستايل لوحة الشرف */
         .honor-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; }
         .honor-badge { font-size: 1.5rem; }
 
-        /* تلوين البطاقات */
-        .card.card-announce { background-color: #f0f9ff; border-right: 5px solid var(--accent, #3498db); }
-        .card.card-hw { background-color: #f4fdf8; border-right: 5px solid var(--success, #2ecc71); }
-        .card.accent-card { background-color: #fffbeb; border-right: 5px solid var(--warning, #f1c40f); }
-        .exam-schedule li { border-right: 4px solid var(--danger, #e74c3c); background: #ffffff; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 12px; }
+        .card.card-announce { background-color: #f0f9ff; border-right: 5px solid #3498db; }
+        .card.card-hw { background-color: #f4fdf8; border-right: 5px solid #2ecc71; }
+        .card.accent-card { background-color: #fffbeb; border-right: 5px solid #f1c40f; }
+        .exam-schedule li { border-right: 4px solid #e74c3c; background: #ffffff; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 12px; }
 
         /* الوضع الليلي */
         body.dark-mode { --bg-light: #121212; --text-main: #e0e0e0; background-color: var(--bg-light); color: var(--text-main); }
         body.dark-mode .main-header { background-color: #1e1e1e; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         body.dark-mode .search-box { background-color: #1e1e1e; color: #fff; border-color: #333; }
         body.dark-mode .hero { background: linear-gradient(135deg, #1e293b, #0f172a); }
-        body.dark-mode .announcement-details { color: #cbd5e1; border-top-color: #333; }
-        body.dark-mode .post-meta { border-top-color: #333; }
+        body.dark-mode .announcement-details, body.dark-mode .post-meta { color: #cbd5e1; border-top-color: #333; }
         body.dark-mode .school-logo { filter: brightness(0.9); }
-        body.dark-mode .card.card-announce { background-color: #0f172a; border-right-color: var(--accent); color: #e2e8f0; }
-        body.dark-mode .card.card-hw { background-color: #064e3b; border-right-color: var(--success); color: #e2e8f0; }
-        body.dark-mode .card.accent-card { background-color: #422006; border-right-color: var(--warning); color: #e2e8f0; }
+        body.dark-mode .card { background-color: #1e1e1e; color: #e2e8f0; }
+        body.dark-mode .card.card-announce { background-color: #0f172a; border-right-color: #3498db; }
+        body.dark-mode .card.card-hw { background-color: #064e3b; border-right-color: #2ecc71; }
+        body.dark-mode .card.accent-card { background-color: #422006; border-right-color: #f1c40f; }
         body.dark-mode .card h3 { color: #fff; }
-        body.dark-mode .exam-schedule li { background-color: #1c1917; border-right-color: var(--danger); color: #e0e0e0; }
+        body.dark-mode .exam-schedule li { background-color: #1c1917; border-right-color: #e74c3c; color: #e0e0e0; }
         body.dark-mode .honor-item { border-bottom-color: #333; }
+
+        /* القصص (Stories) المحدثة */
+        .stories-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-bottom: 20px; scrollbar-width: none; }
+        .stories-wrapper::-webkit-scrollbar { display: none; }
+        .story-circle { min-width: 75px; height: 75px; border-radius: 50%; border: 3px solid #e1306c; padding: 3px; cursor: pointer; flex-shrink: 0; background: white; position: relative; }
+        .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .story-circle .text-preview { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); color: white; font-size: 0.6rem; text-align: center; overflow: hidden; padding: 5px; box-sizing: border-box; }
+        
+        #story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; }
+        #story-viewer img { max-width: 95%; max-height: 80%; border-radius: 15px; }
+        #story-text-container { display: none; color: white; font-size: 1.8rem; text-align: center; padding: 30px; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); width: 85%; border-radius: 15px; min-height: 300px; align-items: center; justify-content: center; line-height: 1.5; font-weight: bold; }
+        .close-story { position: absolute; top: 20px; right: 25px; color: white; font-size: 40px; cursor: pointer; z-index: 100000; }
+        .story-meta { position: absolute; top: 25px; left: 25px; color: white; text-align: left; z-index: 100000; font-family: 'Cairo'; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+
+        /* الإشعار المخصص في الأعلى */
+        #custom-toast { visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
+        #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
+
+        @media screen and (max-width: 850px) {
+            .header-content { display: flex !important; flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px 10px !important; }
+            .logo { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 10px !important; }
+            .school-logo { margin: 0 auto !important; }
+            .main-nav, .main-nav ul { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 15px !important; padding: 0 !important; margin: 0 !important; }
+            .main-layout { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+            .primary-content, .sidebar-content { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; }
+            .container { width: 100% !important; padding: 0 15px !important; box-sizing: border-box !important; }
+            .search-box, .card { width: 100% !important; box-sizing: border-box !important; }
+            .card-actions { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+            .done-btn, .whatsapp-share { text-align: center !important; justify-content: center !important; padding: 10px !important; }
+            h1 { font-size: 1.4rem !important; }
+            .hero-content h2 { font-size: 1.2rem !important; }
+        }
     </style>
 </head>
 <body>
+
+    <div id="custom-toast"></div>
 
     <header class="main-header">
         <div class="container header-content">
             <div class="logo">
                 <img src="https://b.top4top.io/p_3738g1q971.png" alt="شعار المدرسة" class="school-logo">
                 <div>
-                    <h1>مدرسة الطف</h1>
+                    <h1 style="margin: 0;">مدرسة الطف</h1>
                     <span class="sub-title">الابتدائية للبنين</span>
                 </div>
             </div>
             <nav class="main-nav">
-                <ul>
-                    <li><a href="#" onclick="toggleTheme(event)">🌙 المظهر</a></li>
-                    <li><a href="login.html" class="btn-login">دخول الكادر 🔐</a></li>
+                <ul style="list-style: none;">
+                    <li><a href="#" onclick="toggleTheme(event)" style="text-decoration: none;">🌙 المظهر</a></li>
+                    <li><a href="login.html" class="btn-login" style="text-decoration: none;">دخول الكادر 🔐</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" style="text-align: center; padding: 30px 15px;">
         <div class="container hero-content">
-            <h2>مرحباً بكم في منصتنا التعليمية</h2>
-            <p>نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
+            <h2 style="margin-top: 0;">مرحباً بكم في منصتنا التعليمية</h2>
+            <p style="margin-bottom: 0;">نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
         </div>
     </section>
 
     <div class="container">
+        <div class="stories-wrapper" id="stories-wrapper"></div>
+        <div id="story-viewer">
+            <span class="close-story" onclick="document.getElementById('story-viewer').style.display='none'">&times;</span>
+            <div class="story-meta" id="story-meta-info"></div>
+            <img id="story-img" src="" alt="Story">
+            <div id="story-text-container"></div>
+        </div>
+
         <div id="emergency-banner">
             <strong id="emergency-text">🚨 عاجل: يتم جلب التنبيه...</strong>
         </div>
@@ -102,37 +138,38 @@
 
         <div class="main-layout">
             <div class="primary-content">
-                <h2 style="color: var(--primary); margin-bottom: 20px;">📢 إعلانات الإدارة</h2>
+                <h2 style="color: #2c3e50; margin-bottom: 20px;">📢 إعلانات الإدارة</h2>
                 <div id="announcements-list"></div>
 
-                <h2 style="color: var(--primary); margin-bottom: 20px; margin-top: 40px;">📚 الواجبات البيتيّة</h2>
+                <h2 style="color: #2c3e50; margin-bottom: 20px; margin-top: 40px;">📚 الواجبات البيتيّة</h2>
                 <div id="homeworks-list"></div>
             </div>
 
             <div class="sidebar-content">
-                <div class="card" style="text-align: center; background: var(--primary); color: white;">
-                    <h3 style="color: white; justify-content: center;">🕒 الوقت والتاريخ</h3>
+                <div class="card" style="text-align: center; background: #2c3e50; color: white;">
+                    <h3 style="color: white; margin-top: 0;">🕒 الوقت والتاريخ</h3>
                     <div style="font-size: 2.5rem; font-weight: 700;" id="time">00:00:00</div>
                     <div style="opacity: 0.8;" id="date-display">-- --- ----</div>
                 </div>
 
                 <div class="card" style="border-top: 5px solid #f1c40f;">
-                    <h3 style="color: #f1c40f;"><span class="icon">🏆</span> لوحة المتفوقين</h3>
+                    <h3 style="color: #f1c40f; margin-top: 0;"><span class="icon">🏆</span> لوحة المتفوقين</h3>
                     <div id="honor-list">جاري تحميل أسماء الأبطال...</div>
                 </div>
 
                 <div class="card accent-card">
-                    <h3>📅 مواعيد الامتحانات</h3>
+                    <h3 style="margin-top: 0;">📅 مواعيد الامتحانات</h3>
                     <div class="exam-schedule" id="exams-list">
-                        <ul></ul>
+                        <ul style="padding: 0; list-style: none;"></ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer style="text-align: center; padding: 40px 20px; opacity: 0.4; font-size: 0.75rem;">
-        <p>© 2026 مدرسة الطف الابتدائية للبنين</p>
+    <footer style="text-align: center; padding: 30px 20px; font-size: 0.9rem; color: #7f8c8d; border-top: 1px solid #edf2f7; margin-top: 40px;">
+        <p style="margin: 0;">© 2026 مدرسة الطف الابتدائية للبنين</p>
+        <p style="margin: 5px 0 0 0;">تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" style="color: #3498db; font-weight: bold; text-decoration: none;">اوروك سوفت للحلول البرمجية - مرتضى حسين</a></p>
     </footer>
 
     <script type="module">
@@ -151,9 +188,74 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. نظام الوضع الليلي (مع الحفظ)
+        // التنبيه المخصص في الأعلى
+        window.alert = function(msg) {
+            const toast = document.getElementById('custom-toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        };
+
+        // دالة حساب الوقت الماضي
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 3600;
+            if (interval >= 1) return Math.floor(interval) + " ساعة";
+            interval = seconds / 60;
+            if (interval >= 1) return Math.floor(interval) + " دقيقة";
+            return "لحظات";
+        }
+
+        // جلب القصص (Stories) بشرط ألا تتجاوز 24 ساعة
+        window.openStory = (type, content, publisher, timeStr) => {
+            const viewer = document.getElementById('story-viewer');
+            const img = document.getElementById('story-img');
+            const txt = document.getElementById('story-text-container');
+            const meta = document.getElementById('story-meta-info');
+            
+            viewer.style.display = 'flex';
+            meta.innerHTML = `<span style="font-size:1.2rem; font-weight:bold;">${publisher}</span><br><span style="font-size:0.8rem; color:#ddd;">منذ ${timeStr}</span>`;
+            
+            if(type === 'image') {
+                img.src = content; img.style.display = 'block'; txt.style.display = 'none';
+            } else {
+                txt.innerText = content; txt.style.display = 'flex'; img.style.display = 'none';
+            }
+        };
+
+        onSnapshot(query(collection(db, "stories"), orderBy("timestamp", "desc")), (snap) => {
+            const wrapper = document.getElementById('stories-wrapper');
+            wrapper.innerHTML = "";
+            const now = new Date();
+            const oneDay = 24 * 60 * 60 * 1000;
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const storyDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                
+                // إخفاء القصة إذا مر عليها أكثر من 24 ساعة
+                if (now - storyDate > oneDay) return; 
+                
+                const timeStr = timeAgo(storyDate);
+                const isImage = !!d.imageUrl;
+                const content = isImage ? d.imageUrl : d.textContent;
+                const pub = d.publisher || "الإدارة";
+                
+                let previewHtml = isImage 
+                    ? `<img src="${d.imageUrl}" alt="قصة">` 
+                    : `<div class="text-preview">${d.textContent.substring(0, 15)}...</div>`;
+
+                wrapper.innerHTML += `
+                    <div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${content.replace(/'/g, "\\'")}', '${pub}', '${timeStr}')">
+                        ${previewHtml}
+                    </div>
+                `;
+            });
+        });
+
         const applyTheme = (theme) => {
-            document.body.classList.toggle('dark-mode', theme === 'dark');
+            if(theme === 'dark') document.body.classList.add('dark-mode');
+            else document.body.classList.remove('dark-mode');
             localStorage.setItem('theme', theme);
         };
         window.toggleTheme = (e) => {
@@ -163,20 +265,17 @@
         };
         applyTheme(localStorage.getItem('theme') || 'light');
 
-        // 2. تحديث الساعة 12 ساعة مع التاريخ العراقي
         setInterval(() => {
             const now = new Date();
             document.getElementById('time').innerText = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             document.getElementById('date-display').innerText = now.toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         }, 1000);
 
-        // 3. تنسيق التاريخ للمنشورات
         const getFormattedDate = (ts) => {
             if (!ts) return "...";
             return new Intl.DateTimeFormat('ar-IQ', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }).format(ts.toDate());
         };
 
-        // 4. وظائف تفاعلية
         window.toggleAnnounce = (id) => document.getElementById('ann-'+id).classList.toggle('open');
         window.toggleDone = (id) => {
             const btn = document.getElementById('btn-'+id);
@@ -185,7 +284,6 @@
             localStorage.setItem('done-'+id, isDone);
         };
 
-        // 5. التنبيه العاجل
         onSnapshot(doc(db, "settings", "emergency_alert"), (doc) => {
             const data = doc.data();
             const banner = document.getElementById('emergency-banner');
@@ -198,10 +296,8 @@
             }
         });
 
-        // 6. لوحة المتفوقين
         onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc"), limit(5)), (snap) => {
-            const list = document.getElementById('honor-list');
-            list.innerHTML = "";
+            const list = document.getElementById('honor-list'); list.innerHTML = "";
             if (snap.empty) list.innerHTML = "قريباً سيتم إعلان الأوائل..";
             snap.forEach(doc => {
                 const d = doc.data();
@@ -209,26 +305,18 @@
             });
         });
 
-        // 7. جلب الإعلانات
         onSnapshot(query(collection(db, "announcements"), orderBy("timestamp", "desc")), (snap) => {
             const list = document.getElementById('announcements-list'); list.innerHTML = "";
             snap.forEach(doc => {
                 const d = doc.data(); const id = doc.id;
                 list.innerHTML += `
                 <div class="card clickable card-announce" id="ann-${id}" onclick="toggleAnnounce('${id}')">
-                    <h3 style="margin-bottom:0;">📌 ${d.subject} <span style="font-size:0.8rem; color:#94a3b8; font-weight:normal;">(اضغط للقراءة)</span></h3>
-                    <div class="announcement-details">
-                        <p>${d.details}</p>
-                        <div class="post-meta">
-                            <span>🗓 ${getFormattedDate(d.timestamp)}</span>
-                            <span>👤 الإدارة</span>
-                        </div>
-                    </div>
+                    <h3 style="margin-bottom:0; color: #3498db;">📌 ${d.subject} <span style="font-size:0.8rem; color:#94a3b8; font-weight:normal;">(اضغط للقراءة)</span></h3>
+                    <div class="announcement-details"><p>${d.details}</p><div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الإدارة</span></div></div>
                 </div>`;
             });
         });
 
-        // 8. جلب الواجبات
         onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc"), limit(15)), (snap) => {
             const list = document.getElementById('homeworks-list'); list.innerHTML = "";
             snap.forEach(doc => {
@@ -236,12 +324,9 @@
                 const waMessage = encodeURIComponent(`*📚 واجب بيتي جديد - مدرسة الطف*\n\nالمادة: ${d.subject}\nالصف: ${d.class}\nالتفاصيل: ${d.details}`);
                 list.innerHTML += `
                 <div class="card hw-item card-hw">
-                    <h3 style="margin:0; color:var(--accent);">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
+                    <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
                     <p style="margin-top:15px; font-weight:600;">${d.details}</p>
-                    <div class="post-meta">
-                        <span>🗓 ${getFormattedDate(d.timestamp)}</span>
-                        <span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span>
-                    </div>
+                    <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div>
                     <div class="card-actions">
                         <a href="https://wa.me/?text=${waMessage}" target="_blank" class="whatsapp-share">📤 مشاركة واتساب</a>
                         <button id="btn-${id}" class="done-btn ${isSaved?'active':''}" onclick="toggleDone('${id}')">${isSaved?'✅ منجز':'🔘 حدد كمنجز'}</button>
@@ -250,7 +335,6 @@
             });
         });
 
-        // 9. جلب الامتحانات
         onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
             const list = document.querySelector('#exams-list ul'); list.innerHTML = "";
             const now = new Date();
@@ -259,24 +343,14 @@
                 if (isNaN(diffDays) || diffDays <= 2) {
                     const daysLeft = Math.ceil((examDate - now) / 864e5);
                     let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
-                    list.innerHTML += `
-                    <li class="ex-item">
-                        <div><strong>${d.subject}</strong><br><small>${d.class}</small></div>
-                        <div style="text-align:left;">
-                            <div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">${d.details}</div>
-                            ${statusHtml}
-                        </div>
-                    </li>`;
+                    list.innerHTML += `<li class="ex-item"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:#e74c3c; font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></li>`;
                 }
             });
         });
 
-        // 10. محرك البحث الشامل
         document.getElementById('classSearch').onkeyup = () => {
             let v = document.getElementById('classSearch').value.toLowerCase();
-            document.querySelectorAll('.hw-item, .ex-item, .clickable, .card-announce').forEach(el => {
-                el.style.display = el.innerText.toLowerCase().includes(v) ? "" : "none";
-            });
+            document.querySelectorAll('.hw-item, .ex-item, .clickable, .card-announce').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(v) ? "" : "none"; });
         };
     </script>
 </body>

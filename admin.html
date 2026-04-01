@@ -2,24 +2,24 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>المدير العام - مدرسة الطف</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2c3e50">
-<link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     <style>
         :root { --admin-primary: #1a202c; --admin-accent: #805ad5; --danger: #e53e3e; --success: #38a169; --bg: #f7fafc; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; display: flex; min-height: 100vh; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; display: flex; min-height: 100vh; flex-direction: column;}
         
-        /* Sidebar */
-        .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; }
+        .layout-wrapper { display: flex; flex: 1; }
+        
+        .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; overflow-y: auto;}
         .sidebar h2 { color: var(--admin-accent); text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; font-size: 1.2rem; }
         .nav-link { display: block; width: 100%; padding: 12px; margin: 8px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 8px; transition: 0.3s; font-weight: 600; }
         .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; }
         
-        /* Main Content */
-        .main { margin-right: 280px; padding: 40px; width: 100%; }
+        .main { margin-right: 280px; padding: 40px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
         .tab-content { display: none; animation: fadeIn 0.4s; }
         .tab-content.active { display: block; }
         
@@ -33,173 +33,186 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { text-align: right; padding: 15px; border-bottom: 1px solid #edf2f7; }
         
-        /* ألوان الحالة */
         .status-online { color: var(--success); font-weight: bold; animation: blink 2s infinite; }
         .status-offline { color: var(--danger); font-weight: bold; }
         
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        @media (max-width: 768px) { .sidebar { display: none; } .main { margin-right: 0; padding: 15px; } }
+
+        /* الإشعار المخصص */
+        #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--admin-accent); color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
+        #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
+
+        /* ========================================= */
+        /* نافذة التأكيد المخصصة للإدارة (Modal) */
+        /* ========================================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; border-top: 5px solid var(--danger); }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-box h3 { margin-top: 0; color: var(--admin-primary); font-size: 1.2rem; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+        .btn-modal-yes { color: white; background: var(--danger); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
+        .btn-modal-no { background: #e2e8f0; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
+        .btn-modal-yes:hover, .btn-modal-no:hover { filter: brightness(0.9); }
+
+        @media (max-width: 850px) { 
+            .layout-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; height: auto; padding: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+            .sidebar h2 { width: 100%; margin-bottom: 10px; }
+            .nav-link { width: 45%; margin-bottom: 5px; text-align: center; }
+            .main { margin-right: 0; padding: 15px; } 
+            table { font-size: 0.8rem; }
+            th, td { padding: 8px 5px; }
+        }
     </style>
 </head>
-<body style="display:none;" id="admin-body">
+<body id="admin-body">
 
-    <div class="sidebar">
-        <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 70px; display: block; margin: 0 auto 15px auto;">
-        <h2>المدير العام 👑</h2>
-        <button class="nav-link active" onclick="openTab('stats')">📊 الإحصائيات العامة</button>
-        <button class="nav-link" onclick="openTab('teachers')">👨‍🏫 سجل الرقابة الحية</button>
-        <button class="nav-link" onclick="openTab('honor')">🏆 أوائل المدرسة</button>
-        <button class="nav-link" onclick="openTab('emergency')">🚨 التنبيه العاجل</button>
-        <button class="nav-link" onclick="openTab('monitor')">🔍 الرقابة الشاملة</button>
-        <hr style="opacity: 0.1; margin: 20px 0;">
-        <a href="index.html" style="color:#a0aec0; text-decoration:none; display:block; text-align:center;">خروج للرئيسية</a>
+    <div id="custom-toast"></div>
+
+    <div class="modal-overlay" id="custom-confirm">
+        <div class="modal-box">
+            <h3 id="confirm-msg">تأكيد الإجراء</h3>
+            <div class="modal-actions">
+                <button class="btn-modal-yes" id="btn-confirm-yes">تأكيد</button>
+                <button class="btn-modal-no" id="btn-confirm-no">إلغاء</button>
+            </div>
+        </div>
     </div>
 
-    <div class="main">
-        <div id="stats" class="tab-content active">
-            <div class="card">
-                <h2>تحليلات المنصة 📈</h2>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
-                    <div class="card" style="border-top:4px solid var(--admin-accent);"><h3>الواجبات</h3><h1 id="total-hw">0</h1></div>
-                    <div class="card" style="border-top:4px solid #4299e1;"><h3>الإعلانات</h3><h1 id="total-news">0</h1></div>
-                    <div class="card" style="border-top:4px solid #ed8936;"><h3>الامتحانات</h3><h1 id="total-ex">0</h1></div>
+    <div class="layout-wrapper">
+        <div class="sidebar">
+            <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 70px; display: block; margin: 0 auto 15px auto;">
+            <h2>المدير العام 👑</h2>
+            <div id="admin-status" style="text-align:center; color: #48bb78; font-size:0.8rem; margin-bottom: 20px;">● جاري التحقق...</div>
+            
+            <button class="nav-link active" onclick="openTab('stats')">📊 الإحصائيات العامة</button>
+            <button class="nav-link" onclick="openTab('teachers')">👨‍🏫 سجل الرقابة الحية</button>
+            <button class="nav-link" onclick="openTab('honor')">🏆 أوائل المدرسة</button>
+            <button class="nav-link" onclick="openTab('emergency')">🚨 التنبيه العاجل</button>
+            <button class="nav-link" onclick="openTab('monitor')">🔍 الرقابة الشاملة</button>
+            <hr style="opacity: 0.1; margin: 20px 0;">
+            <a href="index.html" style="color:#a0aec0; text-decoration:none; display:block; text-align:center; width: 100%;">خروج للرئيسية</a>
+        </div>
+
+        <div class="main">
+            <div id="stats" class="tab-content active">
+                <div class="card">
+                    <h2>تحليلات المنصة 📈</h2>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
+                        <div class="card" style="border-top:4px solid var(--admin-accent);"><h3>الواجبات</h3><h1 id="total-hw">0</h1></div>
+                        <div class="card" style="border-top:4px solid #4299e1;"><h3>الإعلانات</h3><h1 id="total-news">0</h1></div>
+                        <div class="card" style="border-top:4px solid #ed8936;"><h3>الامتحانات</h3><h1 id="total-ex">0</h1></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="teachers" class="tab-content">
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2>👨‍🏫 سجل نشاط المعلمين الحقيقي</h2>
-                    <button class="btn btn-del" onclick="clearAllLogs()" style="font-size: 0.8rem; padding: 5px 15px;">🗑️ مسح السجل</button>
+            <div id="teachers" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+                        <h2>👨‍🏫 سجل نشاط المعلمين الحقيقي</h2>
+                        <button class="btn btn-del" onclick="clearAllLogs()" style="font-size: 0.8rem; padding: 5px 15px;">🗑️ مسح السجل</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead><tr><th>المعلم</th><th>النشاط</th><th>التفاصيل</th><th>الوقت</th><th>الحالة</th></tr></thead>
+                            <tbody id="activity-logs"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <table>
-                    <thead><tr><th>المعلم</th><th>النشاط</th><th>التفاصيل</th><th>الوقت</th><th>الحالة</th></tr></thead>
-                    <tbody id="activity-logs"></tbody>
-                </table>
             </div>
-        </div>
 
-        <div id="honor" class="tab-content">
-            <div class="card">
-                <h2>🏆 إضافة تلميذ متميز</h2>
-                <input type="text" id="stu-name" class="input-text" placeholder="اسم التلميذ">
-                <input type="text" id="stu-class" class="input-text" placeholder="الصف">
-                <button class="btn btn-save" id="saveHonorBtn">نشر في لوحة الشرف ⭐</button>
-            </div>
-            <div id="honor-list-admin" class="card"></div>
-        </div>
-
-        <div id="emergency" class="tab-content">
-            <div class="card" style="border-right: 10px solid var(--danger);">
-                <h2>🚨 إرسال تنبيه عاجل للمدرسة</h2>
-                <textarea id="alert-msg" class="input-text" rows="3" placeholder="نص التنبيه..."></textarea>
-                <button class="btn btn-save" style="background:var(--danger);" onclick="sendAlert()">تفعيل التنبيه 🚨</button>
-                <button class="btn btn-save" style="background:#718096;" onclick="clearAlert()">إيقاف التنبيه</button>
-            </div>
-        </div>
-
-        <div id="monitor" class="tab-content">
-            <div class="card">
-                <h2>🔍 الرقابة الإدارية الشاملة</h2>
-                <div style="background:#fff5f5; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #feb2b2;">
-                    <p style="color:var(--danger); margin:0; font-weight:bold;">⚠️ تنبيه: الحذف نهائي ويشمل جميع منشورات المعلمين.</p>
+            <div id="honor" class="tab-content">
+                <div class="card">
+                    <h2>🏆 إضافة تلميذ متميز</h2>
+                    <input type="text" id="stu-name" class="input-text" placeholder="اسم التلميذ">
+                    <input type="text" id="stu-class" class="input-text" placeholder="الصف">
+                    <button class="btn btn-save" id="saveHonorBtn">نشر في لوحة الشرف ⭐</button>
                 </div>
-                <div id="master-list">جاري تحميل البيانات...</div>
+                <div id="honor-list-admin" class="card"></div>
             </div>
+
+            <div id="emergency" class="tab-content">
+                <div class="card" style="border-right: 10px solid var(--danger);">
+                    <h2>🚨 إرسال تنبيه عاجل للمدرسة</h2>
+                    <textarea id="alert-msg" class="input-text" rows="3" placeholder="نص التنبيه..."></textarea>
+                    <button class="btn btn-save" style="background:var(--danger);" onclick="sendAlert()">تفعيل التنبيه 🚨</button>
+                    <button class="btn btn-save" style="background:#a0aec0; margin-top:10px;" onclick="stopAlert()">إيقاف التنبيه ✖️</button>
+                </div>
+            </div>
+
+            <div id="monitor" class="tab-content">
+                <div class="card">
+                    <h2>🔍 إدارة جميع المنشورات والقصص</h2>
+                    <div id="master-list">جاري التحميل...</div>
+                </div>
+            </div>
+
+            <footer style="margin-top: auto; text-align: center; padding: 20px; font-size: 0.85rem; color: #a0aec0; border-top: 1px solid #e2e8f0;">
+                © 2026 مدرسة الطف | تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" style="color: var(--admin-accent); font-weight: bold; text-decoration: none;">اوروك سوفت للحلول البرمجية - مرتضى حسين</a>
+            </footer>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc, addDoc, query, orderBy, limit, onSnapshot, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, onSnapshot, query, orderBy, getCountFromServer, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY", 
-            authDomain: "al-taf-1.firebaseapp.com", 
-            projectId: "al-taf-1", 
-            storageBucket: "al-taf-1.firebasestorage.app", 
-            messagingSenderId: "242834897966", 
-            appId: "1:242834897966:web:b5cd3bae396f9d978c73bf" 
+        const firebaseConfig = {
+            apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
+            authDomain: "al-taf-1.firebaseapp.com",
+            projectId: "al-taf-1",
+            storageBucket: "al-taf-1.firebasestorage.app",
+            messagingSenderId: "242834897966",
+            appId: "1:242834897966:web:b5cd3bae396f9d978c73bf"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        window.alert = function(msg) {
+            const toast = document.getElementById('custom-toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        };
+
+        // النافذة المنبثقة بدلاً من رسالة المتصفح
+        window.customConfirm = (msg, onYes) => {
+            const modal = document.getElementById('custom-confirm');
+            document.getElementById('confirm-msg').innerText = msg;
+            modal.style.display = 'flex';
+            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); };
+            document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
+        };
+
+        window.openTab = (id) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(id === 'monitor') loadMasterList();
+        };
+
         onAuthStateChanged(auth, (user) => {
-            if (user && user.email === "admin1@altaf.com") {
-                document.getElementById('admin-body').style.display = "flex";
-                loadAllStats(); loadMasterList(); loadHonorRollAdmin(); loadActivityLogs();
-            } else { window.location.href = "login.html"; }
+            if(user && (user.email === 'admin1@altaf.com' || user.email === 'admin@altaf.com')) {
+                document.getElementById('admin-status').innerText = '● متصل كمدير عام';
+                loadStats();
+                loadLogs();
+                loadHonorRollAdmin();
+                
+                if(!sessionStorage.getItem('adminWelcomed')) {
+                    alert("أهلاً بك سيادة المدير في لوحة التحكم العليا");
+                    sessionStorage.setItem('adminWelcomed', 'true');
+                }
+            } else {
+                window.location.href = "login.html";
+            }
         });
 
-        window.openTab = (tabId) => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            if(tabId === 'monitor') loadMasterList();
-        };
-
-        // دالة سجل الرقابة الحية
-        function loadActivityLogs() {
-            onSnapshot(query(collection(db, "logs"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
-                const container = document.getElementById('activity-logs');
-                container.innerHTML = "";
-                snap.forEach(d => {
-                    const l = d.data();
-                    const time = l.timestamp ? l.timestamp.toDate().toLocaleString('ar-IQ') : '...';
-                    const statusClass = l.isOnline ? 'status-online' : 'status-offline';
-                    const statusText = l.isOnline ? '● متصل الآن' : '● غير متصل';
-                    container.innerHTML += `<tr><td><b>${l.teacherName}</b></td><td>${l.action}</td><td><small>${l.details}</small></td><td>${time}</td><td class="${statusClass}">${statusText}</td></tr>`;
-                });
-            });
-        }
-
-        // مسح السجل
-        window.clearAllLogs = async () => {
-            if (confirm("هل تريد مسح جميع سجلات النشاط؟")) {
-                const snap = await getDocs(collection(db, "logs"));
-                const batch = snap.docs.map(d => deleteDoc(doc(db, "logs", d.id)));
-                await Promise.all(batch);
-                alert("تم مسح السجل.");
-            }
-        };
-
-        // أوائل المدرسة
-        document.getElementById('saveHonorBtn').onclick = async () => {
-            const n = document.getElementById('stu-name').value;
-            const c = document.getElementById('stu-class').value;
-            if(!n || !c) return alert("اكمل البيانات");
-            await addDoc(collection(db, "honor_roll"), { name: n, class: c, timestamp: serverTimestamp() });
-            alert("تم الحفظ!");
-            document.getElementById('stu-name').value = ""; document.getElementById('stu-class').value = "";
-            loadHonorRollAdmin();
-        };
-
-        async function loadHonorRollAdmin() {
-            const container = document.getElementById('honor-list-admin');
-            const snap = await getDocs(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")));
-            container.innerHTML = "<h3>الأوائل الحاليون:</h3>";
-            snap.forEach(d => {
-                container.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>⭐ ${d.data().name} (${d.data().class})</span><button class="btn btn-del" onclick="delHonor('${d.id}')">حذف</button></div>`;
-            });
-        }
-        window.delHonor = async (id) => { if(confirm("حذف؟")) { await deleteDoc(doc(db, "honor_roll", id)); loadHonorRollAdmin(); } };
-
-        // التنبيه العاجل
-        window.sendAlert = async () => {
-            const msg = document.getElementById('alert-msg').value;
-            await setDoc(doc(db, "settings", "emergency_alert"), { text: msg, active: true });
-            alert("تم التفعيل!");
-        };
-        window.clearAlert = async () => { await setDoc(doc(db, "settings", "emergency_alert"), { text: "", active: false }); alert("تم الإيقاف."); };
-
-        // الإحصائيات
-        async function loadAllStats() {
+        async function loadStats() {
             const hw = await getCountFromServer(collection(db, 'homeworks'));
             document.getElementById('total-hw').innerText = hw.data().count;
             const news = await getCountFromServer(collection(db, 'announcements'));
@@ -208,10 +221,85 @@
             document.getElementById('total-ex').innerText = ex.data().count;
         }
 
-        // الرقابة الشاملة
+        function loadLogs() {
+            onSnapshot(query(collection(db, "activity_logs"), orderBy("timestamp", "desc")), (snap) => {
+                const container = document.getElementById('activity-logs');
+                container.innerHTML = "";
+                snap.forEach(doc => {
+                    const l = doc.data();
+                    const t = l.timestamp ? new Date(l.timestamp.seconds * 1000).toLocaleString('ar-EG', {hour:'2-digit', minute:'2-digit', month:'short', day:'numeric'}) : 'الآن';
+                    
+                    const isRecent = l.timestamp && (new Date() - l.timestamp.toDate()) < 600000;
+                    const statusClass = isRecent ? 'status-online' : 'status-offline';
+                    const statusText = isRecent ? '● متصل الآن' : '● غير متصل';
+                    
+                    container.innerHTML += `<tr><td><b>${l.teacherName}</b></td><td>${l.action}</td><td><small>${l.details}</small></td><td><small>${t}</small></td><td class="${statusClass}">${statusText}</td></tr>`;
+                });
+            });
+        }
+        
+        // استبدال التأكيد المزعج بالتأكيد المخصص
+        window.clearAllLogs = () => {
+            customConfirm("هل أنت متأكد من رغبتك في مسح جميع سجلات النشاط؟", async () => {
+                const snap = await getDocs(collection(db, "activity_logs"));
+                snap.forEach(d => deleteDoc(doc(db, "activity_logs", d.id)));
+                alert("تم مسح السجل بنجاح.");
+            });
+        };
+
+        document.getElementById('saveHonorBtn').onclick = async () => {
+            const n = document.getElementById('stu-name').value;
+            const c = document.getElementById('stu-class').value;
+            if(!n || !c) return alert("اكمل البيانات");
+            await addDoc(collection(db, "honor_roll"), { name: n, class: c, timestamp: serverTimestamp() });
+            alert("تم الحفظ في لوحة الشرف!");
+            document.getElementById('stu-name').value = "";
+            document.getElementById('stu-class').value = "";
+        };
+
+        function loadHonorRollAdmin() {
+            onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
+                const list = document.getElementById('honor-list-admin');
+                list.innerHTML = "<h3>الطلاب المتميزين المضافين:</h3>";
+                snap.forEach(docSnap => {
+                    const d = docSnap.data();
+                    list.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
+                        <span>⭐ ${d.name} (${d.class})</span>
+                        <button class="btn btn-del" style="padding:5px 10px;" onclick="delHonor('${docSnap.id}')">حذف</button>
+                    </div>`;
+                });
+            });
+        }
+
+        // استبدال التأكيد المزعج بالتأكيد المخصص
+        window.delHonor = (id) => {
+            customConfirm("هل تريد بالفعل حذف هذا الطالب من لوحة الشرف؟", async () => {
+                await deleteDoc(doc(db, "honor_roll", id));
+                alert("تم حذف الطالب من لوحة الشرف.");
+            });
+        };
+
+        window.sendAlert = async () => {
+            const text = document.getElementById('alert-msg').value;
+            if(!text) return alert("اكتب التنبيه أولاً!");
+            await setDoc(doc(db, "settings", "emergency_alert"), { active: true, text: text });
+            alert("تم إطلاق التنبيه للمدرسة!");
+        };
+
+        window.stopAlert = async () => {
+            await setDoc(doc(db, "settings", "emergency_alert"), { active: false, text: "" });
+            alert("تم إيقاف التنبيه.");
+        };
+
         async function loadMasterList() {
             const container = document.getElementById('master-list');
-            const sections = [{id:'homeworks', l:'واجب'}, {id:'announcements', l:'إعلان'}, {id:'exams', l:'امتحان'}];
+            const sections = [
+                {id:'homeworks', l:'واجب'}, 
+                {id:'announcements', l:'إعلان'}, 
+                {id:'exams', l:'امتحان'},
+                {id:'stories', l:'قصة'}
+            ];
             let all = [];
             for (const s of sections) {
                 const snap = await getDocs(collection(db, s.id));
@@ -219,14 +307,25 @@
             }
             container.innerHTML = "";
             all.forEach(p => {
+                const postTitle = p.subject || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة (Story)");
+                const publisher = p.publisher || p.teacherName || "غير معروف";
                 container.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;">
-                    <span><b>[${p.type}]</b> ${p.subject} (بواسطة: ${p.publisher})</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; flex-wrap: wrap;">
+                    <span><b>[${p.type}]</b> ${postTitle} <small style="color:gray;">(بواسطة: ${publisher})</small></span>
                     <button class="btn btn-del" onclick="adminDel('${p.col}','${p.id}')">حذف</button>
                 </div>`;
             });
         }
-        window.adminDel = async(c,i) => { if(confirm("حذف نهائي؟")){ await deleteDoc(doc(db,c,i)); loadMasterList(); loadAllStats(); }};
+
+        // استبدال التأكيد المزعج بالتأكيد المخصص
+        window.adminDel = (col, id) => {
+            customConfirm("بصفتك المدير، هل أنت متأكد من حذف هذا المنشور نهائياً من سيرفرات المدرسة؟", async () => {
+                await deleteDoc(doc(db, col, id));
+                alert("تم الحذف بنجاح");
+                loadMasterList();
+                loadStats();
+            });
+        };
     </script>
 </body>
 </html>
