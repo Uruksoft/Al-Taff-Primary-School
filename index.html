@@ -13,15 +13,15 @@
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
     <style>
-        /* إصلاح الهوامش ومنع التمرير الأفقي المزعج */
+        /* 1. إصلاح الهوامش ومنع التمرير الأفقي المزعج نهائياً */
         html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; }
-        * { box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: border-box; }
 
         .search-container { margin-bottom: 20px; width: 100%; }
         .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; }
         .search-box:focus { border-color: #3498db; }
         
-        .announcement-details { display: none; padding-top: 15px; margin-top: 15px; border-top: 1px dashed #e2e8f0; color: #475569; }
+        .announcement-details { display: none; padding-top: 15px; margin-top: 15px; border-top: 1px dashed #e2e8f0; color: #475569; word-wrap: break-word; }
         .card.open .announcement-details { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         
@@ -37,19 +37,20 @@
         #emergency-banner { display: none; background: #e74c3c; color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; border-right: 10px solid #f1c40f; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
 
-        .honor-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; }
-        .honor-badge { font-size: 1.5rem; }
+        .honor-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; word-wrap: break-word; }
+        .honor-badge { font-size: 1.5rem; flex-shrink: 0; }
 
-        .card { width: 100%; overflow: hidden; } /* لمنع خروج محتوى البطاقة */
+        /* حماية البطاقات من التمدد وتجاوز الشاشة */
+        .card { width: 100%; overflow: hidden; word-wrap: break-word; box-sizing: border-box; } 
         .card.card-announce { background-color: #f0f9ff; border-right: 5px solid #3498db; margin-bottom: 15px;}
         .card.card-hw { background-color: #f4fdf8; border-right: 5px solid #2ecc71; margin-bottom: 15px;}
         .card.accent-card { background-color: #fffbeb; border-right: 5px solid #f1c40f; }
         .exam-schedule li { border-right: 4px solid #e74c3c; background: #ffffff; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 12px; }
 
-        /* التوزيع الجديد (3 أعمدة) وتعديل الهوامش */
-        .main-layout { display: grid; grid-template-columns: 260px 1fr 260px; gap: 20px; align-items: start; width: 100%; }
+        /* التوزيع الجديد (3 أعمدة) مع حماية minmax للوسط */
+        .main-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr) 260px; gap: 20px; align-items: start; width: 100%; }
         .sidebar-right, .sidebar-left { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-        .primary-content { min-width: 0; width: 100%; }
+        .primary-content { width: 100%; }
 
         /* أداة الطقس */
         .weather-card { background: linear-gradient(135deg, #0284c7, #38bdf8); color: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; }
@@ -79,9 +80,10 @@
         .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .story-circle .text-preview { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); color: white; font-size: 0.6rem; text-align: center; overflow: hidden; padding: 5px; box-sizing: border-box; }
         
-        #story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; }
-        #story-viewer img { max-width: 95%; max-height: 80%; border-radius: 15px; }
-        #story-text-container { display: none; color: white; font-size: 1.8rem; text-align: center; padding: 30px; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); width: 85%; border-radius: 15px; min-height: 300px; align-items: center; justify-content: center; line-height: 1.5; font-weight: bold; }
+        /* 2. تعديل عارض القصة لتصبح بالطول ومناسبة لكل الشاشات */
+        #story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; padding: 15px; box-sizing: border-box; }
+        #story-viewer img { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 10px; }
+        #story-text-container { display: none; color: white; font-size: 1.5rem; text-align: center; padding: 30px; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); width: 100%; max-width: 420px; height: 80vh; border-radius: 15px; align-items: center; justify-content: center; line-height: 1.6; font-weight: bold; overflow-y: auto; word-break: break-word; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .close-story { position: absolute; top: 20px; right: 25px; color: white; font-size: 40px; cursor: pointer; z-index: 100000; }
         .story-meta { position: absolute; top: 25px; left: 25px; color: white; text-align: left; z-index: 100000; font-family: 'Cairo'; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 
@@ -89,7 +91,7 @@
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
         .lib-item { background: #f0f9ff; border-right: 4px solid #3498db; padding: 12px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .lib-link { background: #3498db; color: white; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+        .lib-link { background: #3498db; color: white; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-size: 0.85rem; font-weight: bold; flex-shrink: 0; }
 
         .fab-contact { position: fixed; bottom: 20px; right: 20px; background: #e74c3c; color: white; border: none; border-radius: 50px; padding: 15px 25px; font-family: 'Cairo'; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .fab-contact:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6); }
@@ -98,7 +100,7 @@
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; max-height: 85vh; overflow-y: auto; }
         .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box;}
 
-        /* إصلاح الفوضى على شاشات الموبايل والآيباد */
+        /* 3. إصلاح جذري للفوضى على شاشات الموبايل والآيباد */
         @media screen and (max-width: 950px) {
             .main-layout { display: flex !important; flex-direction: column !important; gap: 15px !important; }
             .header-content { display: flex !important; flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px 10px !important; }
@@ -106,8 +108,8 @@
             .school-logo { margin: 0 auto !important; }
             .main-nav, .main-nav ul { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 15px !important; padding: 0 !important; margin: 0 !important; }
             .primary-content, .sidebar-right, .sidebar-left { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .container { width: 100% !important; padding: 0 15px !important; box-sizing: border-box !important; overflow: hidden; }
-            .card { width: 100% !important; margin-bottom: 15px !important; box-sizing: border-box; }
+            .container { padding: 0 10px !important; }
+            .card { margin-bottom: 15px !important; }
             .card-actions { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
             .done-btn, .whatsapp-share { text-align: center !important; justify-content: center !important; padding: 10px !important; }
         }
@@ -170,6 +172,7 @@
 
     <div class="container">
         <div class="stories-wrapper" id="stories-wrapper"></div>
+        
         <div id="story-viewer">
             <span class="close-story" onclick="document.getElementById('story-viewer').style.display='none'">&times;</span>
             <div class="story-meta" id="story-meta-info"></div>
@@ -258,7 +261,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // متغيرات حفظ البيانات لعرضها في النوافذ المنبثقة
         window.appData = { attendance: [], honor: [], library: [], exams: [], homeworks: [] };
 
         window.alert = function(msg) {
@@ -277,7 +279,6 @@
         }
         fetchWeather();
 
-        // دالة عرض المزيد في المودل
         window.openModalList = (type, title) => {
             const modal = document.getElementById('list-modal');
             document.getElementById('list-modal-title').innerText = title;
@@ -325,7 +326,9 @@
             if (interval >= 1) return Math.floor(interval) + " دقيقة"; return "لحظات";
         }
 
-        window.openStory = (type, content, publisher, timeStr) => {
+        // 4. دالة فتح القصة بالتشفير الآمن (Encode) لمنع تعطل الأكواد
+        window.openStory = (type, encodedContent, publisher, timeStr) => {
+            const content = decodeURIComponent(encodedContent);
             const viewer = document.getElementById('story-viewer'); const img = document.getElementById('story-img'); const txt = document.getElementById('story-text-container'); const meta = document.getElementById('story-meta-info');
             viewer.style.display = 'flex'; meta.innerHTML = `<span style="font-size:1.2rem; font-weight:bold;">${publisher}</span><br><span style="font-size:0.8rem; color:#ddd;">منذ ${timeStr}</span>`;
             if(type === 'image') { img.src = content; img.style.display = 'block'; txt.style.display = 'none'; } else { txt.innerText = content; txt.style.display = 'flex'; img.style.display = 'none'; }
@@ -338,7 +341,8 @@
                 if ((now - storyDate) > 24 * 60 * 60 * 1000) return; 
                 const isImage = !!d.imageUrl; const content = isImage ? d.imageUrl : d.textContent;
                 let previewHtml = isImage ? `<img src="${d.imageUrl}">` : `<div class="text-preview">${d.textContent.substring(0, 15)}...</div>`;
-                wrapper.innerHTML += `<div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${content.replace(/'/g, "\\'")}', '${d.publisher||"الإدارة"}', '${timeAgo(storyDate)}')">${previewHtml}</div>`;
+                let safeContent = encodeURIComponent(content);
+                wrapper.innerHTML += `<div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${safeContent}', '${d.publisher||"الإدارة"}', '${timeAgo(storyDate)}')">${previewHtml}</div>`;
             });
         });
 
@@ -359,7 +363,6 @@
             if(window.appData.attendance.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('attendance', '🙋‍♂️ سجل الغيابات')">عرض المزيد (${window.appData.attendance.length - 2}+)</button>`;
         });
 
-        // لوحة الشرف تبقى لـ 7 أيام
         onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
             window.appData.honor = []; const now = new Date();
             snap.forEach(doc => {
@@ -387,7 +390,6 @@
             if(window.appData.library.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('library', '📚 المكتبة الرقمية')">عرض المزيد (${window.appData.library.length - 2}+)</button>`;
         });
 
-        // الامتحانات تحذف بعد يومين من إجرائها
         onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
             window.appData.exams = []; const now = new Date();
             snap.forEach(doc => {
@@ -403,7 +405,6 @@
             if(window.appData.exams.length > 2) list.parentElement.innerHTML += `<button class="btn-show-more" style="margin-top:0;" onclick="openModalList('exams', '📅 مواعيد الامتحانات')">عرض المزيد (${window.appData.exams.length - 2}+)</button>`;
         });
 
-        // الواجبات (3 أيام فقط وتعرض أول 3)
         onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc")), (snap) => {
             window.appData.homeworks = []; const now = new Date();
             snap.forEach(doc => {

@@ -10,8 +10,10 @@
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     <style>
         :root { --admin-primary: #1a202c; --admin-accent: #805ad5; --danger: #e53e3e; --success: #38a169; --bg: #f7fafc; }
-        html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; flex-direction: column; overflow-x: hidden; }
-        * { box-sizing: border-box; }
+        
+        /* إصلاح الهوامش الشامل */
+        html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; flex-direction: column; overflow-x: hidden; width: 100%; }
+        *, *:before, *:after { box-sizing: border-box; }
         
         .layout-wrapper { display: flex; flex: 1; width: 100%; }
         
@@ -20,18 +22,21 @@
         .nav-link { display: block; width: 100%; padding: 12px; margin: 6px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 8px; transition: 0.3s; font-weight: 600; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; }
         
-        .main { margin-right: 280px; padding: 40px; width: calc(100% - 280px); box-sizing: border-box; display: flex; flex-direction: column;}
+        .main { margin-right: 280px; padding: 40px; width: calc(100% - 280px); max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
         .tab-content { display: none; animation: fadeIn 0.4s; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; width: 100%; }
         
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; width: 100%; }
+        /* حماية البطاقات */
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; width: 100%; overflow: hidden; word-wrap: break-word; }
         .input-text { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box; }
         
         .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.2s; }
         .btn-del { background: var(--danger); color: white; }
         .btn-save { background: var(--success); color: white; width: 100%; margin-top: 15px; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        /* الجداول */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
         th, td { text-align: right; padding: 15px; border-bottom: 1px solid #edf2f7; }
         
         .status-online { color: var(--success); font-weight: bold; animation: blink 2s infinite; }
@@ -40,9 +45,8 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
-        .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;}
+        .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
 
-        /* ستايل رقم الإشعارات الجديد */
         .badge-num { background: #e53e3e; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
 
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--admin-accent); color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
@@ -56,15 +60,18 @@
         .btn-modal-yes { color: white; background: var(--danger); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
         .btn-modal-no { background: #e2e8f0; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
 
-        @media (max-width: 850px) { 
-            .layout-wrapper { flex-direction: column; }
+        /* الشاشات الصغيرة (الهواتف والآيباد) */
+        @media (max-width: 950px) { 
+            .layout-wrapper { flex-direction: column; width: 100%; }
             .sidebar { width: 100%; position: relative; height: auto; padding: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
             .sidebar h2 { width: 100%; margin-bottom: 10px; }
             .nav-link { width: 48%; margin-bottom: 5px; font-size: 0.8rem; padding: 10px;}
             .main { margin-right: 0; padding: 15px; width: 100%; } 
+            .card { margin-bottom: 15px; padding: 15px; width: 100%; box-sizing: border-box; }
             table { font-size: 0.8rem; }
             th, td { padding: 8px 5px; }
-            .msg-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .msg-card { flex-direction: column; align-items: flex-start; }
+            .msg-card div { width: 100%; }
         }
     </style>
 </head>
@@ -103,7 +110,7 @@
             <button class="nav-link" onclick="openTab('emergency')"><span>🚨 التنبيه العاجل</span></button>
             <button class="nav-link" onclick="openTab('monitor')"><span>🔍 الرقابة الشاملة</span></button>
             
-            <hr style="opacity: 0.1; margin: 20px 0;">
+            <hr style="opacity: 0.1; margin: 20px 0; width: 100%;">
             <a href="index.html" style="color:#a0aec0; text-decoration:none; display:block; text-align:center; width: 100%;">خروج للرئيسية</a>
         </div>
 
@@ -152,11 +159,11 @@
 
             <div id="teachers" class="tab-content">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
-                        <h2>👨‍🏫 سجل نشاط المعلمين الحقيقي</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                        <h2 style="margin: 0;">👨‍🏫 سجل نشاط المعلمين الحقيقي</h2>
                         <button class="btn btn-del" onclick="clearAllLogs()" style="font-size: 0.8rem; padding: 5px 15px;">🗑️ مسح السجل</button>
                     </div>
-                    <div style="overflow-x: auto;">
+                    <div class="table-responsive">
                         <table>
                             <thead><tr><th>المعلم</th><th>النشاط</th><th>التفاصيل</th><th>الوقت</th><th>الحالة</th></tr></thead>
                             <tbody id="activity-logs"></tbody>
@@ -238,7 +245,6 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // دالة إرسال التوجيهات من المدير
         window.sendStaffMessage = async () => {
             const text = document.getElementById('chat-msg').value; const img = document.getElementById('chat-img').value;
             if(!text) return alert("الرجاء كتابة نص الرسالة!");
@@ -269,7 +275,6 @@
             const ex = await getCountFromServer(collection(db, 'exams')); document.getElementById('total-ex').innerText = ex.data().count;
         }
 
-        // مستمع صندوق رسائل الأهالي ونظام الإشعارات والأرقام
         let initialInbox = true;
         function loadInbox() {
             onSnapshot(query(collection(db, "messages"), orderBy("timestamp", "desc")), (snap) => {
@@ -333,7 +338,7 @@
                 const list = document.getElementById('honor-list-admin'); list.innerHTML = "";
                 snap.forEach(docSnap => {
                     const d = docSnap.data();
-                    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;"><span>⭐ ${d.name} (${d.class}) - <small>${d.badge||'متميز'}</small></span><button class="btn btn-del" style="padding:5px 10px;" onclick="delHonor('${docSnap.id}')">حذف</button></div>`;
+                    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee; flex-wrap:wrap; gap:10px;"><span>⭐ ${d.name} (${d.class}) - <small>${d.badge||'متميز'}</small></span><button class="btn btn-del" style="padding:5px 10px;" onclick="delHonor('${docSnap.id}')">حذف</button></div>`;
                 });
             });
         }
@@ -351,7 +356,7 @@
             all.forEach(p => {
                 const postTitle = p.subject || p.title || p.absentNames || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
                 const publisher = p.publisher || p.teacherName || p.teacher || "غير معروف";
-                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; flex-wrap: wrap;"><span><b>[${p.type}]</b> ${postTitle} <small style="color:gray;">(بواسطة: ${publisher})</small></span><button class="btn btn-del" onclick="adminDel('${p.col}','${p.id}')">حذف</button></div>`;
+                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; flex-wrap: wrap; gap:10px;"><span><b>[${p.type}]</b> ${postTitle} <small style="color:gray;">(بواسطة: ${publisher})</small></span><button class="btn btn-del" onclick="adminDel('${p.col}','${p.id}')">حذف</button></div>`;
             });
         }
 
