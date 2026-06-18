@@ -6,142 +6,167 @@
     <title>مدرسة الطف الابتدائية - المنصة الرقمية</title>
     <meta name="mobile-web-app-capable" content="yes">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
+    <!-- كود تفعيل وحفظ الوضع الليلي -->
+    <script>
+        if(localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        function toggleTheme(e) {
+            e.preventDefault();
+            document.documentElement.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+    </script>
+
     <style>
-        /* 1. إصلاح الهوامش ومنع التمرير الأفقي المزعج نهائياً */
-        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; }
+        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; scroll-behavior: smooth; font-family: 'Cairo', sans-serif; background-color: #f8fafc;}
         *, *:before, *:after { box-sizing: border-box; }
 
-        .search-container { margin-bottom: 20px; width: 100%; }
-        .search-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; background-color: #fff; }
-        .search-box:focus { border-color: #3498db; }
-        
-        .announcement-details { display: none; padding-top: 15px; margin-top: 15px; border-top: 1px dashed #e2e8f0; color: #475569; word-wrap: break-word; }
-        .card.open .announcement-details { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        
-        .card.clickable { cursor: pointer; }
-        .card-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 15px; align-items: center; }
-        .done-btn { background: none; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; transition: 0.3s; font-weight: bold; }
-        .done-btn.active { background: #2ecc71; color: white; border-color: #2ecc71; }
-        .whatsapp-share { color: #25D366; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        
-        .post-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 10px; flex-wrap: wrap; gap: 10px; }
-        .exam-status { font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
+        /* شريط الهيدر العلوي */
+        .main-header { background-color: #fff; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: relative; z-index: 1010; }
+        .container { width: 95%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .school-logo { width: 50px; height: 50px; object-fit: contain; }
+        .logo h1 { margin: 0; color: #2c3e50; font-size: 1.4rem; font-weight: 800; line-height: 1.2;}
+        .sub-title { font-weight: 600; font-size: 0.9rem; color: #7f8c8d; }
+        .main-nav ul { list-style: none; display: flex; gap: 15px; align-items: center; margin: 0; padding: 0;}
+        .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 15px; border-radius: 8px; transition: 0.3s; font-size: 0.95rem;}
+        .btn-login { background-color: #3498db; color: #fff !important; }
 
-        #emergency-banner { display: none; background: #e74c3c; color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; border-right: 10px solid #f1c40f; animation: pulse 2s infinite; }
+        /* شريط التنقل العلوي المتجاوب */
+        .top-navbar { display: flex; overflow-x: auto; background: #1e293b; padding: 12px 20px; gap: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.1); white-space: nowrap; align-items: center; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-bottom: 4px solid #3498db;}
+        .top-navbar::-webkit-scrollbar { display: none; }
+        .top-navbar a { color: #cbd5e1; text-decoration: none; font-weight: 700; padding: 8px 18px; border-radius: 50px; transition: 0.3s; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center;}
+        .top-navbar a:hover { color: white; background: rgba(255,255,255,0.1); }
+        .top-navbar a.active { background: #3498db; color: white; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4); border-color: #2980b9;}
+        #searchIconBtn { font-size: 1.1rem; padding: 8px 15px; }
+
+        .hero { background: linear-gradient(135deg, #2c3e50, #3498db); color: #fff; padding: 40px 15px; text-align: center; margin-bottom: 30px; border-radius: 0 0 25px 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+        .hero h2 { margin: 0 0 10px 0; font-weight: 800; font-size: 1.8rem;}
+
+        /* مربع البحث الذكي مع الأنيميشن */
+        .search-wrapper { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .search-wrapper.show { max-height: 120px; opacity: 1; margin-bottom: 25px; }
+        .search-container { padding-top: 5px; width: 100%; }
+        .search-box { width: 100%; padding: 18px 25px; border: 2px solid #e2e8f0; border-radius: 50px; font-family: 'Cairo'; font-size: 1rem; font-weight: 600; outline: none; transition: 0.3s; background-color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .search-box:focus { border-color: #3498db; box-shadow: 0 4px 20px rgba(52, 152, 219, 0.15); }
+
+        /* نظام الشبكة (Grid) */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; align-items: start; }
+        
+        /* أزرار الصفوف الذكية */
+        .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .class-card { background: #fff; border: 2px solid #e2e8f0; padding: 25px 15px; border-radius: 16px; font-family: 'Cairo'; font-size: 1.1rem; font-weight: 800; color: #334155; cursor: pointer; transition: 0.3s; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .class-card:hover { border-color: #3498db; color: #3498db; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(52, 152, 219, 0.1); }
+        
+        .back-btn { background: #f1f5f9; color: #475569; border: none; padding: 12px 25px; border-radius: 50px; font-family: 'Cairo'; font-weight: 700; cursor: pointer; margin-bottom: 25px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .back-btn:hover { background: #e2e8f0; color: #1e293b; }
+
+        /* ستايل البطاقات المودرن */
+        .card { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #f1f5f9; } 
+        .card:hover { transform: translateY(-7px); box-shadow: 0 15px 35px rgba(149, 157, 165, 0.2); }
+        
+        .card::before { content: ""; position: absolute; top: 0; right: 0; width: 6px; height: 100%; }
+        .card-announce::before { background: linear-gradient(to bottom, #3498db, #2980b9); }
+        .card-hw::before { background: linear-gradient(to bottom, #2ecc71, #27ae60); }
+        .card-exam::before { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
+        .card-gallery::before { background: linear-gradient(to bottom, #9b59b6, #8e44ad); }
+
+        .card-img-wrapper { margin: -25px -25px 20px -25px; width: calc(100% + 50px); }
+        .card-img-wrapper img { width: 100%; height: 220px; object-fit: cover; display: block; border-radius: 16px 16px 0 0; }
+
+        .card h3 { margin: 0 0 10px 0; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px;}
+        .card-announce h3 { color: #2c3e50; }
+        .card-hw h3 { color: #27ae60; }
+        .card-details { font-weight: 600; color: #475569; line-height: 1.6; flex-grow: 1; }
+        .post-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: #94a3b8; margin-top: 20px; border-top: 1px dashed #e2e8f0; padding-top: 15px; flex-wrap: wrap; gap: 10px; font-weight: 700;}
+        .meta-badge { background: #f1f5f9; padding: 5px 12px; border-radius: 50px; color: #64748b; }
+        
+        /* التبويبات */
+        .main-tab { display: none; animation: fadeIn 0.4s ease-out; width: 100%; }
+        .sub-tab { display: none; animation: fadeIn 0.3s ease-out; width: 100%; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+
+        /* القوائم المصغرة */
+        .list-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; position: relative; overflow: hidden;}
+        .list-item:hover { transform: translateX(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .list-item::before { content: ""; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #cbd5e1; }
+        .list-item.exam-item::before { background: #e74c3c; }
+        .list-item.lib-item::before { background: #3498db; }
+
+        .honor-badge { font-size: 2rem; flex-shrink: 0; background: #fffbeb; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fde68a;}
+        .lib-link { background: #3498db; color: white; padding: 8px 20px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; font-weight: 800; flex-shrink: 0; transition: 0.3s; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);}
+        .lib-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* التنبيه العاجل */
+        #emergency-banner { display: none; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 18px 25px; border-radius: 15px; margin-bottom: 30px; border-right: 8px solid #f1c40f; animation: pulse 2s infinite; font-family: 'Cairo'; box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3); align-items: center; gap: 15px;}
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
 
-        .honor-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; word-wrap: break-word; }
-        .honor-badge { font-size: 1.5rem; flex-shrink: 0; }
-
-        /* حماية البطاقات من التمدد وتجاوز الشاشة */
-        .card { width: 100%; overflow: hidden; word-wrap: break-word; box-sizing: border-box; } 
-        .card.card-announce { background-color: #f0f9ff; border-right: 5px solid #3498db; margin-bottom: 15px;}
-        .card.card-hw { background-color: #f4fdf8; border-right: 5px solid #2ecc71; margin-bottom: 15px;}
-        .card.accent-card { background-color: #fffbeb; border-right: 5px solid #f1c40f; }
-        .exam-schedule li { border-right: 4px solid #e74c3c; background: #ffffff; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 12px; }
-
-        /* التوزيع الجديد (3 أعمدة) مع حماية minmax للوسط */
-        .main-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr) 260px; gap: 20px; align-items: start; width: 100%; }
-        .sidebar-right, .sidebar-left { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-        .primary-content { width: 100%; }
-
-        /* أداة الطقس */
-        .weather-card { background: linear-gradient(135deg, #0284c7, #38bdf8); color: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; }
-        .weather-card h3 { margin: 0 0 5px 0; color: white; font-size: 1.1rem;}
-        .weather-temp { font-size: 2.5rem; font-weight: bold; margin: 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);}
+        /* الوضع الليلي */
+        html.dark-mode body { --bg-light: #0f172a; --text-main: #f8fafc; background-color: var(--bg-light); color: var(--text-main); }
+        html.dark-mode .main-header { background-color: #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
+        html.dark-mode .logo h1, html.dark-mode .main-nav a { color: #f8fafc; }
+        html.dark-mode .top-navbar { background-color: #0b1120; border-bottom-color:#1e293b;}
+        html.dark-mode .search-box { background-color: #1e293b; color: #fff; border-color: #334155; }
+        html.dark-mode .hero { background: linear-gradient(135deg, #0f172a, #1e293b); box-shadow: none; border-bottom: 1px solid #334155;}
         
-        .btn-show-more { background: #f1f5f9; color: var(--accent); border: none; padding: 10px; width: 100%; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-show-more:hover { background: #e2e8f0; }
-
-        body.dark-mode { --bg-light: #121212; --text-main: #e0e0e0; background-color: var(--bg-light); color: var(--text-main); }
-        body.dark-mode .main-header { background-color: #1e1e1e; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        body.dark-mode .search-box { background-color: #1e1e1e; color: #fff; border-color: #333; }
-        body.dark-mode .hero { background: linear-gradient(135deg, #1e293b, #0f172a); }
-        body.dark-mode .announcement-details, body.dark-mode .post-meta { color: #cbd5e1; border-top-color: #333; }
-        body.dark-mode .card { background-color: #1e1e1e; color: #e2e8f0; }
-        body.dark-mode .card.card-announce { background-color: #0f172a; border-right-color: #3498db; }
-        body.dark-mode .card.card-hw { background-color: #064e3b; border-right-color: #2ecc71; }
-        body.dark-mode .card.accent-card { background-color: #422006; border-right-color: #f1c40f; }
-        body.dark-mode .exam-schedule li { background-color: #1c1917; border-right-color: #e74c3c; color: #e0e0e0; }
-        body.dark-mode .honor-item { border-bottom-color: #333; }
-        body.dark-mode .lib-item { background: #0f172a; border-color: #333; }
-        body.dark-mode .btn-show-more { background: #333; color: #fff; }
-
-        .stories-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-bottom: 20px; scrollbar-width: none; width: 100%; }
-        .stories-wrapper::-webkit-scrollbar { display: none; }
-        .story-circle { min-width: 75px; height: 75px; border-radius: 50%; border: 3px solid #e1306c; padding: 3px; cursor: pointer; flex-shrink: 0; background: white; position: relative; }
-        .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .story-circle .text-preview { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); color: white; font-size: 0.6rem; text-align: center; overflow: hidden; padding: 5px; box-sizing: border-box; }
+        html.dark-mode .card { background-color: #1e293b; color: #e2e8f0; border-color: #334155; box-shadow: 0 8px 24px rgba(0,0,0,0.4);}
+        html.dark-mode .card h3 { color: #f8fafc; }
+        html.dark-mode .card-details { color: #cbd5e1; }
+        html.dark-mode .post-meta { border-top-color: #334155; }
+        html.dark-mode .meta-badge { background: #334155; color: #94a3b8; }
+        html.dark-mode .list-item { background: #1e293b; border-color: #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        html.dark-mode .honor-badge { background: #334155; border-color: #f59e0b; }
         
-        /* 2. تعديل عارض القصة لتصبح بالطول ومناسبة لكل الشاشات */
-        #story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; padding: 15px; box-sizing: border-box; }
-        #story-viewer img { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 10px; }
-        #story-text-container { display: none; color: white; font-size: 1.5rem; text-align: center; padding: 30px; background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af); width: 100%; max-width: 420px; height: 80vh; border-radius: 15px; align-items: center; justify-content: center; line-height: 1.6; font-weight: bold; overflow-y: auto; word-break: break-word; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .close-story { position: absolute; top: 20px; right: 25px; color: white; font-size: 40px; cursor: pointer; z-index: 100000; }
-        .story-meta { position: absolute; top: 25px; left: 25px; color: white; text-align: left; z-index: 100000; font-family: 'Cairo'; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+        /* الوضع الليلي للأزرار الجديدة */
+        html.dark-mode .class-card { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        html.dark-mode .class-card:hover { border-color: #3498db; color: #fff; }
+        html.dark-mode .back-btn { background: #334155; color: #cbd5e1; }
+        html.dark-mode .back-btn:hover { background: #475569; color: #fff; }
 
-        #custom-toast { visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
-        #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
+        .fab-contact { position: fixed; bottom: 25px; right: 25px; background: #e74c3c; color: white; border: none; border-radius: 50px; padding: 15px 25px; font-family: 'Cairo'; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 10px;}
+        .fab-contact:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(231, 76, 60, 0.6); }
 
-        .lib-item { background: #f0f9ff; border-right: 4px solid #3498db; padding: 12px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .lib-link { background: #3498db; color: white; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-size: 0.85rem; font-weight: bold; flex-shrink: 0; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: right; box-shadow: 0 20px 40px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; max-height: 85vh; overflow-y: auto; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 15px; margin-top: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Cairo'; font-weight: 600; box-sizing: border-box; transition: 0.3s;}
+        .modal-box input:focus, .modal-box textarea:focus { border-color: #e74c3c; outline: none; }
+        html.dark-mode .modal-box { background: #1e293b; color: #f8fafc; box-shadow: 0 20px 40px rgba(0,0,0,0.6);}
+        html.dark-mode .modal-box input, html.dark-mode .modal-box textarea { background: #0f172a; color: #fff; border-color: #334155; }
 
-        .fab-contact { position: fixed; bottom: 20px; right: 20px; background: #e74c3c; color: white; border: none; border-radius: 50px; padding: 15px 25px; font-family: 'Cairo'; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .fab-contact:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6); }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; max-height: 85vh; overflow-y: auto; }
-        .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box;}
-
-        /* 3. إصلاح جذري للفوضى على شاشات الموبايل والآيباد */
         @media screen and (max-width: 950px) {
-            .main-layout { display: flex !important; flex-direction: column !important; gap: 15px !important; }
-            .header-content { display: flex !important; flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px 10px !important; }
-            .logo { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 10px !important; }
-            .school-logo { margin: 0 auto !important; }
-            .main-nav, .main-nav ul { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 15px !important; padding: 0 !important; margin: 0 !important; }
-            .primary-content, .sidebar-right, .sidebar-left { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .container { padding: 0 10px !important; }
-            .card { margin-bottom: 15px !important; }
-            .card-actions { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
-            .done-btn, .whatsapp-share { text-align: center !important; justify-content: center !important; padding: 10px !important; }
+            .header-content { flex-direction: column; text-align: center; gap: 15px; padding: 15px 10px; }
+            .logo { flex-direction: column; align-items: center; gap: 10px; }
+            .main-nav ul { flex-direction: row; justify-content: center; gap: 10px; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .card-img-wrapper img { height: 200px; }
+            .class-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div id="custom-toast"></div>
+    <div id="custom-toast" style="visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 50px; padding: 15px 25px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: top 0.4s ease, opacity 0.4s ease; opacity: 0;"></div>
 
     <button class="fab-contact" onclick="document.getElementById('contact-modal').style.display='flex'">📩 تواصل مع الإدارة</button>
 
     <div class="modal-overlay" id="contact-modal">
         <div class="modal-box" style="text-align: center;">
-            <h3 style="color: #e74c3c; margin-top:0;">إرسال رسالة للإدارة 🏫</h3>
-            <p style="font-size: 0.85rem; color: gray;">رسالتك ستصل مباشرة إلى مكتب السيد المدير.</p>
+            <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.5rem;">إرسال رسالة للإدارة 🏫</h3>
+            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">رسالتك ستصل مباشرة وبسرية إلى مكتب السيد المدير.</p>
             <input type="text" id="parent-name" placeholder="اسم ولي الأمر (أو الطالب)">
             <input type="tel" id="parent-phone" placeholder="رقم الهاتف للتواصل">
             <textarea id="parent-msg" rows="4" placeholder="اكتب استفسارك أو شكواك هنا..."></textarea>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="sendParentMsg()" style="background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1;">إرسال الرسالة</button>
-                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1;">إلغاء</button>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="sendParentMsg()" style="background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 1rem; flex: 1; transition: 0.3s;">إرسال الرسالة</button>
+                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 1rem; flex: 1; transition: 0.3s;">إلغاء</button>
             </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="list-modal">
-        <div class="modal-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
-                <h3 id="list-modal-title" style="margin: 0; color: var(--primary);">العنوان</h3>
-                <span style="font-size: 1.5rem; cursor: pointer; color: var(--danger);" onclick="document.getElementById('list-modal').style.display='none'">&times;</span>
-            </div>
-            <div id="list-modal-content"></div>
         </div>
     </div>
 
@@ -150,100 +175,128 @@
             <div class="logo">
                 <img src="https://b.top4top.io/p_3738g1q971.png" alt="شعار المدرسة" class="school-logo">
                 <div>
-                    <h1 style="margin: 0;">مدرسة الطف</h1>
+                    <h1>مدرسة الطف</h1>
                     <span class="sub-title">الابتدائية للبنين</span>
                 </div>
             </div>
             <nav class="main-nav">
-                <ul style="list-style: none;">
-                    <li><a href="#" onclick="toggleTheme(event)" style="text-decoration: none;">🌙 المظهر</a></li>
-                    <li><a href="login.html" class="btn-login" style="text-decoration: none;">دخول الكادر 🔐</a></li>
+                <ul>
+                    <li><a href="#" onclick="toggleTheme(event)">المظهر</a></li>
+                    <li><a href="login.html" class="btn-login">دخول الكادر</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero" style="text-align: center; padding: 30px 15px;">
-        <div class="container hero-content">
-            <h2 style="margin-top: 0;">مرحباً بكم في منصتنا التعليمية</h2>
-            <p style="margin-bottom: 0;">نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
+    <!-- شريط التنقل العلوي النظيف وبدون إيموجي -->
+    <nav class="top-navbar">
+        <a onclick="showTab('news', this)" class="active">الرئيسية (الأخبار)</a>
+        <a onclick="showTab('hw', this)">الواجبات البيتية</a>
+        <a onclick="showTab('exams', this)">مواعيد الامتحانات</a>
+        <a onclick="showTab('honor', this)">لوحة الشرف</a>
+        <a onclick="showTab('attendance', this)">الغيابات اليومية</a>
+        <a onclick="showTab('library', this)">المكتبة الرقمية</a>
+        <a onclick="showTab('exhibit', this)">معرض الصور</a>
+        <a onclick="toggleSearch()" id="searchIconBtn" title="بحث">🔍</a>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h2>مرحباً بكم في منصتنا التعليمية</h2>
+            <p style="margin-bottom: 0; font-size: 1.1rem; opacity: 0.9;">نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
         </div>
     </section>
 
-    <div class="container">
-        <div class="stories-wrapper" id="stories-wrapper"></div>
-        
-        <div id="story-viewer">
-            <span class="close-story" onclick="document.getElementById('story-viewer').style.display='none'">&times;</span>
-            <div class="story-meta" id="story-meta-info"></div>
-            <img id="story-img" src="" alt="Story">
-            <div id="story-text-container"></div>
+    <div class="container" style="padding-top: 10px; padding-bottom: 80px;">
+
+        <!-- شريط التنبيه العاجل -->
+        <div id="emergency-banner" style="display: none;">
+            <span style="font-size: 2rem;">🚨</span>
+            <div>
+                <strong style="font-size: 1.2rem; display: block; margin-bottom: 5px;">تنبيه إداري عاجل</strong>
+                <span id="emergency-text" style="font-weight: 600; line-height: 1.5;"></span>
+            </div>
         </div>
 
-        <div id="emergency-banner">
-            <strong id="emergency-text">🚨 عاجل: يتم جلب التنبيه...</strong>
+        <!-- مربع البحث المدمج بأيقونة العدسة -->
+        <div class="search-wrapper" id="search-wrapper">
+            <div class="search-container">
+                <input type="text" id="classSearch" class="search-box" placeholder="اكتب للبحث داخل القسم المفتوح (مثال: الرابع)...">
+            </div>
         </div>
 
-        <div class="search-container">
-            <input type="text" id="classSearch" class="search-box" placeholder="🔍 ابحث عن صفك أو مادتك بسرعة (مثلاً: الرابع)...">
+        <!-- الأخبار -->
+        <div id="tab-news" class="main-tab" style="display: block;">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">آخر أخبار المدرسة</h2>
+            <div id="school-news-list" class="cards-grid">جاري تحميل الأخبار...</div>
         </div>
-        
-        <h2 style="color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">📢 إعلانات الإدارة</h2>
-        <div id="announcements-list" style="margin-bottom: 30px; width: 100%;"></div>
 
-        <div class="main-layout">
+        <!-- الواجبات البيتية مع نظام الفلترة بالصفوف -->
+        <div id="tab-hw" class="main-tab">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">الواجبات البيتيّة الحديثة</h2>
             
-            <div class="sidebar-right">
-                <div class="weather-card">
-                    <h3>☀️ طقس النجف الأشرف</h3>
-                    <div class="weather-temp" id="weather-temp">--°C</div>
-                    <div style="font-size: 0.9rem;" id="weather-desc">جاري التحديث...</div>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #e67e22;">
-                    <h3 style="color: #e67e22; margin-top: 0;">🙋‍♂️ الغيابات اليومية</h3>
-                    <div id="attendance-list-public">جاري التحميل...</div>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #f1c40f;">
-                    <h3 style="color: #f1c40f; margin-top: 0;"><span class="icon">🏆</span> لوحة الشرف</h3>
-                    <div id="honor-list">جاري التحميل...</div>
-                </div>
+            <div id="hw-classes" class="class-grid" style="display: grid;">
+                <button class="class-card" onclick="openClassView('hw', 'الأول', 'الواجبات - الصف الأول الابتدائي')">الصف الأول</button>
+                <button class="class-card" onclick="openClassView('hw', 'الثاني', 'الواجبات - الصف الثاني الابتدائي')">الصف الثاني</button>
+                <button class="class-card" onclick="openClassView('hw', 'الثالث', 'الواجبات - الصف الثالث الابتدائي')">الصف الثالث</button>
+                <button class="class-card" onclick="openClassView('hw', 'الرابع', 'الواجبات - الصف الرابع الابتدائي')">الصف الرابع</button>
+                <button class="class-card" onclick="openClassView('hw', 'الخامس', 'الواجبات - الصف الخامس الابتدائي')">الصف الخامس</button>
+                <button class="class-card" onclick="openClassView('hw', 'السادس', 'الواجبات - الصف السادس الابتدائي')">الصف السادس</button>
             </div>
 
-            <div class="primary-content">
-                <h2 style="color: #2c3e50; margin-top: 0; margin-bottom: 20px;">📚 الواجبات البيتيّة الحديثة</h2>
-                <div id="homeworks-list"></div>
+            <div id="hw-details" class="sub-tab">
+                <button class="back-btn" onclick="closeClassView('hw')">⬅ عودة لاختيار الصف</button>
+                <h3 id="hw-class-title" style="color: #27ae60; margin-top: 0; margin-bottom: 25px; font-weight: 800;"></h3>
+                <div id="homeworks-list" class="cards-grid"></div>
             </div>
-
-            <div class="sidebar-left">
-                <div class="card" style="text-align: center; background: #2c3e50; color: white;">
-                    <h3 style="color: white; margin-top: 0;">🕒 الوقت والتاريخ</h3>
-                    <div style="font-size: 2.2rem; font-weight: 700;" id="time">00:00</div>
-                    <div style="opacity: 0.8; font-size:0.9rem;" id="date-display">-- --- ----</div>
-                </div>
-
-                <div class="card accent-card">
-                    <h3 style="margin-top: 0;">📅 مواعيد الامتحانات</h3>
-                    <div class="exam-schedule" id="exams-list">
-                        <ul style="padding: 0; list-style: none;"></ul>
-                    </div>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #3498db;">
-                    <h3 style="color: #3498db; margin-top: 0;">📚 المكتبة الرقمية</h3>
-                    <p style="font-size: 0.8rem; color: gray;">ملازم، ملخصات، أوراق عمل</p>
-                    <div id="library-list">جاري جلب الملفات...</div>
-                </div>
-            </div>
-
         </div>
-    </div>
 
-    <footer style="text-align: center; padding: 30px 20px; font-size: 0.9rem; color: #7f8c8d; border-top: 1px solid #edf2f7; margin-top: 40px;">
-        <p style="margin: 0;">© 2026 مدرسة الطف الابتدائية للبنين</p>
-        <p style="margin: 5px 0 0 0;">تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" style="color: #3498db; font-weight: bold; text-decoration: none;">اوروك سوفت للحلول البرمجية - مرتضى حسين</a></p>
-    </footer>
+        <!-- الامتحانات -->
+        <div id="tab-exams" class="main-tab">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">مواعيد الامتحانات القادمة</h2>
+            <div id="exams-list" style="display: flex; flex-direction: column; gap: 15px;">جاري تحميل المواعيد...</div>
+        </div>
+
+        <!-- لوحة الشرف -->
+        <div id="tab-honor" class="main-tab">
+            <h2 style="color: #f59e0b; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">أبطال لوحة الشرف</h2>
+            <div id="honor-list" class="cards-grid">جاري التحميل...</div>
+        </div>
+
+        <!-- سجل الغيابات مع نظام الفلترة بالصفوف -->
+        <div id="tab-attendance" class="main-tab">
+            <h2 style="color: #e67e22; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">سجل الغيابات اليومي</h2>
+            
+            <div id="attendance-classes" class="class-grid" style="display: grid;">
+                <button class="class-card" onclick="openClassView('attendance', 'الأول', 'غيابات الصف الأول الابتدائي')">الصف الأول</button>
+                <button class="class-card" onclick="openClassView('attendance', 'الثاني', 'غيابات الصف الثاني الابتدائي')">الصف الثاني</button>
+                <button class="class-card" onclick="openClassView('attendance', 'الثالث', 'غيابات الصف الثالث الابتدائي')">الصف الثالث</button>
+                <button class="class-card" onclick="openClassView('attendance', 'الرابع', 'غيابات الصف الرابع الابتدائي')">الصف الرابع</button>
+                <button class="class-card" onclick="openClassView('attendance', 'الخامس', 'غيابات الصف الخامس الابتدائي')">الصف الخامس</button>
+                <button class="class-card" onclick="openClassView('attendance', 'السادس', 'غيابات الصف السادس الابتدائي')">الصف السادس</button>
+            </div>
+
+            <div id="attendance-details" class="sub-tab">
+                <button class="back-btn" onclick="closeClassView('attendance')">⬅ عودة لاختيار الصف</button>
+                <h3 id="attendance-class-title" style="color: #e67e22; margin-top: 0; margin-bottom: 25px; font-weight: 800;"></h3>
+                <div id="attendance-list-public" class="cards-grid"></div>
+            </div>
+        </div>
+
+        <!-- المكتبة -->
+        <div id="tab-library" class="main-tab">
+            <h2 style="color: #3498db; margin-top: 0; margin-bottom: 5px; font-weight: 800; font-size: 1.8rem;">المكتبة الرقمية المفتوحة</h2>
+            <p style="color: #64748b; font-weight: 600; margin-bottom: 25px;">ملازم، ملخصات، ومواد دراسية للتحميل المباشر</p>
+            <div id="library-list" style="display: flex; flex-direction: column; gap: 15px;">جاري جلب الملفات...</div>
+        </div>
+
+        <!-- معرض الصور -->
+        <div id="tab-exhibit" class="main-tab">
+            <h2 style="color: #9b59b6; margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.8rem;">معرض صور المدرسة</h2>
+            <div id="exhibit-list" class="cards-grid">جاري تحميل المعرض...</div>
+        </div>
+
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -261,54 +314,101 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.appData = { attendance: [], honor: [], library: [], exams: [], homeworks: [] };
+        // متغيرات عامة لحفظ البيانات لتسهيل فلترتها لاحقاً
+        window.appData = { hw: [], attendance: [] };
+        window.currentView = { hw: { active: false, keyword: "" }, attendance: { active: false, keyword: "" } };
 
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
-            toast.innerText = msg; toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible';
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 3000);
         };
 
-        async function fetchWeather() {
-            try {
-                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=32.0283&longitude=44.3411&current_weather=true");
-                const data = await res.json();
-                document.getElementById('weather-temp').innerText = Math.round(data.current_weather.temperature) + '°C';
-                document.getElementById('weather-desc').innerText = "النجف الأشرف";
-            } catch(e) { document.getElementById('weather-temp').innerText = "--"; }
-        }
-        fetchWeather();
+        window.toggleSearch = function() {
+            const wrapper = document.getElementById('search-wrapper');
+            const iconBtn = document.getElementById('searchIconBtn');
+            if(wrapper.classList.contains('show')) {
+                wrapper.classList.remove('show');
+                iconBtn.classList.remove('active');
+            } else {
+                wrapper.classList.add('show');
+                iconBtn.classList.add('active');
+                document.getElementById('classSearch').focus();
+            }
+        };
 
-        window.openModalList = (type, title) => {
-            const modal = document.getElementById('list-modal');
-            document.getElementById('list-modal-title').innerText = title;
-            const content = document.getElementById('list-modal-content'); content.innerHTML = '';
-            const data = window.appData[type];
-            if(!data || data.length === 0) { content.innerHTML = "<p style='text-align:center;'>لا توجد بيانات.</p>"; return; }
+        // برمجة البحث الذكي في الأقسام المفتوحة
+        document.getElementById('classSearch').addEventListener('input', function(e) {
+            let val = e.target.value.toLowerCase();
+            let activeTab = document.querySelector('.main-tab[style*="display: block"]');
+            if(activeTab) {
+                activeTab.querySelectorAll('.card, .list-item').forEach(card => {
+                    if(card.innerText.toLowerCase().includes(val)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        });
 
-            data.forEach(d => {
-                if(type === 'attendance') {
-                    content.innerHTML += `<div style="background: #fffaf0; border-right: 4px solid #e67e22; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
-                        <div style="display:flex; justify-content:space-between;"><strong>الصف: ${d.class}</strong><span style="font-size:0.8rem; color:gray;">${timeAgo(d.timestamp?d.timestamp.toDate():new Date())}</span></div>
-                        <div style="color:#e53e3e; font-weight:bold; font-size:0.9rem; margin-top:5px;">الغياب: <span style="font-weight:normal; color:#475569;">${d.absentNames}</span></div></div>`;
-                } else if (type === 'honor') {
-                    let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
-                    content.innerHTML += `<div class="honor-item"><span class="honor-badge">${badgeIcon}</span><div><strong>${d.name}</strong> <span style="font-size:0.7rem; background:#f1c40f; color:#fff; padding:2px 5px; border-radius:4px;">${d.badge || 'متميز'}</span><br><small style="color:gray;">${d.class}</small></div></div>`;
-                } else if (type === 'library') {
-                    content.innerHTML += `<div class="lib-item"><div><strong style="color:var(--primary);">${d.subject}</strong><br><small style="color:gray;">${d.class}</small></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
-                } else if (type === 'exams') {
-                    const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
-                    let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
-                    content.innerHTML += `<div style="background:#fff; border-right:4px solid #e74c3c; padding:12px; margin-bottom:10px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); display:flex; justify-content:space-between;"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></div>`;
-                } else if (type === 'homeworks') {
-                    content.innerHTML += `<div class="card hw-item card-hw" style="margin-bottom:10px;">
-                        <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
-                        <p style="margin-top:10px; font-weight:600;">${d.details}</p>
-                        <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div></div>`;
+        window.showTab = function(tabId, el) {
+            document.querySelectorAll('.main-tab').forEach(tab => tab.style.display = 'none');
+            document.querySelectorAll('.top-navbar a').forEach(a => a.classList.remove('active'));
+            document.getElementById('tab-' + tabId).style.display = 'block';
+            if(el) { el.classList.add('active'); el.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"}); }
+            // مسح وتحديث حقل البحث عند تغيير التبويب
+            document.getElementById('classSearch').value = '';
+            document.getElementById('classSearch').dispatchEvent(new Event('input'));
+        };
+
+        // دوال فتح وإغلاق تبويبات الصفوف
+        window.openClassView = function(type, gradeKeyword, gradeTitle) {
+            document.getElementById(type + '-classes').style.display = 'none';
+            document.getElementById(type + '-details').style.display = 'block';
+            document.getElementById(type + '-class-title').innerText = gradeTitle;
+            window.currentView[type] = { active: true, keyword: gradeKeyword };
+            renderFilteredData(type);
+        };
+
+        window.closeClassView = function(type) {
+            document.getElementById(type + '-classes').style.display = 'grid';
+            document.getElementById(type + '-details').style.display = 'none';
+            window.currentView[type] = { active: false, keyword: "" };
+        };
+
+        // دالة الفلترة والرسم الذكية للصفوف
+        function renderFilteredData(type) {
+            if (type === 'hw') {
+                const list = document.getElementById('homeworks-list');
+                list.innerHTML = "";
+                let data = window.appData.hw;
+                if (window.currentView.hw.active) {
+                    data = data.filter(d => d.class && d.class.includes(window.currentView.hw.keyword));
                 }
-            });
-            modal.style.display = 'flex';
-        };
+                if (data.length === 0) { list.innerHTML = "<p style='font-size:1.1rem; font-weight:700; color:#64748b;'>لا توجد واجبات مسجلة حالياً لهذا الصف.</p>"; return; }
+                data.forEach(d => {
+                    list.innerHTML += `<div class="card card-hw">
+                        <h3>📝 ${d.subject}</h3>
+                        <div class="card-details">${d.details}</div>
+                        <div class="post-meta"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span><span class="meta-badge">👤 ${d.publisher || 'المعلم'}</span></div>
+                    </div>`;
+                });
+            } else if (type === 'attendance') {
+                const list = document.getElementById('attendance-list-public');
+                list.innerHTML = "";
+                let data = window.appData.attendance;
+                if (window.currentView.attendance.active) {
+                    data = data.filter(d => d.class && d.class.includes(window.currentView.attendance.keyword));
+                }
+                if (data.length === 0) { list.innerHTML = "<p style='font-size:1.1rem; font-weight:700; color:#64748b;'>جميع التلاميذ حاضرين، لا توجد غيابات اليوم لهذا الصف.</p>"; return; }
+                data.forEach(d => {
+                    list.innerHTML += `<div class="card" style="border-right: 6px solid #e67e22;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><strong style="font-size:1.2rem; color:inherit;">الشعبة/الصف: ${d.class}</strong><span class="meta-badge">${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span></div>
+                        <div style="color:#e53e3e; font-weight:800; font-size:1rem;">الأسماء:<br> <span style="font-weight:600; color:#475569; line-height:1.8;">${d.absentNames}</span></div></div>`;
+                });
+            }
+        }
 
         window.sendParentMsg = async () => {
             const n = document.getElementById('parent-name').value; const p = document.getElementById('parent-phone').value; const m = document.getElementById('parent-msg').value;
@@ -326,131 +426,110 @@
             if (interval >= 1) return Math.floor(interval) + " دقيقة"; return "لحظات";
         }
 
-        // 4. دالة فتح القصة بالتشفير الآمن (Encode) لمنع تعطل الأكواد
-        window.openStory = (type, encodedContent, publisher, timeStr) => {
-            const content = decodeURIComponent(encodedContent);
-            const viewer = document.getElementById('story-viewer'); const img = document.getElementById('story-img'); const txt = document.getElementById('story-text-container'); const meta = document.getElementById('story-meta-info');
-            viewer.style.display = 'flex'; meta.innerHTML = `<span style="font-size:1.2rem; font-weight:bold;">${publisher}</span><br><span style="font-size:0.8rem; color:#ddd;">منذ ${timeStr}</span>`;
-            if(type === 'image') { img.src = content; img.style.display = 'block'; txt.style.display = 'none'; } else { txt.innerText = content; txt.style.display = 'flex'; img.style.display = 'none'; }
-        };
-
-        onSnapshot(query(collection(db, "stories"), orderBy("timestamp", "desc")), (snap) => {
-            const wrapper = document.getElementById('stories-wrapper'); wrapper.innerHTML = ""; const now = new Date();
-            snap.forEach(doc => {
-                const d = doc.data(); const storyDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                if ((now - storyDate) > 24 * 60 * 60 * 1000) return; 
-                const isImage = !!d.imageUrl; const content = isImage ? d.imageUrl : d.textContent;
-                let previewHtml = isImage ? `<img src="${d.imageUrl}">` : `<div class="text-preview">${d.textContent.substring(0, 15)}...</div>`;
-                let safeContent = encodeURIComponent(content);
-                wrapper.innerHTML += `<div class="story-circle" onclick="openStory('${isImage ? 'image' : 'text'}', '${safeContent}', '${d.publisher||"الإدارة"}', '${timeAgo(storyDate)}')">${previewHtml}</div>`;
-            });
+        // التنبيه العاجل
+        onSnapshot(doc(db, "settings", "emergency_alert"), (docSnap) => {
+            const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
+            if (docSnap.exists() && docSnap.data().active) {
+                textEl.innerText = docSnap.data().text; banner.style.display = 'flex';
+            } else { banner.style.display = 'none'; }
         });
 
-        onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc")), (snap) => {
-            window.appData.attendance = []; const now = new Date();
+        // الأخبار
+        onSnapshot(query(collection(db, "school_news"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('school-news-list'); list.innerHTML = "";
+            if (snap.empty) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
             snap.forEach(doc => {
-                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                if ((now - recordDate) <= 24 * 60 * 60 * 1000) window.appData.attendance.push(d);
-            });
-            const list = document.getElementById('attendance-list-public'); list.innerHTML = "";
-            if (window.appData.attendance.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray; font-size:0.85rem;'>لا غيابات مسجلة اليوم.</p>"; return; }
-            for(let i=0; i < Math.min(2, window.appData.attendance.length); i++) {
-                const d = window.appData.attendance[i]; const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                list.innerHTML += `<div style="background: #fffaf0; border-right: 4px solid #e67e22; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
-                    <div style="display:flex; justify-content:space-between;"><strong>الصف: ${d.class}</strong><span style="font-size:0.8rem; color:gray;">${timeAgo(recordDate)}</span></div>
-                    <div style="color:#e53e3e; font-weight:bold; font-size:0.9rem; margin-top:5px;">الغياب: <span style="font-weight:normal; color:#475569;">${d.absentNames}</span></div></div>`;
-            }
-            if(window.appData.attendance.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('attendance', '🙋‍♂️ سجل الغيابات')">عرض المزيد (${window.appData.attendance.length - 2}+)</button>`;
-        });
-
-        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
-            window.appData.honor = []; const now = new Date();
-            snap.forEach(doc => {
-                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) window.appData.honor.push(d);
-            });
-            const list = document.getElementById('honor-list'); list.innerHTML = "";
-            if (window.appData.honor.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray;'>لا يوجد أبطال لهذا الأسبوع..</p>"; return; }
-            for(let i=0; i < Math.min(2, window.appData.honor.length); i++) {
-                const d = window.appData.honor[i];
-                let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
-                list.innerHTML += `<div class="honor-item"><span class="honor-badge">${badgeIcon}</span><div><strong>${d.name}</strong> <span style="font-size:0.7rem; background:#f1c40f; color:#fff; padding:2px 5px; border-radius:4px;">${d.badge || 'متميز'}</span><br><small style="color:gray;">${d.class}</small></div></div>`;
-            }
-            if(window.appData.honor.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('honor', '🏆 لوحة الشرف')">عرض المزيد (${window.appData.honor.length - 2}+)</button>`;
-        });
-
-        onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc")), (snap) => {
-            window.appData.library = []; snap.forEach(doc => window.appData.library.push(doc.data()));
-            const list = document.getElementById('library-list'); list.innerHTML = "";
-            if (window.appData.library.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray; font-size:0.85rem;'>قيد التجهيز..</p>"; return; }
-            for(let i=0; i < Math.min(2, window.appData.library.length); i++) {
-                const d = window.appData.library[i];
-                list.innerHTML += `<div class="lib-item"><div><strong style="color:var(--primary);">${d.subject}</strong><br><small style="color:gray;">${d.class}</small></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
-            }
-            if(window.appData.library.length > 2) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('library', '📚 المكتبة الرقمية')">عرض المزيد (${window.appData.library.length - 2}+)</button>`;
-        });
-
-        onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
-            window.appData.exams = []; const now = new Date();
-            snap.forEach(doc => {
-                const d = doc.data(); const diffDays = (now - new Date(d.details)) / 864e5;
-                if (isNaN(diffDays) || diffDays <= 2) window.appData.exams.push(d);
-            });
-            const list = document.querySelector('#exams-list ul'); list.innerHTML = "";
-            for(let i=0; i < Math.min(2, window.appData.exams.length); i++) {
-                const d = window.appData.exams[i]; const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - now) / 864e5);
-                let statusHtml = daysLeft > 0 ? `<span class="exam-status" style="background:#e0f2fe; color:#0369a1;">⏳ ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="exam-status" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="exam-status" style="background:#f1f5f9; color:#64748b;">✅ انتهى</span>`);
-                list.innerHTML += `<li class="ex-item"><div><strong>${d.subject}</strong><br><small>${d.class}</small></div><div style="text-align:left;"><div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">${d.details}</div>${statusHtml}</div></li>`;
-            }
-            if(window.appData.exams.length > 2) list.parentElement.innerHTML += `<button class="btn-show-more" style="margin-top:0;" onclick="openModalList('exams', '📅 مواعيد الامتحانات')">عرض المزيد (${window.appData.exams.length - 2}+)</button>`;
-        });
-
-        onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc")), (snap) => {
-            window.appData.homeworks = []; const now = new Date();
-            snap.forEach(doc => {
-                const d = doc.data(); const dTime = d.timestamp ? d.timestamp.toDate() : new Date();
-                if ((now - dTime) <= 3 * 24 * 60 * 60 * 1000) window.appData.homeworks.push({id: doc.id, ...d});
-            });
-            const list = document.getElementById('homeworks-list'); list.innerHTML = "";
-            if(window.appData.homeworks.length === 0) { list.innerHTML = "<p style='text-align:center; color:gray;'>لا توجد واجبات حديثة.</p>"; return; }
-            
-            for(let i=0; i < Math.min(3, window.appData.homeworks.length); i++) {
-                const d = window.appData.homeworks[i]; const id = d.id; const isSaved = localStorage.getItem('done-'+id) === 'true';
-                const waMessage = encodeURIComponent(`*📚 واجب بيتي*\nالمادة: ${d.subject}\nالصف: ${d.class}\nالتفاصيل: ${d.details}`);
-                list.innerHTML += `<div class="card hw-item card-hw">
-                    <h3 style="margin:0; color:#2ecc71;">${d.subject} <span style="color:#64748b; font-size:0.9rem;">- ${d.class}</span></h3>
-                    <p style="margin-top:15px; font-weight:600;">${d.details}</p>
-                    <div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الأستاذ: ${d.publisher || 'المعلم'}</span></div>
-                    <div class="card-actions"><a href="https://wa.me/?text=${waMessage}" target="_blank" class="whatsapp-share">📤 مشاركة واتساب</a>
-                    <button id="btn-${id}" class="done-btn ${isSaved?'active':''}" onclick="toggleDone('${id}')">${isSaved?'✅ منجز':'🔘 حدد كمنجز'}</button></div></div>`;
-            }
-            if(window.appData.homeworks.length > 3) list.innerHTML += `<button class="btn-show-more" onclick="openModalList('homeworks', '📚 جميع الواجبات')">عرض المزيد (${window.appData.homeworks.length - 3}+)</button>`;
-        });
-
-        onSnapshot(query(collection(db, "announcements"), orderBy("timestamp", "desc")), (snap) => {
-            const list = document.getElementById('announcements-list'); list.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data(); const id = doc.id;
-                list.innerHTML += `<div class="card clickable card-announce" id="ann-${id}" onclick="document.getElementById('ann-${id}').classList.toggle('open')">
-                    <h3 style="margin-bottom:0; color: #3498db;">📌 ${d.subject} <span style="font-size:0.8rem; color:#94a3b8; font-weight:normal;">(اضغط للقراءة)</span></h3>
-                    <div class="announcement-details"><p>${d.details}</p><div class="post-meta"><span>🗓 ${getFormattedDate(d.timestamp)}</span><span>👤 الإدارة</span></div></div>
+                const d = doc.data();
+                const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}"></div>` : "";
+                list.innerHTML += `<div class="card card-announce">
+                    ${imgHtml}
+                    <h3>${d.title}</h3>
+                    <div class="card-details">${d.details}</div>
+                    <div class="post-meta"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span><span class="meta-badge">👤 ${d.publisher}</span></div>
                 </div>`;
             });
         });
 
-        window.toggleDone = (id) => { const btn = document.getElementById('btn-'+id); const isDone = btn.classList.toggle('active'); btn.innerHTML = isDone ? "✅ منجز" : "🔘 حدد كمنجز"; localStorage.setItem('done-'+id, isDone); };
-        const applyTheme = (theme) => { if(theme === 'dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); localStorage.setItem('theme', theme); };
-        window.toggleTheme = (e) => { e.preventDefault(); const isDark = document.body.classList.contains('dark-mode'); applyTheme(isDark ? 'light' : 'dark'); }; applyTheme(localStorage.getItem('theme') || 'light');
+        // الواجبات البيتية (يتم حفظها في المتغير ثم تُرسم)
+        onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.hw = [];
+            snap.forEach(doc => window.appData.hw.push(doc.data()));
+            renderFilteredData('hw');
+        });
 
-        setInterval(() => {
+        // الامتحانات
+        onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('exams-list'); list.innerHTML = "";
+            if (snap.empty) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
+            snap.forEach(doc => {
+                const d = doc.data();
+                const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
+                let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`);
+                
+                list.innerHTML += `<div class="list-item exam-item">
+                    <div><strong style="font-size:1.2rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600;">${d.class}</span></div>
+                    <div style="text-align:left;"><div style="color:#e74c3c; font-weight:800; font-size:1rem; margin-bottom:8px;">${d.details}</div>${statusHtml}</div>
+                </div>`;
+            });
+        });
+
+        // الغيابات (يتم حفظها خلال اخر 24 ساعة ثم تُرسم)
+        onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc")), (snap) => {
+            window.appData.attendance = [];
             const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: false });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        }, 1000);
+            snap.forEach(doc => {
+                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - recordDate) <= 24 * 60 * 60 * 1000) {
+                    window.appData.attendance.push(d);
+                }
+            });
+            renderFilteredData('attendance');
+        });
 
-        const getFormattedDate = (ts) => { if (!ts) return "..."; return new Intl.DateTimeFormat('ar-IQ', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }).format(ts.toDate()); };
-        onSnapshot(doc(db, "settings", "emergency_alert"), (doc) => { const data = doc.data(); const banner = document.getElementById('emergency-banner'); if (data && data.active && data.text) { banner.style.display = "block"; document.getElementById('emergency-text').innerText = "🚨 عاجل: " + data.text; } else { banner.style.display = "none"; } });
-        document.getElementById('classSearch').onkeyup = () => { let v = document.getElementById('classSearch').value.toLowerCase(); document.querySelectorAll('.hw-item, .ex-item, .clickable, .card-announce').forEach(el => { el.style.display = el.innerText.toLowerCase().includes(v) ? "" : "none"; }); };
+        // لوحة الشرف
+        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('honor-list'); list.innerHTML = "";
+            let hasRecords = false; const now = new Date();
+            snap.forEach(doc => {
+                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) {
+                    hasRecords = true;
+                    let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
+                    list.innerHTML += `<div class="card" style="flex-direction: row; align-items: center; gap: 20px; border-right: 6px solid #f59e0b;">
+                        <div class="honor-badge">${badgeIcon}</div>
+                        <div><strong style="font-size:1.2rem; color:inherit; display:block; margin-bottom:5px;">${d.name}</strong> <span class="meta-badge" style="background:#fef3c7; color:#d97706;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:8px;">${d.class}</div></div>
+                    </div>`;
+                }
+            });
+            if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
+        });
+
+        // المكتبة
+        onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('library-list'); list.innerHTML = "";
+            if (snap.empty) { list.innerHTML = "<p>قيد التجهيز..</p>"; return; }
+            snap.forEach(doc => {
+                const d = doc.data();
+                list.innerHTML += `<div class="list-item lib-item">
+                    <div><strong style="font-size:1.1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600;">${d.class}</span></div>
+                    <a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a>
+                </div>`;
+            });
+        });
+
+        // معرض الصور
+        onSnapshot(query(collection(db, "exhibition"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('exhibit-list'); list.innerHTML = "";
+            if (snap.empty) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
+            snap.forEach(doc => {
+                const d = doc.data();
+                list.innerHTML += `<div class="card card-gallery">
+                    <div class="card-img-wrapper"><img src="${d.imageUrl}"></div>
+                    <h3 style="color:#8e44ad; justify-content:center; text-align:center;">${d.title}</h3>
+                    <div class="post-meta" style="justify-content:center;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span></div>
+                </div>`;
+            });
+        });
     </script>
 </body>
 </html>
