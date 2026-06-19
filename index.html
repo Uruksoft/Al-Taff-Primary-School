@@ -22,25 +22,63 @@
             e.preventDefault();
             document.documentElement.classList.toggle('dark-mode');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+            updateThemeIcon();
         }
+        function updateThemeIcon() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            document.querySelectorAll('.theme-toggle-icon').forEach(el => {
+                el.innerText = isDark ? '☀️' : '🌙';
+            });
+        }
+        window.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
 
     <style>
-        /* ================= الأساسيات ================= */
-        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; scroll-behavior: smooth; font-family: 'Cairo', sans-serif; background-color: #f8fafc;}
+        /* ================= الأساسيات والوضع الليلي ================= */
+        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; scroll-behavior: smooth; font-family: 'Cairo', sans-serif; background-color: #f8fafc; transition: background-color 0.3s;}
         *, *:before, *:after { box-sizing: border-box; }
 
-        /* ================= الهيدر العلوي ================= */
-        .main-header { background-color: #fff; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: relative; z-index: 1010; transition: 0.3s;}
+        /* ================= شاشة الترحيب التطبيقية (Splash Screen) ================= */
+        .app-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e293b;
+            color: white; z-index: 99999; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 20px; transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .app-splash h2 { font-weight: 800; font-size: 1.6rem; margin-top: 20px; color: #f1c40f; line-height: 1.4; }
+        .app-splash p { font-size: 0.95rem; color: #cbd5e1; margin-top: 5px; font-weight: 600; }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #3498db; border-radius: 50%; animation: spin 1s infinite linear; margin-top: 30px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ================= تأثير التحميل الوهمي (Skeleton Loader) ================= */
+        .skeleton-card { background: #fff; border-radius: 12px; padding: 20px; height: 240px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #f1f5f9; }
+        .skeleton-block { background: #e2e8f0; border-radius: 6px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
+        .skeleton-img { height: 120px; margin: -20px -20px 10px -20px; border-radius: 12px 12px 0 0; }
+        .skeleton-title { height: 24px; width: 70%; }
+        .skeleton-text { height: 16px; width: 95%; }
+        .skeleton-meta { height: 20px; width: 40%; margin-top: auto; border-radius: 20px; }
+        @keyframes skeleton-pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        /* ================= 🌟 إصلاح نافذة التواصل (Modal) 🌟 ================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s ease; }
+        .modal-box { background: #fff; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(0); display: flex; flex-direction: column; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Cairo'; font-size: 0.95rem; outline: none; transition: 0.3s; }
+        .modal-box input:focus, .modal-box textarea:focus { border-color: #e74c3c; box-shadow: 0 0 5px rgba(231,76,60,0.3); }
+        
+        /* رسالة التنبيه المنبثقة (Toast) */
+        .toast-msg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; transition: all 0.4s ease; opacity: 0; visibility: hidden; }
+
+        /* ================= الهيدر ونظام الموبايل ================= */
+        .main-header { background-color: #fff; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: relative; z-index: 1010; }
         .container { width: 95%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 12px; }
         .school-logo { width: 45px; height: 45px; object-fit: contain; }
         .logo h1 { margin: 0; color: #2c3e50; font-size: 1.3rem; font-weight: 800; line-height: 1.2;}
         .sub-title { font-weight: 600; font-size: 0.85rem; color: #7f8c8d; }
-        .main-nav ul { list-style: none; display: flex; gap: 10px; align-items: center; margin: 0; padding: 0;}
-        .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 6px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem;}
+        .main-nav ul { list-style: none; display: flex; gap: 12px; align-items: center; margin: 0; padding: 0;}
+        .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem;}
         .btn-login { background-color: #3498db; color: #fff !important; }
+        .btn-header-contact { background-color: #e74c3c; color: #fff !important; box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3); cursor: pointer; }
 
         /* ================= جرس الإشعارات الذكي ================= */
         .notif-container { position: relative; display: flex; align-items: center; }
@@ -48,14 +86,14 @@
         .bell-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.8)); }
         @keyframes gentle-ring { 0%, 100% { transform: rotate(0deg); } 5%, 15% { transform: rotate(10deg); } 10%, 20% { transform: rotate(-10deg); } 25% { transform: rotate(0deg); } }
         .notif-badge { display: none; position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: 800; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .notif-dropdown { display: none; position: absolute; top: 45px; left: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; width: 280px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; overflow: hidden; text-align: right; cursor: default;}
+        .notif-dropdown { display: none; position: absolute; top: 45px; left: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; width: 290px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; overflow: hidden; text-align: right; cursor: default;}
         .notif-dropdown.show { display: block; animation: fadeIn 0.2s ease-out; }
         .notif-header { background: #f8fafc; padding: 12px 15px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #2c3e50; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;}
         .notif-list { max-height: 300px; overflow-y: auto; padding: 10px; }
         .notif-item { padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; color: #475569; border-radius: 8px; margin-bottom: 5px; background: #f0f9ff; transition: 0.3s; line-height: 1.5; cursor: pointer;}
         .notif-item:hover { background: #e0f2fe; transform: translateX(-3px); }
 
-        /* ================= النافبار وتصميم الأقسام ================= */
+        /* ================= أزرار التنقل والتبويبات ================= */
         .top-navbar { display: flex; overflow-x: auto; background: #1e293b; padding: 10px 15px; gap: 10px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.1); white-space: nowrap; align-items: center; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-bottom: 3px solid #3498db;}
         .top-navbar::-webkit-scrollbar { display: none; }
         .top-navbar a { color: #cbd5e1; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 50px; transition: 0.3s; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;}
@@ -70,7 +108,7 @@
         .back-btn { background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; border-radius: 50px; font-family: 'Cairo'; font-weight: 700; cursor: pointer; margin-bottom: 20px; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
         .back-btn:hover { background: #e2e8f0; color: #1e293b; }
 
-        /* ================= البطاقات ================= */
+        /* ================= الكروت والقوائم ================= */
         .card { background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(149, 157, 165, 0.08); transition: all 0.5s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #f1f5f9; } 
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(149, 157, 165, 0.15); }
         .card::before { content: ""; position: absolute; top: 0; right: 0; width: 4px; height: 100%; }
@@ -80,7 +118,6 @@
         .card-gallery::before { background: linear-gradient(to bottom, #9b59b6, #8e44ad); }
         .card-img-wrapper { margin: -15px -15px 15px -15px; width: calc(100% + 30px); position: relative; overflow: hidden; }
         .card-img-wrapper img { width: 100%; height: 160px; object-fit: cover; display: block; border-radius: 12px 12px 0 0; transition: transform 0.3s ease; }
-        .card-img-wrapper img:hover { transform: scale(1.05); }
         .card h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 6px;}
         .card-announce h3 { color: #2c3e50; }
         .card-hw h3 { color: #27ae60; }
@@ -88,8 +125,6 @@
         .card-details { font-weight: 600; color: #475569; line-height: 1.5; flex-grow: 1; font-size: 0.9rem;}
         .post-meta { display: flex; font-size: 0.8rem; color: #94a3b8; margin-top: 15px; border-top: 1px dashed #e2e8f0; padding-top: 10px; font-weight: 700; flex-direction: column; gap: 6px;}
         .meta-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 50px; color: #64748b; display: inline-flex; align-items: center; width: fit-content;}
-
-        /* ================= التبويبات والقوائم ================= */
         .main-tab { display: none; animation: fadeIn 0.3s ease-out; width: 100%; }
         .sub-tab { display: none; animation: fadeIn 0.2s ease-out; width: 100%; }
         @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
@@ -100,12 +135,10 @@
         .honor-badge { font-size: 1.8rem; flex-shrink: 0; background: #fffbeb; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fde68a;}
         .lib-link { background: #3498db; color: white; padding: 6px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; transition: 0.3s;}
         .lib-link:hover { background: #2980b9; transform: translateY(-2px); }
-        #emergency-banner { display: none; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; border-right: 6px solid #f1c40f; animation: pulse 2s infinite; font-family: 'Cairo'; align-items: center; gap: 12px;}
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
         .btn-show-more { display: inline-block; padding: 8px 25px; background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd; border-radius: 50px; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: 0.3s; }
         .btn-show-more:hover { background: #bae6fd; color: #0369a1; transform: translateY(-2px); }
 
-        /* ================= العرض السينمائي للصور (Lightbox) ================= */
+        /* ================= العرض السينمائي (Lightbox) ================= */
         .lightbox-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease; }
         .lightbox-content { position: relative; max-width: 90%; max-height: 85%; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .lightbox-img { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -113,7 +146,7 @@
         .lightbox-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
         .lightbox-btn:hover { background: #3498db; transform: scale(1.1); box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4); }
 
-        /* ================= الفوتر والتواصل ================= */
+        /* ================= الفوتر ================= */
         .main-footer { background-color: #1e293b; color: #cbd5e1; padding: 30px 15px; text-align: center; border-top: 4px solid #3498db; margin-top: auto;}
         .main-footer .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;}
         .main-footer .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
@@ -124,17 +157,8 @@
         .main-footer .rights { font-size: 0.9rem; line-height: 1.8;}
         .main-footer .rights a { color: #3498db; text-decoration: none; font-weight: 800; transition: 0.3s;}
         .main-footer .rights a:hover { color: #fff; }
-        
-        .fab-contact { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-family: 'Cairo'; font-size: 1rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4), inset 0 0 10px rgba(255,255,255,0.2); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px; animation: pulse-glow 2s infinite; }
-        .fab-contact:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6), inset 0 0 15px rgba(255,255,255,0.3); }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
-        
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 400px; text-align: right; box-shadow: 0 15px 30px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; max-height: 85vh; overflow-y: auto; }
-        .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; font-weight: 600; font-size: 0.9rem; box-sizing: border-box; transition: 0.3s;}
-        .modal-box input:focus, .modal-box textarea:focus { border-color: #e74c3c; outline: none; }
 
-        /* ================= تصميم التطبيق المخصص للهواتف ================= */
+        /* ================= 📱 واجهة التطبيق المخصصة للهواتف ================= */
         .mobile-bottom-nav { display: none; }
         .mobile-sidebar { display: none; }
         .sidebar-overlay { display: none; }
@@ -145,30 +169,35 @@
             .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; font-size: 0.75rem; font-weight: 800; gap: 4px; transition: 0.3s; cursor: pointer; }
             .nav-item.active { color: #3498db; transform: translateY(-3px); }
             .nav-item i { font-size: 1.3rem; font-style: normal; }
+            
             .mobile-sidebar { display: flex; flex-direction: column; position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: #fff; z-index: 2000; box-shadow: -5px 0 25px rgba(0,0,0,0.15); transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); overflow-y: auto; padding-bottom: 20px; }
             .mobile-sidebar.open { right: 0; }
-            .sidebar-header { background: linear-gradient(135deg, #2c3e50, #3498db); padding: 30px 20px; color: #fff; display: flex; flex-direction: column; gap: 10px; position: relative; }
+            .sidebar-header { background: linear-gradient(135deg, #2c3e50, #3498db); padding: 25px 20px; color: #fff; display: flex; flex-direction: column; gap: 10px; position: relative; }
             .sidebar-header .close-btn { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer;}
             .sidebar-content { padding: 15px; display: flex; flex-direction: column; gap: 5px; }
             .side-item { padding: 12px 15px; color: #475569; text-decoration: none; font-weight: 800; font-size: 1rem; border-radius: 10px; transition: 0.3s; display: flex; align-items: center; gap: 10px; cursor: pointer; }
             .side-item:hover, .side-item.active { background: #f0f9ff; color: #3498db; }
             .sidebar-overlay { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); z-index: 1999; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: 0.4s; }
             .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
-            .header-content { flex-direction: row !important; justify-content: space-between !important; padding: 12px 15px !important; }
+            
+            .header-content { flex-direction: row !important; justify-content: space-between !important; padding: 10px 15px !important; }
             .logo { flex-direction: row !important; gap: 10px !important; }
-            .school-logo { width: 35px !important; height: 35px !important; margin:0 !important;}
+            .school-logo { width: 38px !important; height: 38px !important; margin:0 !important;}
             .logo h1 { font-size: 1.1rem !important; }
             .sub-title { display: none; } 
-            .main-nav ul li:not(.notif-container) { display: none; } 
+            
+            .main-nav ul { gap: 15px; }
+            .main-nav ul li:not(.notif-container):not(.mobile-icon-nav) { display: none; } 
+            .mobile-icon-nav { display: block !important; font-size: 1.3rem; cursor: pointer; }
+            
             .notif-dropdown { width: 300px; left: 5px; right: auto; transform: none; }
             .cards-grid { grid-template-columns: 1fr; }
             .card-img-wrapper img { height: 180px; }
             .class-grid { grid-template-columns: repeat(2, 1fr); }
-            .fab-contact { bottom: 85px; right: 15px; padding: 10px 15px; font-size: 0.9rem; }
-            .main-footer { padding: 25px 15px !important; margin-bottom: 70px; } 
+            .main-footer { padding: 25px 15px !important; margin-bottom: 65px; } 
         }
 
-        /* ================= الوضع الليلي (Dark Mode) ================= */
+        /* تكييفات الوضع الليلي الإضافية */
         html.dark-mode body { --bg-light: #0f172a; --text-main: #f8fafc; background-color: var(--bg-light); color: var(--text-main); }
         html.dark-mode .main-header { background-color: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
         html.dark-mode .logo h1 { color: #f8fafc; }
@@ -176,8 +205,6 @@
         html.dark-mode .notif-header { background: #0f172a; color: #f8fafc; border-color: #334155; }
         html.dark-mode .notif-item { background: #334155; color: #cbd5e1; border-color: #475569; }
         html.dark-mode .notif-item:hover { background: #475569; }
-        html.dark-mode .top-navbar { background-color: #0b1120; border-bottom-color:#1e293b;}
-        html.dark-mode .hero { background: linear-gradient(135deg, #0f172a, #1e293b); box-shadow: none; border-bottom: 1px solid #334155;}
         html.dark-mode .card { background-color: #1e293b; color: #e2e8f0; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.4);}
         html.dark-mode .card h3 { color: #f8fafc; }
         html.dark-mode .card-details { color: #cbd5e1; }
@@ -189,38 +216,51 @@
         html.dark-mode .back-btn { background: #334155; color: #cbd5e1; }
         html.dark-mode .back-btn:hover { background: #475569; color: #fff; }
         html.dark-mode .main-footer { background-color: #0b1120; border-color: #1e293b; }
+        
+        /* تكييف النافذة بالوضع الليلي */
         html.dark-mode .modal-box { background: #1e293b; color: #f8fafc; box-shadow: 0 15px 30px rgba(0,0,0,0.6);}
         html.dark-mode .modal-box input, html.dark-mode .modal-box textarea { background: #0f172a; color: #fff; border-color: #334155; }
+        html.dark-mode .modal-box input:focus, html.dark-mode .modal-box textarea:focus { border-color: #e74c3c; }
+        
         html.dark-mode .mobile-bottom-nav { background: #1e293b; border-top-color: #0f172a; }
         html.dark-mode .mobile-sidebar { background: #0f172a; }
         html.dark-mode .side-item { color: #cbd5e1; }
         html.dark-mode .side-item:hover, html.dark-mode .side-item.active { background: #1e293b; color: #38bdf8; }
         html.dark-mode .btn-show-more { background: #1e293b; color: #38bdf8; border-color: #334155; }
         html.dark-mode .btn-show-more:hover { background: #0f172a; border-color: #38bdf8; }
+        html.dark-mode .skeleton-card { background: #1e293b; border-color: #334155; }
+        html.dark-mode .skeleton-block { background: #334155; }
     </style>
 </head>
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
 
-    <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+    <!-- رسالة منبثقة أسفل الشاشة (Toast) -->
+    <div id="custom-toast" class="toast-msg">تمت العملية بنجاح</div>
 
-    <div id="custom-toast" style="visibility: hidden; min-width: 200px; background-color: #3498db; color: white; text-align: center; border-radius: 30px; padding: 12px 20px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; font-weight: 800; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: top 0.4s ease, opacity 0.4s ease; opacity: 0;"></div>
+    <!-- 📱 شاشة الترحيب الذكية للتطبيق -->
+    <div id="app-splash" class="app-splash">
+        <img src="https://b.top4top.io/p_3738g1q971.png" style="width:90px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
+        <h2>أهلاً وسهلاً بكم في منصة مدرسة الطف الابتدائية</h2>
+        <p>جاري تحميل تهيئة النظام المطور...</p>
+        <div class="spinner"></div>
+    </div>
 
-    <button class="fab-contact" onclick="document.getElementById('contact-modal').style.display='flex'">📩 تواصل معنا</button>
-
-    <div class="modal-overlay" id="contact-modal">
-        <div class="modal-box" style="text-align: center;">
-            <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem;">إرسال رسالة للإدارة</h3>
-            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">رسالتك ستصل مباشرة وبسرية إلى مكتب السيد المدير.</p>
+    <!-- 🌟 نافذة التواصل الموحدة والمصلحة (Modal) 🌟 -->
+    <div class="modal-overlay" id="contact-modal" onclick="if(event.target === this) this.style.display='none'">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem; text-align: center;">إرسال رسالة للإدارة</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px; text-align: center;">رسالتك ستصل مباشرة وبسرية إلى مكتب السيد المدير.</p>
             <input type="text" id="parent-name" placeholder="اسم ولي الأمر (أو الطالب)">
             <input type="tel" id="parent-phone" placeholder="رقم الهاتف للتواصل">
             <textarea id="parent-msg" rows="4" placeholder="اكتب استفسارك أو شكواك هنا..."></textarea>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="sendParentMsg()" style="background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.9rem; flex: 1; transition: 0.3s;">إرسال</button>
-                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.9rem; flex: 1; transition: 0.3s;">إلغاء</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="sendParentMsg()" style="background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إرسال</button>
+                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
             </div>
         </div>
     </div>
 
+    <!-- القائمة الجانبية (للهواتف) -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSideMenu()"></div>
     <div class="mobile-sidebar" id="mobile-sidebar">
         <div class="sidebar-header">
@@ -239,12 +279,14 @@
             <a onclick="showTab('attendance', this); closeSideMenu();" class="side-item">🙋‍♂️ الغيابات اليومية</a>
             <a onclick="showTab('library', this); closeSideMenu();" class="side-item">📚 المكتبة الرقمية</a>
             <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item">🎨 معرض الصور</a>
+            <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;">📩 تواصل مع الإدارة</a>
+            <div id="pwa-install-container"></div>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <a href="#" onclick="toggleTheme(event); closeSideMenu();" class="side-item">🌙 تغيير المظهر</a>
             <a href="login.html" class="side-item" style="color:#3498db;">🔐 دخول الكادر</a>
         </div>
     </div>
 
+    <!-- نافذة العرض السينمائي للصور -->
     <div id="lightbox-overlay" class="lightbox-overlay" onclick="closeLightbox()">
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <img id="lightbox-img" class="lightbox-img" src="" alt="معاينة">
@@ -255,6 +297,7 @@
         </div>
     </div>
 
+    <!-- الهيدر الرئيسي -->
     <header class="main-header">
         <div class="container header-content">
             <div class="logo">
@@ -266,24 +309,24 @@
             </div>
             <nav class="main-nav">
                 <ul>
+                    <li class="mobile-icon-nav"><a href="#" onclick="toggleTheme(event)" class="theme-toggle-icon">🌙</a></li>
                     <li class="notif-container">
                         <a href="#" onclick="toggleNotif(event)" class="bell-btn">🔔
                             <span id="notif-badge" class="notif-badge">0</span>
                         </a>
                         <div id="notif-dropdown" class="notif-dropdown">
-                            <div class="notif-header">الإشعارات الحديثة <button onclick="clearNotifs(event)" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-family:'Cairo'; font-size:0.8rem; font-weight:bold;">مسح</button></div>
-                            <div id="notif-list" class="notif-list">
-                                <p style="text-align: center; color: gray; font-size: 0.85rem; margin: 15px 0;">لا توجد إشعارات جديدة.</p>
-                            </div>
+                            <div class="notif-header">الإشعارات الدائمة <button onclick="clearNotifs(event)" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-family:'Cairo'; font-size:0.8rem; font-weight:bold;">تصفير</button></div>
+                            <div id="notif-list" class="notif-list"></div>
                         </div>
                     </li>
-                    <li><a href="#" onclick="toggleTheme(event)">المظهر</a></li>
+                    <li><a onclick="document.getElementById('contact-modal').style.display='flex'" class="btn-header-contact">📩 تواصل معنا</a></li>
                     <li><a href="login.html" class="btn-login">دخول الكادر</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- شريط التنقل (الكمبيوتر) -->
     <nav class="top-navbar">
         <a onclick="showTab('news', this)" class="active">الرئيسية (الأخبار)</a>
         <a onclick="showTab('hw', this)">الواجبات البيتية</a>
@@ -294,6 +337,7 @@
         <a onclick="showTab('exhibit', this)">معرض الصور</a>
     </nav>
 
+    <!-- شريط التنقل السفلي (الهواتف) -->
     <div class="mobile-bottom-nav">
         <a onclick="showTab('news', this)" class="nav-item active"><i>🏠</i><span>الرئيسية</span></a>
         <a onclick="showTab('hw', this)" class="nav-item"><i>📝</i><span>الواجبات</span></a>
@@ -302,6 +346,7 @@
         <a onclick="openSideMenu()" class="nav-item"><i>☰</i><span>المزيد</span></a>
     </div>
 
+    <!-- قسم الترحيب -->
     <section class="hero">
         <div class="container">
             <h2>مرحباً بكم في منصة مدرسة الطف الإلكترونية</h2>
@@ -309,6 +354,7 @@
         </div>
     </section>
 
+    <!-- الحاوية الرئيسية للأقسام -->
     <div class="container" style="padding-top: 5px; flex-grow: 1; padding-bottom: 40px;">
 
         <div id="emergency-banner" style="display: none;">
@@ -319,12 +365,14 @@
             </div>
         </div>
 
+        <!-- قسم الأخبار -->
         <div id="tab-news" class="main-tab" style="display: block;">
             <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">آخر أخبار المدرسة</h2>
-            <div id="school-news-list" class="cards-grid">جاري تحميل الأخبار...</div>
+            <div id="school-news-list" class="cards-grid"></div>
             <div id="news-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
         </div>
 
+        <!-- قسم الواجبات -->
         <div id="tab-hw" class="main-tab">
             <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">الواجبات البيتيّة الحديثة</h2>
             <div id="hw-classes" class="class-grid" style="display: grid;">
@@ -342,16 +390,19 @@
             </div>
         </div>
 
+        <!-- قسم الامتحانات -->
         <div id="tab-exams" class="main-tab">
             <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">مواعيد الامتحانات القادمة</h2>
-            <div id="exams-list" class="cards-grid">جاري تحميل المواعيد...</div>
+            <div id="exams-list" class="cards-grid"></div>
         </div>
 
+        <!-- قسم الشرف -->
         <div id="tab-honor" class="main-tab">
             <h2 style="color: #f59e0b; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">أبطال لوحة الشرف</h2>
-            <div id="honor-list" class="cards-grid">جاري التحميل...</div>
+            <div id="honor-list" class="cards-grid"></div>
         </div>
 
+        <!-- قسم الغيابات -->
         <div id="tab-attendance" class="main-tab">
             <h2 style="color: #e67e22; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">سجل الغيابات اليومي</h2>
             <div class="card" style="text-align: center; padding: 40px 20px; border-right: 6px solid #94a3b8; align-items: center; justify-content: center;">
@@ -361,21 +412,24 @@
             </div>
         </div>
 
+        <!-- قسم المكتبة -->
         <div id="tab-library" class="main-tab">
             <h2 style="color: #3498db; margin-top: 0; margin-bottom: 5px; font-weight: 800; font-size: 1.4rem;">المكتبة الرقمية</h2>
             <p style="color: #64748b; font-weight: 600; font-size: 0.9rem; margin-bottom: 20px;">ملازم، ملخصات للتحميل المباشر</p>
-            <div id="library-list" style="display: flex; flex-direction: column; gap: 12px;">جاري جلب الملفات...</div>
+            <div id="library-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
             <div id="lib-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
         </div>
 
+        <!-- قسم المعرض -->
         <div id="tab-exhibit" class="main-tab">
             <h2 style="color: #9b59b6; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">معرض صور المدرسة</h2>
-            <div id="exhibit-list" class="cards-grid">جاري تحميل المعرض...</div>
+            <div id="exhibit-list" class="cards-grid"></div>
             <div id="exhibit-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
         </div>
 
     </div>
 
+    <!-- الفوتر -->
     <footer class="main-footer">
         <div class="container">
             <div class="social-links">
@@ -390,9 +444,10 @@
         </div>
     </footer>
 
+    <!-- ================= سكربتات المنصة المحدثة ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, doc, addDoc, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, doc, addDoc, serverTimestamp, limit, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
@@ -404,12 +459,62 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
 
         window.appData = { hw: [] };
         window.currentView = { hw: { active: false, keyword: "" } };
 
-        /* --- دوال واجهة المستخدم --- */
+        function injectSkeletons(containerId, count = 3, hasImg = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = "";
+            for (let i = 0; i < count; i++) {
+                container.innerHTML += `
+                    <div class="skeleton-card">
+                        ${hasImg ? '<div class="skeleton-block skeleton-img"></div>' : ''}
+                        <div class="skeleton-block skeleton-title"></div>
+                        <div class="skeleton-block skeleton-text"></div>
+                        <div class="skeleton-block skeleton-text" style="width:80%;"></div>
+                        <div class="skeleton-block skeleton-meta"></div>
+                    </div>`;
+            }
+        }
+
+        injectSkeletons('school-news-list', 3, true);
+        injectSkeletons('exams-list', 3, false);
+        injectSkeletons('honor-list', 3, false);
+        injectSkeletons('library-list', 3, false);
+        injectSkeletons('exhibit-list', 3, true);
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('app-splash');
+                if(splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 500);
+                }
+            }, 1800);
+        });
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredPrompt = e;
+            const installContainer = document.getElementById('pwa-install-container');
+            if (installContainer) {
+                installContainer.innerHTML = `<a onclick="triggerPWAInstall()" class="side-item" style="background:#2ecc71; color:white; margin-top:10px;">📲 تثبيت التطبيق على الهاتف</a>`;
+            }
+        });
+        window.triggerPWAInstall = async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') { document.getElementById('pwa-install-container').innerHTML = ''; }
+            deferredPrompt = null;
+        };
+
         window.openLightbox = function(src) {
             const overlay = document.getElementById('lightbox-overlay');
             document.getElementById('lightbox-img').src = src;
@@ -442,13 +547,27 @@
             window.currentView[type] = { active: false, keyword: "" };
         };
 
-        /* --- دوال الإشعارات والتوجيه الذكي --- */
-        window.toggleNotif = function(e) { e.preventDefault(); document.getElementById('notif-dropdown').classList.toggle('show'); document.getElementById('notif-badge').style.display = 'none'; document.getElementById('notif-badge').innerText = '0'; };
-        window.clearNotifs = function(e) { e.preventDefault(); document.getElementById('notif-list').innerHTML = '<p style="text-align: center; color: gray; font-size: 0.85rem; margin: 15px 0;">لا توجد إشعارات جديدة.</p>'; };
-        document.addEventListener('click', function(e) { const dropdown = document.getElementById('notif-dropdown'); if (!e.target.closest('.notif-container') && dropdown.classList.contains('show')) { dropdown.classList.remove('show'); } });
+        let storedNotifs = JSON.parse(localStorage.getItem('altaf_cached_notifs')) || [];
+        
+        window.toggleNotif = function(e) { 
+            e.preventDefault(); 
+            document.getElementById('notif-dropdown').classList.toggle('show'); 
+            document.getElementById('notif-badge').style.display = 'none'; 
+            document.getElementById('notif-badge').innerText = '0'; 
+        };
+        
+        window.clearNotifs = function(e) { 
+            e.preventDefault(); 
+            storedNotifs = [];
+            localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs));
+            renderNotificationsUI();
+        };
 
-        window.openFromNotif = function(tabId, docId, className = '') {
-            document.getElementById('notif-dropdown').classList.remove('show');
+        window.openAndDestroyNotif = function(id, tabId, docId, className) {
+            storedNotifs = storedNotifs.filter(n => n.id !== id);
+            localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs));
+            renderNotificationsUI();
+
             showTab(tabId, null); 
             if (tabId === 'hw' && className) { let gradeKeyword = className.split(' ')[0]; openClassView('hw', gradeKeyword, 'الواجبات - ' + className); }
             setTimeout(() => {
@@ -459,24 +578,53 @@
                         postEl.style.boxShadow = '0 0 25px rgba(52, 152, 219, 0.8)'; setTimeout(() => { postEl.style.boxShadow = ''; }, 2000); 
                     }
                 }
-            }, 400); 
+            }, 400);
         };
 
-        function addNotification(text, tabId, docId, className = '') {
-            const list = document.getElementById('notif-list'); const badge = document.getElementById('notif-badge');
-            if(list.innerHTML.includes('لا توجد إشعارات')) { list.innerHTML = ''; }
+        function pushPersistentNotification(id, text, tabId, docId, className = '') {
+            if (storedNotifs.some(n => n.id === id)) return;
             const timeNow = new Date().toLocaleTimeString('ar-IQ', { hour: 'numeric', minute: '2-digit', hour12: true });
-            list.innerHTML = `<div class="notif-item" onclick="openFromNotif('${tabId}', '${docId}', '${className}')"><strong>🔔 تنبيه جديد:</strong><br>${text}<br><small style="color:gray; font-size:0.75rem; display:block; margin-top:5px;">${timeNow}</small></div>` + list.innerHTML;
-            let count = parseInt(badge.innerText) || 0; count++; badge.innerText = count; badge.style.display = 'inline-block';
-            document.getElementById('notify-sound').play().catch(()=>{});
+            storedNotifs.unshift({ id, text, tabId, docId, className, time: timeNow });
+            localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs));
+            renderNotificationsUI();
+            const sound = document.getElementById('notify-sound');
+            if(sound) sound.play().catch(()=>{});
         }
 
+        function renderNotificationsUI() {
+            const list = document.getElementById('notif-list');
+            const badge = document.getElementById('notif-badge');
+            if (!list || !badge) return;
+
+            list.innerHTML = "";
+            if (storedNotifs.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.85rem; margin: 15px 0;">لا توجد إشعارات جديدة.</p>';
+                badge.style.display = 'none';
+                badge.innerText = '0';
+                return;
+            }
+
+            badge.innerText = storedNotifs.length;
+            badge.style.display = 'inline-block';
+
+            storedNotifs.forEach(n => {
+                list.innerHTML += `
+                    <div class="notif-item" onclick="openAndDestroyNotif('${n.id}', '${n.tabId}', '${n.docId}', '${n.className}')">
+                        <strong>🔔 تنبيه جديد:</strong><br>${n.text}
+                        <br><small style="color:gray; font-size:0.75rem; display:block; margin-top:5px;">${n.time}</small>
+                    </div>`;
+            });
+        }
+
+        renderNotificationsUI();
+
         window.alert = function(msg) {
-            const toast = document.getElementById('custom-toast'); toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible';
+            const toast = document.getElementById('custom-toast');
+            if(!toast) return;
+            toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible';
             setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 3000);
         };
 
-        /* --- أدوات مساعدة --- */
         function formatFullDate(date) {
             if(!date) return "غير محدد"; const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
             const dayName = days[date.getDay()]; const dateNum = date.toLocaleDateString('ar-IQ', { year: 'numeric', month: 'numeric', day: 'numeric' });
@@ -503,25 +651,39 @@
 
         window.sendParentMsg = async () => {
             const n = document.getElementById('parent-name').value; const p = document.getElementById('parent-phone').value; const m = document.getElementById('parent-msg').value;
-            if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة.");
-            try { await addDoc(collection(db, "messages"), { name: n, phone: p, message: m, timestamp: serverTimestamp() }); alert("تم إرسال رسالتك للإدارة بنجاح."); document.getElementById('contact-modal').style.display = 'none'; document.getElementById('parent-name').value = ''; document.getElementById('parent-phone').value = ''; document.getElementById('parent-msg').value = ''; } catch (e) { alert("حدث خطأ!"); }
+            if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة بشكل صحيح.");
+            try { 
+                await addDoc(collection(db, "messages"), { name: n, phone: p, message: m, timestamp: serverTimestamp() }); 
+                alert("تم إرسال رسالتك للإدارة بنجاح ✔️"); 
+                document.getElementById('contact-modal').style.display = 'none'; 
+                document.getElementById('parent-name').value = ''; 
+                document.getElementById('parent-phone').value = ''; 
+                document.getElementById('parent-msg').value = ''; 
+            } catch (e) { alert("حدث خطأ في الإرسال!"); }
         };
 
-        /* --- جلب البيانات مع الفايربيس (إصلاح تكرار الإشعارات) --- */
+        let isInitialLoad = true;
+        setTimeout(() => { isInitialLoad = false; }, 4000); 
+
         onSnapshot(doc(db, "settings", "emergency_alert"), (docSnap) => {
             const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
-            if (docSnap.exists() && docSnap.data().active) { textEl.innerText = docSnap.data().text; banner.style.display = 'flex'; } else { banner.style.display = 'none'; }
+            if (docSnap.exists() && docSnap.data().active) { 
+                textEl.innerText = docSnap.data().text; banner.style.display = 'flex'; 
+                if (!isInitialLoad) pushPersistentNotification('emergency_' + Date.now(), '🚨 تنبيه إداري عاجل منشور بالرئيسية!', 'news', '');
+            } else { banner.style.display = 'none'; }
         });
 
-        // 1. الأخبار
-        let newsLimit = 6; let unsubNews = null; let initialNews = true;
+        let newsLimit = 6; let unsubNews = null;
         function fetchNews() {
             if (unsubNews) unsubNews();
             unsubNews = onSnapshot(query(collection(db, "school_news"), orderBy("timestamp", "desc"), limit(newsLimit)), (snap) => {
                 const list = document.getElementById('school-news-list'); const moreBtnContainer = document.getElementById('news-more-btn-container');
                 list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-                snap.docChanges().forEach(change => { if (change.type === "added" && !initialNews) { addNotification(`تم نشر خبر: ${change.doc.data().title}`, 'news', change.doc.id); } });
-                initialNews = false;
+                
+                snap.docChanges().forEach(change => { 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تم نشر خبر مدرسة جديد: ${change.doc.data().title}`, 'news', change.doc.id); } 
+                });
+
                 if (snap.empty) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
                 snap.forEach(doc => {
                     const d = doc.data(); const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : "";
@@ -530,24 +692,22 @@
                 if (snap.size >= newsLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد ⬇️</button>`; }
             });
         }
-        window.loadMoreNews = () => { newsLimit += 6; initialNews = true; fetchNews(); }; fetchNews();
+        window.loadMoreNews = () => { newsLimit += 6; fetchNews(); }; fetchNews();
 
-        // 2. الواجبات
-        let initialHw = true;
         onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc"), limit(100)), (snap) => {
             window.appData.hw = [];
-            snap.docChanges().forEach(change => { if (change.type === "added" && !initialHw) { addNotification(`تم إضافة واجب جديد لمادة ${change.doc.data().subject} - ${change.doc.data().class}`, 'hw', change.doc.id, change.doc.data().class); } });
-            initialHw = false;
+            snap.docChanges().forEach(change => { 
+                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `واجب بيتي جديد لمادة ${change.doc.data().subject} - ${change.doc.data().class}`, 'hw', change.doc.id, change.doc.data().class); } 
+            });
             snap.forEach(doc => { let data = doc.data(); data.id = doc.id; window.appData.hw.push(data); });
             renderFilteredData('hw');
         });
 
-        // 3. الامتحانات
-        let initialExams = true;
         onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
             const list = document.getElementById('exams-list'); list.innerHTML = "";
-            snap.docChanges().forEach(change => { if (change.type === "added" && !initialExams) { addNotification(`تم تحديد موعد امتحان ${change.doc.data().subject} - ${change.doc.data().class}`, 'exams', change.doc.id); } });
-            initialExams = false;
+            snap.docChanges().forEach(change => { 
+                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `جدول موعد امتحان: ${change.doc.data().subject} - ${change.doc.data().class}`, 'exams', change.doc.id); } 
+            });
             if (snap.empty) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
             snap.forEach(doc => {
                 const d = doc.data(); const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
@@ -557,19 +717,17 @@
             });
         });
 
-        // 4. الغيابات
-        let initialAttendance = true;
         onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
-            snap.docChanges().forEach(change => { if (change.type === "added" && !initialAttendance) { addNotification(`تنبيه: تم تحديث سجل الغيابات اليومي لصف ${change.doc.data().class}`, 'attendance', ''); } });
-            initialAttendance = false;
+            snap.docChanges().forEach(change => { 
+                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تنبيه غيابات: تم تحديث سجل الغياب اليومي لصف ${change.doc.data().class}`, 'attendance', ''); } 
+            });
         });
 
-        // 5. الشرف
-        let initialHonor = true;
         onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
             const list = document.getElementById('honor-list'); list.innerHTML = ""; let hasRecords = false; const now = new Date();
-            snap.docChanges().forEach(change => { if (change.type === "added" && !initialHonor) { addNotification(`بطل جديد في لوحة الشرف 🌟: ${change.doc.data().name}`, 'honor', change.doc.id); } });
-            initialHonor = false;
+            snap.docChanges().forEach(change => { 
+                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🌟 طالب متميز جديد في لوحة الشرف: ${change.doc.data().name}`, 'honor', change.doc.id); } 
+            });
             snap.forEach(doc => {
                 const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
                 if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) {
@@ -581,16 +739,18 @@
             if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
         });
 
-        // 6. المكتبة
-        let libLimit = 10; let unsubLib = null; let initialLib = true;
+        let libLimit = 10; let unsubLib = null;
         function fetchLibrary() {
             if(unsubLib) unsubLib();
             unsubLib = onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc"), limit(libLimit)), (snap) => {
                 const list = document.getElementById('library-list'); const moreBtnContainer = document.getElementById('lib-more-btn-container');
                 list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-                snap.docChanges().forEach(change => { if (change.type === "added" && !initialLib) { addNotification(`ملزمة جديدة في المكتبة: ${change.doc.data().subject} - ${change.doc.data().class}`, 'library', change.doc.id); } });
-                initialLib = false;
-                if (snap.empty) { list.innerHTML = "<p>قيد التجهيز..</p>"; return; }
+                
+                snap.docChanges().forEach(change => { 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `📚 ملزمة أو ملخص جديد متاح للتحميل: ${change.doc.data().subject}`, 'library', change.doc.id); } 
+                });
+
+                if (snap.empty) { list.innerHTML = "<p>قيد التجهيز من قبل الكادر للمكتبة..</p>"; return; }
                 snap.forEach(doc => {
                     const d = doc.data();
                     list.innerHTML += `<div class="list-item lib-item" id="${doc.id}"><div><strong style="font-size:1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600; font-size:0.85rem;">${d.class}</span></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
@@ -598,17 +758,19 @@
                 if (snap.size >= libLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد ⬇️</button>`; }
             });
         }
-        window.loadMoreLib = () => { libLimit += 10; initialLib = true; fetchLibrary(); }; fetchLibrary();
+        window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); }; fetchLibrary();
 
-        // 7. المعرض
-        let exhibitLimit = 6; let unsubExhibit = null; let initialExhibit = true;
+        let exhibitLimit = 6; let unsubExhibit = null;
         function fetchExhibit() {
             if(unsubExhibit) unsubExhibit();
             unsubExhibit = onSnapshot(query(collection(db, "exhibition"), orderBy("timestamp", "desc"), limit(exhibitLimit)), (snap) => {
                 const list = document.getElementById('exhibit-list'); const moreBtnContainer = document.getElementById('exhibit-more-btn-container');
                 list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-                snap.docChanges().forEach(change => { if (change.type === "added" && !initialExhibit) { addNotification(`تم إضافة صورة لمعرض المدرسة: ${change.doc.data().title}`, 'exhibit', change.doc.id); } });
-                initialExhibit = false;
+
+                snap.docChanges().forEach(change => { 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🎨 تم إضافة صور جديدة في معرض ألبوم المدرسة`, 'exhibit', change.doc.id); } 
+                });
+
                 if (snap.empty) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
                 snap.forEach(doc => {
                     const d = doc.data();
@@ -617,7 +779,7 @@
                 if (snap.size >= exhibitLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد ⬇️</button>`; }
             });
         }
-        window.loadMoreExhibit = () => { exhibitLimit += 6; initialExhibit = true; fetchExhibit(); }; fetchExhibit();
+        window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); }; fetchExhibit();
 
     </script>
 </body>
