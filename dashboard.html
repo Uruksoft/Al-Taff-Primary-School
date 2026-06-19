@@ -77,9 +77,7 @@
 <body>
 
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
     <div id="custom-toast"></div>
-
     <a href="https://wa.me/009647815202022" class="fab-support" target="_blank">📞 الدعم الفني السريع</a>
 
     <div class="modal-overlay" id="custom-confirm">
@@ -173,8 +171,10 @@
         <div id="tab-story" class="tab-content">
             <div class="card" style="border-top: 5px solid #e1306c;">
                 <h3 style="color: #e1306c;">📸 نشر قصة جديدة (Story)</h3>
-                <label>رابط الصورة (URL)</label><input type="url" id="story-url" placeholder="https://example.com/image.jpg" dir="ltr">
-                <label>أو اكتب نص القصة</label><textarea id="story-text" rows="3" placeholder="ماذا تريد أن تخبر الطلاب اليوم؟"></textarea>
+                <label>إرفاق صورة من الجهاز (اختياري)</label>
+                <input type="file" id="story-img-file" accept="image/*" style="padding:10px; background:#f4f7f6; cursor:pointer;">
+                <label>أو اكتب نص القصة</label>
+                <textarea id="story-text" rows="3" placeholder="ماذا تريد أن تخبر الطلاب اليوم؟"></textarea>
                 <button class="btn-pub" style="background: linear-gradient(45deg, #f58529, #dd2a7b);" onclick="publishStory()" id="btn-story">نشر القصة الآن</button>
             </div>
         </div>
@@ -183,8 +183,7 @@
             <div class="card" style="border-top: 5px solid #e84393;">
                 <h3 style="color:#e84393;">💬 توجيهات وتعميمات السيد المدير</h3>
                 <p style="color:gray; font-size:0.85rem;">هنا تصلك الرسائل والتوجيهات الإدارية الهامة بشكل مباشر لتطبيقها.</p>
-                <div id="teacher-chat-list" style="margin-top: 20px;">
-                    </div>
+                <div id="teacher-chat-list" style="margin-top: 20px;"></div>
             </div>
         </div>
 
@@ -209,7 +208,8 @@
                 <h3 style="color: #34495e;">📚 رفع ملزمة للمكتبة الرقمية</h3>
                 <label>اسم الملزمة أو الملخص</label><input type="text" id="lib-sub" placeholder="مثال: ملخص علوم نصف السنة">
                 <label>الصف</label><select id="lib-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
-                <label>رابط ملف (PDF / Google Drive)</label><input type="url" id="lib-url" placeholder="https://..." dir="ltr">
+                <label>رابط ملف الـ PDF (من Google Drive مثلاً)</label><input type="url" id="lib-url" placeholder="https://..." dir="ltr">
+                <p style="font-size:0.8rem; color:#e74c3c;">* المكتبة الرقمية تتطلب رابط مباشر للملزمة (Drive)، لا يمكن رفع ملفات PDF من الجهاز مباشرة هنا.</p>
                 <textarea id="lib-det" style="display:none;">ملف مكتبة</textarea>
                 <button class="btn-pub" style="background:#34495e;" onclick="publishLibrary()" id="btn-lib">رفع للمكتبة</button>
             </div>
@@ -255,6 +255,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+
+        // المفتاح الخاص بك اللي أرسلته
+        const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
+
+        // دالة الرفع المباشر لخدمة ImgBB
+        window.uploadToImgBB = async (fileInputId) => {
+            const fileInput = document.getElementById(fileInputId);
+            if (!fileInput || fileInput.files.length === 0) return "";
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const data = await res.json();
+                return data.success ? data.data.url : "";
+            } catch (e) { 
+                console.error("خطأ برفع الصورة:", e);
+                alert("حدث خطأ أثناء رفع الصورة لخدمة الاستضافة."); 
+                return ""; 
+            }
+        };
 
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
@@ -378,16 +400,24 @@
             } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "إرسال سجل الغياب"; btn.disabled = false; }
         };
 
+        // نشر القصة للمعلمين مع الرفع المباشر
         window.publishStory = async () => {
-            const url = document.getElementById('story-url').value; const txt = document.getElementById('story-text').value;
+            const txt = document.getElementById('story-text').value;
+            const fileInput = document.getElementById('story-img-file');
+            
+            if(fileInput.files.length === 0 && !txt) return alert("الرجاء إرفاق صورة أو كتابة نص القصة!");
+            
             const btn = document.getElementById('btn-story');
-            if(!url && !txt) return alert("الرجاء إدخال رابط الصورة أو كتابة نص القصة!");
-            btn.innerText = "جاري النشر..."; btn.disabled = true;
+            btn.innerText = "جاري الرفع والنشر... ⏳"; btn.disabled = true;
+            
+            let imgUrl = await uploadToImgBB('story-img-file');
+            
             try {
-                await addDoc(collection(db, "stories"), { imageUrl: url, textContent: txt, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                await addDoc(collection(db, "stories"), { imageUrl: imgUrl, textContent: txt, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
                 reportActivity("نشر قصة", "قام بنشر قصة جديدة"); alert("تم نشر القصة بنجاح!");
-                document.getElementById('story-url').value = ""; document.getElementById('story-text').value = "";
-            } catch (e) { alert("فشل النشر"); } finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
+                document.getElementById('story-img-file').value = ""; document.getElementById('story-text').value = "";
+            } catch (e) { alert("فشل النشر"); } 
+            finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
         };
 
         window.sendToFirebase = async (col, pre) => {

@@ -10,48 +10,33 @@
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     <style>
         :root { --admin-primary: #1a202c; --admin-accent: #805ad5; --danger: #e53e3e; --success: #38a169; --bg: #f7fafc; }
-        
-        /* إصلاح الهوامش الشامل */
         html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; flex-direction: column; overflow-x: hidden; width: 100%; }
         *, *:before, *:after { box-sizing: border-box; }
-        
         .layout-wrapper { display: flex; flex: 1; width: 100%; }
-        
         .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; overflow-y: auto;}
         .sidebar h2 { color: var(--admin-accent); text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; font-size: 1.2rem; }
         .nav-link { display: block; width: 100%; padding: 12px; margin: 6px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 8px; transition: 0.3s; font-weight: 600; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; }
-        
         .main { margin-right: 280px; padding: 40px; width: calc(100% - 280px); max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
         .tab-content { display: none; animation: fadeIn 0.4s; }
         .tab-content.active { display: block; width: 100%; }
-        
-        /* حماية البطاقات */
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; width: 100%; overflow: hidden; word-wrap: break-word; }
         .input-text { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box; }
-        
         .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.2s; }
         .btn-del { background: var(--danger); color: white; }
-        .btn-save { background: var(--success); color: white; width: 100%; margin-top: 15px; }
-        
-        /* الجداول */
+        .btn-save { background: var(--success); color: white; width: 100%; margin-top: 15px; transition: 0.3s; }
+        .btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
         th, td { text-align: right; padding: 15px; border-bottom: 1px solid #edf2f7; }
-        
         .status-online { color: var(--success); font-weight: bold; animation: blink 2s infinite; }
         .status-offline { color: var(--danger); font-weight: bold; }
-        
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-
         .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
-
         .badge-num { background: #e53e3e; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
-
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--admin-accent); color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
-
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; border-top: 5px solid var(--danger); }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -59,8 +44,6 @@
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
         .btn-modal-yes { color: white; background: var(--danger); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
         .btn-modal-no { background: #e2e8f0; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
-
-        /* الشاشات الصغيرة (الهواتف والآيباد) */
         @media (max-width: 950px) { 
             .layout-wrapper { flex-direction: column; width: 100%; }
             .sidebar { width: 100%; position: relative; height: auto; padding: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
@@ -78,7 +61,6 @@
 <body id="admin-body">
 
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
     <div id="custom-toast"></div>
     <div class="modal-overlay" id="custom-confirm">
         <div class="modal-box">
@@ -97,12 +79,11 @@
             <div id="admin-status" style="text-align:center; color: #48bb78; font-size:0.8rem; margin-bottom: 20px;">● جاري التحقق...</div>
             
             <button class="nav-link active" onclick="openTab('stats')"><span>📊 الإحصائيات العامة</span></button>
-            
+            <button class="nav-link" onclick="openTab('school-news')" style="color:#3498db;"><span>📰 أخبار المدرسة العامة</span></button>
             <button class="nav-link" onclick="openTab('inbox')" style="color:#f6ad55;">
                 <span>📩 صندوق الأهالي</span>
                 <span id="inbox-badge" class="badge-num">0</span>
             </button>
-            
             <button class="nav-link" onclick="openTab('tab-chat')" style="color:#e84393;"><span>💬 توجيهات الكادر</span></button>
             <button class="nav-link" onclick="openTab('tab-exhibit')" style="color:#9b59b6;"><span>🎨 إدارة المعرض</span></button>
             <button class="nav-link" onclick="openTab('teachers')"><span>👨‍🏫 الرقابة الحية</span></button>
@@ -120,16 +101,29 @@
                     <h2>تحليلات المنصة 📈</h2>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:20px;">
                         <div class="card" style="border-top:4px solid var(--admin-accent); margin-bottom:0;"><h3>الواجبات</h3><h1 id="total-hw">0</h1></div>
-                        <div class="card" style="border-top:4px solid #4299e1; margin-bottom:0;"><h3>الإعلانات</h3><h1 id="total-news">0</h1></div>
+                        <div class="card" style="border-top:4px solid #4299e1; margin-bottom:0;"><h3>الأخبار</h3><h1 id="total-news">0</h1></div>
                         <div class="card" style="border-top:4px solid #ed8936; margin-bottom:0;"><h3>الامتحانات</h3><h1 id="total-ex">0</h1></div>
                     </div>
+                </div>
+            </div>
+
+            <div id="school-news" class="tab-content">
+                <div class="card" style="border-top: 5px solid #3498db;">
+                    <h2 style="color: #3498db;">📰 نشر أخبار المدرسة العامة</h2>
+                    <p style="color:gray; font-size:0.85rem;">تظهر هذه الأخبار مباشرة في الصفحة الرئيسية مع إمكانية إرفاق صورة.</p>
+                    <input type="text" id="news-title-input" class="input-text" placeholder="عنوان الخبر (مثال: حفل تكريم الطلاب)">
+                    <textarea id="news-det-input" class="input-text" rows="4" placeholder="تفاصيل الخبر..."></textarea>
+                    
+                    <label style="display:block; margin-top:10px; font-weight:bold; color:#3498db;">إرفاق صورة من الجهاز (اختياري):</label>
+                    <input type="file" id="news-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    
+                    <button class="btn btn-save" id="btn-news-pub" style="background:#3498db;" onclick="publishSchoolNews()">نشر الخبر للمدرسة 🚀</button>
                 </div>
             </div>
 
             <div id="inbox" class="tab-content">
                 <div class="card">
                     <h2>📩 صندوق تواصل أولياء الأمور</h2>
-                    <p style="color:gray; font-size:0.9rem;">الرسائل تصلك هنا من الصفحة الرئيسية فوراً.</p>
                     <div id="inbox-list">جاري تحميل الرسائل...</div>
                 </div>
             </div>
@@ -137,10 +131,12 @@
             <div id="tab-chat" class="tab-content">
                 <div class="card" style="border-top: 5px solid #e84393;">
                     <h2 style="color: #e84393;">💬 توجيهات ورسائل الكادر التدريسي</h2>
-                    <p style="color:gray; font-size:0.85rem;">أرسل تعميماً وسيصل إشعار فوري لجميع المعلمين في لوحاتهم.</p>
                     <textarea id="chat-msg" class="input-text" rows="3" placeholder="اكتب توجيهاتك للمعلمين هنا..."></textarea>
-                    <input type="url" id="chat-img" class="input-text" placeholder="رابط صورة مرفقة (اختياري) - https://..." dir="ltr">
-                    <button class="btn btn-save" style="background:#e84393;" onclick="sendStaffMessage()">إرسال الرسالة للكادر 🚀</button>
+                    
+                    <label style="display:block; margin-top:10px; font-weight:bold; color:#e84393;">إرفاق صورة للتعميم (اختياري):</label>
+                    <input type="file" id="chat-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    
+                    <button class="btn btn-save" id="btn-chat-pub" style="background:#e84393;" onclick="sendStaffMessage()">إرسال الرسالة للكادر 🚀</button>
                 </div>
                 <div class="card">
                     <h3>سجل التوجيهات المرسلة للكادر</h3>
@@ -152,8 +148,11 @@
                 <div class="card" style="border-top: 5px solid #9b59b6;">
                     <h3 style="color: #9b59b6;">🎨 نشر في معرض المدرسة حصرياً للإدارة</h3>
                     <input type="text" id="exhibit-sub" class="input-text" placeholder="مثال: صور تكريم الأوائل">
-                    <input type="url" id="exhibit-url" class="input-text" placeholder="https://..." dir="ltr">
-                    <button class="btn btn-save" style="background:#9b59b6;" onclick="publishExhibit()" id="btn-exhibit">نشر في المعرض الآن 🎨</button>
+                    
+                    <label style="display:block; margin-top:10px; font-weight:bold; color:#9b59b6;">اختر الصورة المراد عرضها:</label>
+                    <input type="file" id="exhibit-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    
+                    <button class="btn btn-save" id="btn-exhibit-pub" style="background:#9b59b6;" onclick="publishExhibit()">نشر في المعرض الآن 🎨</button>
                 </div>
             </div>
 
@@ -219,6 +218,28 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // المفتاح الخاص بك اللي أرسلته
+        const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
+
+        // دالة الرفع المباشر لخدمة ImgBB
+        window.uploadToImgBB = async (fileInputId) => {
+            const fileInput = document.getElementById(fileInputId);
+            if (!fileInput || fileInput.files.length === 0) return "";
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const data = await res.json();
+                return data.success ? data.data.url : "";
+            } catch (e) { 
+                console.error("خطأ برفع الصورة:", e);
+                alert("حدث خطأ أثناء رفع الصورة لخدمة الاستضافة."); 
+                return ""; 
+            }
+        };
+
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
             toast.innerText = msg; toast.style.backgroundColor = msg.includes('🔔') ? '#e53e3e' : 'var(--admin-accent)';
@@ -245,11 +266,49 @@
             } else { window.location.href = "login.html"; }
         });
 
+        // نشر أخبار المدرسة مع الرفع المباشر
+        window.publishSchoolNews = async () => {
+            const title = document.getElementById('news-title-input').value;
+            const det = document.getElementById('news-det-input').value;
+            if(!title || !det) return alert("الرجاء كتابة عنوان وتفاصيل الخبر!");
+            
+            const btn = document.getElementById('btn-news-pub');
+            btn.innerText = "جاري رفع الصورة والنشر... ⏳"; btn.disabled = true;
+            
+            let imgUrl = await uploadToImgBB('news-img-file');
+            
+            try {
+                await addDoc(collection(db, "school_news"), { 
+                    title: title, details: det, imageUrl: imgUrl, publisher: "الإدارة العامة", timestamp: serverTimestamp() 
+                });
+                alert("تم نشر خبر المدرسة بنجاح!"); 
+                document.getElementById('news-title-input').value = ""; 
+                document.getElementById('news-det-input').value = "";
+                document.getElementById('news-img-file').value = "";
+                loadStats();
+            } catch (e) { alert("حدث خطأ أثناء النشر!"); }
+            
+            btn.innerText = "نشر الخبر للمدرسة 🚀"; btn.disabled = false;
+        };
+
+        // إرسال تعميم للكادر مع الرفع المباشر
         window.sendStaffMessage = async () => {
-            const text = document.getElementById('chat-msg').value; const img = document.getElementById('chat-img').value;
+            const text = document.getElementById('chat-msg').value; 
             if(!text) return alert("الرجاء كتابة نص الرسالة!");
-            await addDoc(collection(db, "staff_messages"), { text: text, imgUrl: img, sender: "الإدارة", timestamp: serverTimestamp() });
-            alert("تم إرسال التعميم للكادر بنجاح!"); document.getElementById('chat-msg').value = ""; document.getElementById('chat-img').value = "";
+            
+            const btn = document.getElementById('btn-chat-pub');
+            btn.innerText = "جاري الرفع والإرسال... ⏳"; btn.disabled = true;
+            
+            let imgUrl = await uploadToImgBB('chat-img-file');
+            
+            try {
+                await addDoc(collection(db, "staff_messages"), { text: text, imgUrl: imgUrl, sender: "الإدارة", timestamp: serverTimestamp() });
+                alert("تم إرسال التعميم للكادر بنجاح!"); 
+                document.getElementById('chat-msg').value = ""; 
+                document.getElementById('chat-img-file').value = "";
+            } catch(e) { alert("حدث خطأ"); }
+            
+            btn.innerText = "إرسال الرسالة للكادر 🚀"; btn.disabled = false;
         };
 
         function loadStaffMessages() {
@@ -271,7 +330,7 @@
 
         async function loadStats() {
             const hw = await getCountFromServer(collection(db, 'homeworks')); document.getElementById('total-hw').innerText = hw.data().count;
-            const news = await getCountFromServer(collection(db, 'announcements')); document.getElementById('total-news').innerText = news.data().count;
+            const news = await getCountFromServer(collection(db, 'school_news')); document.getElementById('total-news').innerText = news.data().count;
             const ex = await getCountFromServer(collection(db, 'exams')); document.getElementById('total-ex').innerText = ex.data().count;
         }
 
@@ -290,14 +349,7 @@
                     }
                 });
                 initialInbox = false;
-
-                if (snap.size > 0) {
-                    badge.innerText = snap.size;
-                    badge.style.display = 'inline-block';
-                } else {
-                    badge.style.display = 'none';
-                }
-
+                if (snap.size > 0) { badge.innerText = snap.size; badge.style.display = 'inline-block'; } else { badge.style.display = 'none'; }
                 if(snap.empty) { list.innerHTML = "<p>لا توجد رسائل حالياً.</p>"; return; }
                 snap.forEach(docSnap => {
                     const d = docSnap.data(); const t = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('ar-EG') : '';
@@ -309,14 +361,28 @@
             });
         }
 
+        // نشر في المعرض مع الرفع المباشر
         window.publishExhibit = async () => {
-            const sub = document.getElementById('exhibit-sub').value; const url = document.getElementById('exhibit-url').value;
-            if(!sub || !url) return alert("أدخل العنوان ورابط الصورة!");
-            const btn = document.getElementById('btn-exhibit'); btn.innerText = "جاري النشر..."; btn.disabled = true;
+            const sub = document.getElementById('exhibit-sub').value; 
+            if(!sub) return alert("أدخل عنوان الصورة!");
+            
+            const btn = document.getElementById('btn-exhibit-pub'); 
+            btn.innerText = "جاري الرفع والنشر... ⏳"; btn.disabled = true;
+            
+            let imgUrl = await uploadToImgBB('exhibit-img-file');
+            if(!imgUrl) {
+                alert("الرجاء اختيار صورة من جهازك لرفعها في المعرض!");
+                btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false;
+                return;
+            }
+
             try {
-                await addDoc(collection(db, "exhibition"), { title: sub, imageUrl: url, publisher: "الإدارة", uid: auth.currentUser.uid, timestamp: serverTimestamp() });
-                alert("تم النشر في معرض المدرسة بنجاح!"); document.getElementById('exhibit-sub').value = ""; document.getElementById('exhibit-url').value = "";
-            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
+                await addDoc(collection(db, "exhibition"), { title: sub, imageUrl: imgUrl, publisher: "الإدارة", uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                alert("تم النشر في معرض المدرسة بنجاح!"); 
+                document.getElementById('exhibit-sub').value = ""; 
+                document.getElementById('exhibit-img-file').value = "";
+            } catch (e) { alert("حدث خطأ!"); } 
+            finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
         };
 
         function loadLogs() {
@@ -349,7 +415,7 @@
 
         async function loadMasterList() {
             const container = document.getElementById('master-list');
-            const sections = [{id:'homeworks', l:'واجب'}, {id:'announcements', l:'إعلان'}, {id:'exams', l:'امتحان'}, {id:'stories', l:'قصة'}, {id:'exhibition', l:'معرض'}, {id:'library', l:'مكتبة'}, {id:'attendance', l:'سجل غياب'}];
+            const sections = [{id:'homeworks', l:'واجب'}, {id:'school_news', l:'أخبار المدرسة'}, {id:'exams', l:'امتحان'}, {id:'stories', l:'قصة'}, {id:'exhibition', l:'معرض'}, {id:'library', l:'مكتبة'}, {id:'attendance', l:'سجل غياب'}];
             let all = [];
             for (const s of sections) { const snap = await getDocs(collection(db, s.id)); snap.forEach(d => all.push({id:d.id, col:s.id, type:s.l, ...d.data()})); }
             container.innerHTML = "";
