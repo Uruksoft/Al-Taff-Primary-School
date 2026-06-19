@@ -256,6 +256,32 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // ==========================================
+        // 🛡️ 1. دالة تنظيف النصوص (XSS Protection) 🛡️
+        // ==========================================
+        window.sanitizeHTML = function(str) {
+            if (!str) return "";
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            // استبدال علامات الاقتباس لمنع كسر خصائص HTML
+            return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        };
+
+        // ==========================================
+        // 🛡️ 2. قفل بوابة لوحة التحكم (Auth Guard) 🛡️
+        // ==========================================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userName = user.email.split('@')[0];
+                document.getElementById('teacher-name').innerText = "الحساب: " + user.email;
+                loadStatistics();
+                if(!sessionStorage.getItem('welcomed')) { alert("أهلاً بك في النظام يا أستاذ " + userName); sessionStorage.setItem('welcomed', 'true'); }
+            } else { 
+                // استخدام replace لمنع زر الرجوع من العودة لهذه الصفحة
+                window.location.replace("login.html"); 
+            }
+        });
+
         // المفتاح الخاص بك اللي أرسلته
         const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
 
@@ -295,16 +321,7 @@
             document.getElementById('btn-prompt-yes').onclick = () => { modal.style.display = 'none'; onSave(input.value); }; document.getElementById('btn-prompt-no').onclick = () => { modal.style.display = 'none'; };
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userName = user.email.split('@')[0];
-                document.getElementById('teacher-name').innerText = "الحساب: " + user.email;
-                loadStatistics();
-                if(!sessionStorage.getItem('welcomed')) { alert("أهلاً بك في النظام يا أستاذ " + userName); sessionStorage.setItem('welcomed', 'true'); }
-            } else { window.location.href = "login.html"; }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "login.html"; }); });
+        document.getElementById('logoutBtn').addEventListener('click', () => { signOut(auth).then(() => { window.location.replace("login.html"); }); });
 
         window.openTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -343,11 +360,13 @@
             snap.forEach(doc => {
                 const d = doc.data(); 
                 if(d.sender === "الإدارة") {
-                    const imgHtml = d.imgUrl ? `<br><img src="${d.imgUrl}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : "";
+                    // تطبيق الفلترة على النص
+                    const safeText = window.sanitizeHTML(d.text);
+                    const imgHtml = d.imgUrl ? `<br><img src="${window.sanitizeHTML(d.imgUrl)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : "";
                     const timeStr = d.timestamp ? new Date(d.timestamp.seconds*1000).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
                     list.innerHTML += `<div style="padding:15px; border-radius:8px; margin-bottom:15px; text-align:right; background:#fdf2f8; border-right:5px solid #e84393;">
                         <b style="color:#d53f8c; font-size:1.1rem;">👑 الإدارة العامة</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br>
-                        <p style="margin:10px 0; font-weight:bold; font-size:1rem; color:#333;">${d.text}</p> ${imgHtml}
+                        <p style="margin:10px 0; font-weight:bold; font-size:1rem; color:#333;">${safeText}</p> ${imgHtml}
                     </div>`;
                 }
             });
@@ -454,9 +473,14 @@
 
                 allPosts.forEach(p => {
                     const dateStr = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleDateString('ar-EG') : 'غير معروف';
-                    const postTitle = p.subject || p.title || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
-                    const postClass = p.class ? `(${p.class})` : "";
-                    const editBtnHtml = (p.col !== 'stories' && p.col !== 'library') ? `<button class="edit-btn" onclick="editPost('${p.col}', '${p.id}', '${p.details}', '${postTitle}')">تعديل ✏️</button>` : "";
+                    
+                    // تطبيق الفلترة على النصوص المجلوبة قبل عرضها
+                    const rawTitle = p.subject || p.title || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
+                    const postTitle = window.sanitizeHTML(rawTitle);
+                    const postClass = p.class ? `(${window.sanitizeHTML(p.class)})` : "";
+                    const safeDetails = window.sanitizeHTML(p.details || "");
+
+                    const editBtnHtml = (p.col !== 'stories' && p.col !== 'library') ? `<button class="edit-btn" onclick="editPost('${p.col}', '${p.id}', '${safeDetails}', '${postTitle}')">تعديل ✏️</button>` : "";
 
                     container.innerHTML += `
                         <div class="post-item">
