@@ -49,22 +49,20 @@
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #3498db; border-radius: 50%; animation: spin 1s infinite linear; margin-top: 30px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ================= تأثير التحميل الوهمي (Skeleton Loader) ================= */
-        .skeleton-card { background: #fff; border-radius: 12px; padding: 20px; height: 240px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #f1f5f9; }
+        /* ================= 🌟 تأثير التحميل الوهمي (Skeleton Loader) 🌟 ================= */
+        .skeleton-card { background: #fff; border-radius: 12px; padding: 20px; height: 240px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .skeleton-block { background: #e2e8f0; border-radius: 6px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
         .skeleton-img { height: 120px; margin: -20px -20px 10px -20px; border-radius: 12px 12px 0 0; }
         .skeleton-title { height: 24px; width: 70%; }
         .skeleton-text { height: 16px; width: 95%; }
         .skeleton-meta { height: 20px; width: 40%; margin-top: auto; border-radius: 20px; }
-        @keyframes skeleton-pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        @keyframes skeleton-pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* ================= 🌟 إصلاح نافذة التواصل (Modal) 🌟 ================= */
+        /* ================= نافذة التواصل (Modal) ================= */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s ease; }
         .modal-box { background: #fff; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(0); display: flex; flex-direction: column; }
         .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Cairo'; font-size: 0.95rem; outline: none; transition: 0.3s; }
         .modal-box input:focus, .modal-box textarea:focus { border-color: #e74c3c; box-shadow: 0 0 5px rgba(231,76,60,0.3); }
-        
-        /* رسالة التنبيه المنبثقة (Toast) */
         .toast-msg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; transition: all 0.4s ease; opacity: 0; visibility: hidden; }
 
         /* ================= الهيدر ونظام الموبايل ================= */
@@ -217,7 +215,6 @@
         html.dark-mode .back-btn:hover { background: #475569; color: #fff; }
         html.dark-mode .main-footer { background-color: #0b1120; border-color: #1e293b; }
         
-        /* تكييف النافذة بالوضع الليلي */
         html.dark-mode .modal-box { background: #1e293b; color: #f8fafc; box-shadow: 0 15px 30px rgba(0,0,0,0.6);}
         html.dark-mode .modal-box input, html.dark-mode .modal-box textarea { background: #0f172a; color: #fff; border-color: #334155; }
         html.dark-mode .modal-box input:focus, html.dark-mode .modal-box textarea:focus { border-color: #e74c3c; }
@@ -234,6 +231,11 @@
 </head>
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
 
+    <!-- 🔊 🌟 إضافة مشغل الصوت المفقود للإشعارات 🌟 🔊 -->
+    <audio id="notify-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- رسالة منبثقة أسفل الشاشة (Toast) -->
     <div id="custom-toast" class="toast-msg">تمت العملية بنجاح</div>
 
@@ -245,7 +247,7 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- 🌟 نافذة التواصل الموحدة والمصلحة (Modal) 🌟 -->
+    <!-- نافذة التواصل الموحدة (Modal) -->
     <div class="modal-overlay" id="contact-modal" onclick="if(event.target === this) this.style.display='none'">
         <div class="modal-box" onclick="event.stopPropagation()">
             <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem; text-align: center;">إرسال رسالة للإدارة</h3>
@@ -280,9 +282,12 @@
             <a onclick="showTab('library', this); closeSideMenu();" class="side-item">📚 المكتبة الرقمية</a>
             <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item">🎨 معرض الصور</a>
             <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;">📩 تواصل مع الإدارة</a>
-            <div id="pwa-install-container"></div>
+            
+            <!-- 🌟 حل مشكلة التثبيت: زر دائم وواضح 🌟 -->
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <a href="login.html" class="side-item" style="color:#3498db;">🔐 دخول الكادر</a>
+            <a onclick="installApp()" class="side-item" style="background:#2ecc71; color:white; justify-content: center; font-size: 1.1rem;">📲 تثبيت المنصة بالهاتف</a>
+            
+            <a href="login.html" class="side-item" style="color:#3498db; margin-top:10px;">🔐 دخول الكادر</a>
         </div>
     </div>
 
@@ -467,6 +472,7 @@
         window.appData = { hw: [] };
         window.currentView = { hw: { active: false, keyword: "" } };
 
+        /* 🌟 حل مشكلة التحميل الوهمي السريع 🌟 */
         function injectSkeletons(containerId, count = 3, hasImg = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -499,20 +505,23 @@
             }, 1800);
         });
 
+        /* 🌟 حل مشكلة أيقونة التثبيت لتعمل للجميع (iOS و Android) 🌟 */
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            const installContainer = document.getElementById('pwa-install-container');
-            if (installContainer) {
-                installContainer.innerHTML = `<a onclick="triggerPWAInstall()" class="side-item" style="background:#2ecc71; color:white; margin-top:10px;">📲 تثبيت التطبيق على الهاتف</a>`;
-            }
+            e.preventDefault(); 
+            deferredPrompt = e;
         });
-        window.triggerPWAInstall = async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') { document.getElementById('pwa-install-container').innerHTML = ''; }
-            deferredPrompt = null;
+
+        window.installApp = async () => {
+            if (deferredPrompt) {
+                // للأندرويد: يفتح النافذة الرسمية للتثبيت
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') { deferredPrompt = null; }
+            } else {
+                // للآيفون والأجهزة التي لا تدعم الزر المباشر
+                alert('📲 لتثبيت المنصة كتطبيق:\n\n1- للآيفون (Safari): اضغط على زر "المشاركة ⬆️" بالأسفل، ثم اختر "إضافة للشاشة الرئيسية ➕".\n\n2- للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى، ثم اختر "تثبيت التطبيق".');
+            }
         };
 
         window.openLightbox = function(src) {
@@ -587,8 +596,12 @@
             storedNotifs.unshift({ id, text, tabId, docId, className, time: timeNow });
             localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs));
             renderNotificationsUI();
+            
+            // 🔊 تشغيل ملف الإشعار الصوتي الفعلي 🔊
             const sound = document.getElementById('notify-sound');
-            if(sound) sound.play().catch(()=>{});
+            if(sound) {
+                sound.play().catch(error => console.log("تحتاج لتفاعل المستخدم أولاً لتشغيل الصوت"));
+            }
         }
 
         function renderNotificationsUI() {
@@ -622,7 +635,7 @@
             const toast = document.getElementById('custom-toast');
             if(!toast) return;
             toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible';
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 4000);
         };
 
         function formatFullDate(date) {
@@ -665,121 +678,130 @@
         let isInitialLoad = true;
         setTimeout(() => { isInitialLoad = false; }, 4000); 
 
-        onSnapshot(doc(db, "settings", "emergency_alert"), (docSnap) => {
-            const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
-            if (docSnap.exists() && docSnap.data().active) { 
-                textEl.innerText = docSnap.data().text; banner.style.display = 'flex'; 
-                if (!isInitialLoad) pushPersistentNotification('emergency_' + Date.now(), '🚨 تنبيه إداري عاجل منشور بالرئيسية!', 'news', '');
-            } else { banner.style.display = 'none'; }
-        });
+        // 🌟หน่วง زمني ذكي لإعطاء فرصة لظهور تأثير التحميل الوهمي 🌟
+        function setupRealtimeListeners() {
+            onSnapshot(doc(db, "settings", "emergency_alert"), (docSnap) => {
+                const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
+                if (docSnap.exists() && docSnap.data().active) { 
+                    textEl.innerText = docSnap.data().text; banner.style.display = 'flex'; 
+                    if (!isInitialLoad) pushPersistentNotification('emergency_' + Date.now(), '🚨 تنبيه إداري عاجل منشور بالرئيسية!', 'news', '');
+                } else { banner.style.display = 'none'; }
+            });
 
-        let newsLimit = 6; let unsubNews = null;
-        function fetchNews() {
-            if (unsubNews) unsubNews();
-            unsubNews = onSnapshot(query(collection(db, "school_news"), orderBy("timestamp", "desc"), limit(newsLimit)), (snap) => {
-                const list = document.getElementById('school-news-list'); const moreBtnContainer = document.getElementById('news-more-btn-container');
-                list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-                
+            let newsLimit = 6; let unsubNews = null;
+            window.loadMoreNews = () => { newsLimit += 6; fetchNews(); }; 
+            function fetchNews() {
+                if (unsubNews) unsubNews();
+                unsubNews = onSnapshot(query(collection(db, "school_news"), orderBy("timestamp", "desc"), limit(newsLimit)), (snap) => {
+                    const list = document.getElementById('school-news-list'); const moreBtnContainer = document.getElementById('news-more-btn-container');
+                    list.innerHTML = ""; moreBtnContainer.innerHTML = "";
+                    
+                    snap.docChanges().forEach(change => { 
+                        if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تم نشر خبر مدرسة جديد: ${change.doc.data().title}`, 'news', change.doc.id); } 
+                    });
+
+                    if (snap.empty) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
+                    snap.forEach(doc => {
+                        const d = doc.data(); const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : "";
+                        list.innerHTML += `<div class="card card-announce" id="${doc.id}">${imgHtml}<h3>${d.title}</h3><div class="card-details">${d.details}</div><div class="post-meta" style="flex-direction: row; gap: 10px;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span><span class="meta-badge">👤 ${d.publisher}</span></div></div>`;
+                    });
+                    if (snap.size >= newsLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد ⬇️</button>`; }
+                });
+            }
+            fetchNews();
+
+            onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc"), limit(100)), (snap) => {
+                window.appData.hw = [];
                 snap.docChanges().forEach(change => { 
-                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تم نشر خبر مدرسة جديد: ${change.doc.data().title}`, 'news', change.doc.id); } 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `واجب بيتي جديد لمادة ${change.doc.data().subject} - ${change.doc.data().class}`, 'hw', change.doc.id, change.doc.data().class); } 
                 });
+                snap.forEach(doc => { let data = doc.data(); data.id = doc.id; window.appData.hw.push(data); });
+                if(window.currentView.hw.active) renderFilteredData('hw');
+            });
 
-                if (snap.empty) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
-                snap.forEach(doc => {
-                    const d = doc.data(); const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : "";
-                    list.innerHTML += `<div class="card card-announce" id="${doc.id}">${imgHtml}<h3>${d.title}</h3><div class="card-details">${d.details}</div><div class="post-meta" style="flex-direction: row; gap: 10px;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span><span class="meta-badge">👤 ${d.publisher}</span></div></div>`;
-                });
-                if (snap.size >= newsLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد ⬇️</button>`; }
-            });
-        }
-        window.loadMoreNews = () => { newsLimit += 6; fetchNews(); }; fetchNews();
-
-        onSnapshot(query(collection(db, "homeworks"), orderBy("timestamp", "desc"), limit(100)), (snap) => {
-            window.appData.hw = [];
-            snap.docChanges().forEach(change => { 
-                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `واجب بيتي جديد لمادة ${change.doc.data().subject} - ${change.doc.data().class}`, 'hw', change.doc.id, change.doc.data().class); } 
-            });
-            snap.forEach(doc => { let data = doc.data(); data.id = doc.id; window.appData.hw.push(data); });
-            renderFilteredData('hw');
-        });
-
-        onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
-            const list = document.getElementById('exams-list'); list.innerHTML = "";
-            snap.docChanges().forEach(change => { 
-                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `جدول موعد امتحان: ${change.doc.data().subject} - ${change.doc.data().class}`, 'exams', change.doc.id); } 
-            });
-            if (snap.empty) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
-            snap.forEach(doc => {
-                const d = doc.data(); const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
-                let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`);
-                const pubDate = d.timestamp ? d.timestamp.toDate() : new Date(); const dateString = formatFullDate(pubDate);
-                list.innerHTML += `<div class="card card-exam" id="${doc.id}"><h3>📅 ${d.subject}</h3><div class="card-details"><strong style="color:#2c3e50;">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:#2c3e50;">الموعد:</strong> <span style="color:#e74c3c; font-weight:800;">${d.details}</span><div style="margin-top:12px;">${statusHtml}</div></div><div class="post-meta"><span class="meta-badge" style="color: #2c3e50;">👤 الناشر: ${d.publisher || 'الإدارة'}</span><span class="meta-badge" style="color: #e74c3c;">🕒 وقت النشر: ${dateString}</span></div></div>`;
-            });
-        });
-
-        onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
-            snap.docChanges().forEach(change => { 
-                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تنبيه غيابات: تم تحديث سجل الغياب اليومي لصف ${change.doc.data().class}`, 'attendance', ''); } 
-            });
-        });
-
-        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
-            const list = document.getElementById('honor-list'); list.innerHTML = ""; let hasRecords = false; const now = new Date();
-            snap.docChanges().forEach(change => { 
-                if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🌟 طالب متميز جديد في لوحة الشرف: ${change.doc.data().name}`, 'honor', change.doc.id); } 
-            });
-            snap.forEach(doc => {
-                const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
-                if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) {
-                    hasRecords = true;
-                    let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
-                    list.innerHTML += `<div class="card" id="${doc.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid #f59e0b;"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#fef3c7; color:#d97706; padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`;
-                }
-            });
-            if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
-        });
-
-        let libLimit = 10; let unsubLib = null;
-        function fetchLibrary() {
-            if(unsubLib) unsubLib();
-            unsubLib = onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc"), limit(libLimit)), (snap) => {
-                const list = document.getElementById('library-list'); const moreBtnContainer = document.getElementById('lib-more-btn-container');
-                list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-                
+            onSnapshot(query(collection(db, "exams"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
+                const list = document.getElementById('exams-list'); list.innerHTML = "";
                 snap.docChanges().forEach(change => { 
-                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `📚 ملزمة أو ملخص جديد متاح للتحميل: ${change.doc.data().subject}`, 'library', change.doc.id); } 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `جدول موعد امتحان: ${change.doc.data().subject} - ${change.doc.data().class}`, 'exams', change.doc.id); } 
                 });
-
-                if (snap.empty) { list.innerHTML = "<p>قيد التجهيز من قبل الكادر للمكتبة..</p>"; return; }
+                if (snap.empty) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
                 snap.forEach(doc => {
-                    const d = doc.data();
-                    list.innerHTML += `<div class="list-item lib-item" id="${doc.id}"><div><strong style="font-size:1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600; font-size:0.85rem;">${d.class}</span></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
+                    const d = doc.data(); const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5);
+                    let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`);
+                    const pubDate = d.timestamp ? d.timestamp.toDate() : new Date(); const dateString = formatFullDate(pubDate);
+                    list.innerHTML += `<div class="card card-exam" id="${doc.id}"><h3>📅 ${d.subject}</h3><div class="card-details"><strong style="color:#2c3e50;">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:#2c3e50;">الموعد:</strong> <span style="color:#e74c3c; font-weight:800;">${d.details}</span><div style="margin-top:12px;">${statusHtml}</div></div><div class="post-meta"><span class="meta-badge" style="color: #2c3e50;">👤 الناشر: ${d.publisher || 'الإدارة'}</span><span class="meta-badge" style="color: #e74c3c;">🕒 وقت النشر: ${dateString}</span></div></div>`;
                 });
-                if (snap.size >= libLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد ⬇️</button>`; }
             });
-        }
-        window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); }; fetchLibrary();
 
-        let exhibitLimit = 6; let unsubExhibit = null;
-        function fetchExhibit() {
-            if(unsubExhibit) unsubExhibit();
-            unsubExhibit = onSnapshot(query(collection(db, "exhibition"), orderBy("timestamp", "desc"), limit(exhibitLimit)), (snap) => {
-                const list = document.getElementById('exhibit-list'); const moreBtnContainer = document.getElementById('exhibit-more-btn-container');
-                list.innerHTML = ""; moreBtnContainer.innerHTML = "";
-
+            onSnapshot(query(collection(db, "attendance"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
                 snap.docChanges().forEach(change => { 
-                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🎨 تم إضافة صور جديدة في معرض ألبوم المدرسة`, 'exhibit', change.doc.id); } 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `تنبيه غيابات: تم تحديث سجل الغياب اليومي لصف ${change.doc.data().class}`, 'attendance', ''); } 
                 });
-
-                if (snap.empty) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    list.innerHTML += `<div class="card card-gallery" id="${doc.id}"><div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div><h3 style="color:#8e44ad; justify-content:center; text-align:center;">${d.title}</h3><div class="post-meta" style="flex-direction: row; justify-content:center;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span></div></div>`;
-                });
-                if (snap.size >= exhibitLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد ⬇️</button>`; }
             });
+
+            onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc"), limit(50)), (snap) => {
+                const list = document.getElementById('honor-list'); list.innerHTML = ""; let hasRecords = false; const now = new Date();
+                snap.docChanges().forEach(change => { 
+                    if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🌟 طالب متميز جديد في لوحة الشرف: ${change.doc.data().name}`, 'honor', change.doc.id); } 
+                });
+                snap.forEach(doc => {
+                    const d = doc.data(); const recordDate = d.timestamp ? d.timestamp.toDate() : new Date();
+                    if ((now - recordDate) <= 7 * 24 * 60 * 60 * 1000) {
+                        hasRecords = true;
+                        let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡";
+                        list.innerHTML += `<div class="card" id="${doc.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid #f59e0b;"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#fef3c7; color:#d97706; padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`;
+                    }
+                });
+                if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
+            });
+
+            let libLimit = 10; let unsubLib = null;
+            window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); }; 
+            function fetchLibrary() {
+                if(unsubLib) unsubLib();
+                unsubLib = onSnapshot(query(collection(db, "library"), orderBy("timestamp", "desc"), limit(libLimit)), (snap) => {
+                    const list = document.getElementById('library-list'); const moreBtnContainer = document.getElementById('lib-more-btn-container');
+                    list.innerHTML = ""; moreBtnContainer.innerHTML = "";
+                    
+                    snap.docChanges().forEach(change => { 
+                        if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `📚 ملزمة أو ملخص جديد متاح للتحميل: ${change.doc.data().subject}`, 'library', change.doc.id); } 
+                    });
+
+                    if (snap.empty) { list.innerHTML = "<p>قيد التجهيز من قبل الكادر للمكتبة..</p>"; return; }
+                    snap.forEach(doc => {
+                        const d = doc.data();
+                        list.innerHTML += `<div class="list-item lib-item" id="${doc.id}"><div><strong style="font-size:1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600; font-size:0.85rem;">${d.class}</span></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`;
+                    });
+                    if (snap.size >= libLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد ⬇️</button>`; }
+                });
+            }
+            fetchLibrary();
+
+            let exhibitLimit = 6; let unsubExhibit = null;
+            window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); }; 
+            function fetchExhibit() {
+                if(unsubExhibit) unsubExhibit();
+                unsubExhibit = onSnapshot(query(collection(db, "exhibition"), orderBy("timestamp", "desc"), limit(exhibitLimit)), (snap) => {
+                    const list = document.getElementById('exhibit-list'); const moreBtnContainer = document.getElementById('exhibit-more-btn-container');
+                    list.innerHTML = ""; moreBtnContainer.innerHTML = "";
+
+                    snap.docChanges().forEach(change => { 
+                        if (change.type === "added" && !isInitialLoad) { pushPersistentNotification(change.doc.id, `🎨 تم إضافة صور جديدة في معرض ألبوم المدرسة`, 'exhibit', change.doc.id); } 
+                    });
+
+                    if (snap.empty) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
+                    snap.forEach(doc => {
+                        const d = doc.data();
+                        list.innerHTML += `<div class="card card-gallery" id="${doc.id}"><div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div><h3 style="color:#8e44ad; justify-content:center; text-align:center;">${d.title}</h3><div class="post-meta" style="flex-direction: row; justify-content:center;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp ? d.timestamp.toDate() : new Date())}</span></div></div>`;
+                    });
+                    if (snap.size >= exhibitLimit) { moreBtnContainer.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد ⬇️</button>`; }
+                });
+            }
+            fetchExhibit();
         }
-        window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); }; fetchExhibit();
+
+        // تفعيل جلب البيانات بعد 1000 جزء من الثانية للاستمتاع بالتحميل الوهمي
+        setTimeout(setupRealtimeListeners, 1000);
 
     </script>
 </body>
