@@ -2,57 +2,118 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>المدير العام - مدرسة الطف</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c3e50">
+    <meta name="theme-color" content="#1a202c">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     <style>
         :root { --admin-primary: #1a202c; --admin-accent: #805ad5; --danger: #e53e3e; --success: #38a169; --bg: #f7fafc; }
+        
         html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; flex-direction: column; overflow-x: hidden; width: 100%; }
         *, *:before, *:after { box-sizing: border-box; }
+        
+        .mobile-header { display: none; }
+        
         .layout-wrapper { display: flex; flex: 1; width: 100%; }
-        .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; overflow-y: auto;}
-        .sidebar h2 { color: var(--admin-accent); text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; font-size: 1.2rem; }
-        .nav-link { display: block; width: 100%; padding: 12px; margin: 6px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 8px; transition: 0.3s; font-weight: 600; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
-        .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; }
-        .main { margin-right: 280px; padding: 40px; width: calc(100% - 280px); max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
-        .tab-content { display: none; animation: fadeIn 0.4s; }
-        .tab-content.active { display: block; width: 100%; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; width: 100%; overflow: hidden; word-wrap: break-word; }
-        .input-text { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box; }
-        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.2s; }
-        .btn-del { background: var(--danger); color: white; }
-        .btn-save { background: var(--success); color: white; width: 100%; margin-top: 15px; transition: 0.3s; }
-        .btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
+        
+        /* تصميم الديسكتوب (الشاشات الكبيرة) */
+        .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; overflow-y: auto; transition: 0.3s;}
+        .sidebar h2 { color: var(--admin-accent); text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; font-size: 1.2rem; font-weight: 800;}
+        .nav-link { display: flex; width: 100%; padding: 12px 15px; margin: 8px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 10px; transition: 0.3s; font-weight: 700; font-size: 0.95rem; align-items: center; gap: 12px; }
+        .nav-link .icon { font-size: 1.3rem; }
+        .nav-link .text { flex-grow: 1; }
+        .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; transform: translateX(-5px); box-shadow: 0 4px 10px rgba(128, 90, 213, 0.3);}
+        
+        .main { margin-right: 280px; padding: 30px; width: calc(100% - 280px); max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column; transition: 0.3s;}
+        
+        .tab-content { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+        
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 25px; width: 100%; border: 1px solid #edf2f7; }
+        .card h2, .card h3 { color: var(--admin-primary); font-weight: 800; margin-top: 0; }
+        
+        .input-text { width: 100%; padding: 12px 15px; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; box-sizing: border-box; font-size: 0.95rem; transition: 0.3s; background: #f8fafc;}
+        .input-text:focus { border-color: var(--admin-accent); outline: none; box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.2); background: white;}
+        
+        .btn { padding: 12px 20px; border-radius: 10px; cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; font-size: 1rem; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-del { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 8px 15px; font-size: 0.9rem;}
+        .btn-del:hover { background: #fca5a5; color: white; }
+        .btn-save { background: var(--success); color: white; width: 100%; margin-top: 20px; box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);}
+        .btn-save:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none;}
+        
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
+        th { background: #f8fafc; color: #475569; font-weight: 800; }
         th, td { text-align: right; padding: 15px; border-bottom: 1px solid #edf2f7; }
         .status-online { color: var(--success); font-weight: bold; animation: blink 2s infinite; }
         .status-offline { color: var(--danger); font-weight: bold; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        
+        .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 20px; margin-bottom: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border: 1px solid #feebc8; transition: 0.3s;}
+        .msg-card:hover { transform: translateX(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
         .badge-num { background: #e53e3e; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--admin-accent); color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; border-top: 5px solid var(--danger); }
+        
+        /* ================= النوافذ المنبثقة (Modals) ================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 32, 44, 0.8); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; border-top: 5px solid var(--danger); }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .modal-box h3 { margin-top: 0; color: var(--admin-primary); font-size: 1.2rem; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-        .btn-modal-yes { color: white; background: var(--danger); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
-        .btn-modal-no { background: #e2e8f0; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
+        .modal-box h3 { margin-top: 0; color: var(--admin-primary); font-size: 1.3rem; font-weight: 800; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 25px; justify-content: center; }
+        .btn-modal-yes { color: white; background: var(--danger); border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; box-shadow: 0 4px 10px rgba(229, 62, 62, 0.3); }
+        .btn-modal-yes:hover { filter: brightness(0.9); transform: translateY(-2px); }
+        .btn-modal-no { background: #e2e8f0; color: #475569; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
+        .btn-modal-no:hover { background: #cbd5e1; }
+
+        /* ================= تصميم الموبايل الذكي (الشبكة - Grid) ================= */
         @media (max-width: 950px) { 
-            .layout-wrapper { flex-direction: column; width: 100%; }
-            .sidebar { width: 100%; position: relative; height: auto; padding: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
-            .sidebar h2 { width: 100%; margin-bottom: 10px; }
-            .nav-link { width: 48%; margin-bottom: 5px; font-size: 0.8rem; padding: 10px;}
-            .main { margin-right: 0; padding: 15px; width: 100%; } 
-            .card { margin-bottom: 15px; padding: 15px; width: 100%; box-sizing: border-box; }
-            table { font-size: 0.8rem; }
-            th, td { padding: 8px 5px; }
+            .layout-wrapper { flex-direction: column; width: 100%; background: #f8fafc; }
+            
+            /* الهيدر العلوي الخاص بالموبايل */
+            .mobile-header {
+                display: flex; justify-content: space-between; align-items: center;
+                background: var(--admin-primary); padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--admin-accent); color: white;
+            }
+            .mobile-header h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+            
+            /* تحويل القائمة الجانبية إلى شبكة (Grid) */
+            .sidebar { 
+                width: 100%; position: static; height: auto; padding: 20px 15px; 
+                display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; 
+                background: transparent; z-index: 1;
+            }
+            .sidebar.mobile-hidden { display: none; }
+            
+            /* إخفاء العناصر غير الضرورية في شبكة الموبايل */
+            .sidebar h2, .sidebar img, .sidebar hr, .sidebar a, .sidebar #admin-status { display: none !important; }
+            
+            /* شكل أيقونات الموبايل (المربعات) */
+            .nav-link {
+                background: white; color: var(--admin-primary); flex-direction: column; gap: 8px;
+                padding: 20px 5px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+                margin: 0; align-items: center; justify-content: center; border: 1px solid #e2e8f0;
+            }
+            .nav-link:active { transform: scale(0.95); }
+            .nav-link .icon { font-size: 2.2rem; margin: 0; transition: 0.3s;}
+            .nav-link .text { font-size: 0.75rem; font-weight: 800; text-align: center; line-height: 1.3;}
+            .nav-link.active, .nav-link:hover { background: white; color: var(--admin-accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(128,90,213,0.15); border-color: var(--admin-accent); }
+            .nav-link:hover .icon { transform: scale(1.1); }
+            
+            /* منطقة العمل */
+            .main { margin: 0; padding: 15px; width: 100%; display: none; } 
+            .main.mobile-active { display: flex; animation: slideIn 0.3s ease-out; }
+            @keyframes slideIn { from {opacity: 0; transform: translateX(20px);} to {opacity: 1; transform: translateX(0);} }
+            
+            .card { padding: 20px; width: 100%; box-sizing: border-box; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 10px 5px; }
             .msg-card { flex-direction: column; align-items: flex-start; }
             .msg-card div { width: 100%; }
         }
@@ -62,47 +123,69 @@
 
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
     <div id="custom-toast"></div>
+    
+    <!-- نافذة التأكيد الاحترافية -->
     <div class="modal-overlay" id="custom-confirm">
         <div class="modal-box">
             <h3 id="confirm-msg">تأكيد الإجراء</h3>
+            <p style="color: #718096; font-size: 0.9rem; margin-top: 5px;">هذا الإجراء لا يمكن التراجع عنه.</p>
             <div class="modal-actions">
-                <button class="btn-modal-yes" id="btn-confirm-yes">تأكيد</button>
+                <button class="btn-modal-yes" id="btn-confirm-yes">تأكيد الحذف</button>
                 <button class="btn-modal-no" id="btn-confirm-no">إلغاء</button>
             </div>
         </div>
     </div>
 
+    <!-- الهيدر الخاص بالموبايل -->
+    <div class="mobile-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="mobile-back-btn" style="display:none; background:var(--admin-accent); color:white; border:none; padding:8px 12px; border-radius:8px; font-family:'Cairo'; font-weight:bold; cursor:pointer;" onclick="closeTabMobile()">رجوع ⬅️</button>
+            <h3 id="mobile-header-title">المدير العام</h3>
+        </div>
+        <a href="index.html" style="background:#4a5568; color:white; padding:6px 12px; border-radius:8px; font-family:'Cairo'; font-weight:bold; cursor:pointer; text-decoration:none; font-size:0.9rem;">خروج</a>
+    </div>
+
     <div class="layout-wrapper">
-        <div class="sidebar">
-            <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 70px; display: block; margin: 0 auto 15px auto;">
+        <div class="sidebar" id="admin-sidebar">
+            <!-- تم تصحيح خطأ filter: drop-shadow هنا -->
+            <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 75px; display: block; margin: 0 auto 15px auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
             <h2>المدير العام 👑</h2>
-            <div id="admin-status" style="text-align:center; color: #48bb78; font-size:0.8rem; margin-bottom: 20px;">● جاري التحقق...</div>
+            <div id="admin-status" style="text-align:center; color: #48bb78; font-size:0.85rem; margin-bottom: 25px; font-weight:bold; background: rgba(72, 187, 120, 0.1); padding: 5px; border-radius: 8px;">● جاري التحقق...</div>
             
-            <button class="nav-link active" onclick="openTab('stats')"><span>📊 الإحصائيات العامة</span></button>
-            <button class="nav-link" onclick="openTab('school-news')" style="color:#3498db;"><span>📰 أخبار المدرسة العامة</span></button>
-            <button class="nav-link" onclick="openTab('inbox')" style="color:#f6ad55;">
-                <span>📩 صندوق الأهالي</span>
-                <span id="inbox-badge" class="badge-num">0</span>
+            <button class="nav-link active" onclick="openTab('stats', 'الإحصائيات العامة')"><span class="icon">📊</span><span class="text">الإحصائيات</span></button>
+            <button class="nav-link" onclick="openTab('school-news', 'أخبار المدرسة العامة')" style="color:#3498db;"><span class="icon">📰</span><span class="text">أخبار المدرسة</span></button>
+            <button class="nav-link" onclick="openTab('inbox', 'صندوق الأهالي')" style="color:#f6ad55; position:relative;">
+                <span class="icon">📩</span><span class="text">صندوق الأهالي</span>
+                <span id="inbox-badge" class="badge-num" style="position:absolute; top:10px; left:10px;">0</span>
             </button>
-            <button class="nav-link" onclick="openTab('tab-chat')" style="color:#e84393;"><span>💬 توجيهات الكادر</span></button>
-            <button class="nav-link" onclick="openTab('tab-exhibit')" style="color:#9b59b6;"><span>🎨 إدارة المعرض</span></button>
-            <button class="nav-link" onclick="openTab('teachers')"><span>👨‍🏫 الرقابة الحية</span></button>
-            <button class="nav-link" onclick="openTab('honor')"><span>🏆 أوائل المدرسة</span></button>
-            <button class="nav-link" onclick="openTab('emergency')"><span>🚨 التنبيه العاجل</span></button>
-            <button class="nav-link" onclick="openTab('monitor')"><span>🔍 الرقابة الشاملة</span></button>
+            <button class="nav-link" onclick="openTab('tab-chat', 'توجيهات الكادر')" style="color:#e84393;"><span class="icon">💬</span><span class="text">توجيهات الكادر</span></button>
+            <button class="nav-link" onclick="openTab('tab-exhibit', 'إدارة المعرض')" style="color:#9b59b6;"><span class="icon">🎨</span><span class="text">إدارة المعرض</span></button>
+            <button class="nav-link" onclick="openTab('teachers', 'الرقابة الحية')"><span class="icon">👨‍🏫</span><span class="text">الرقابة الحية</span></button>
+            <button class="nav-link" onclick="openTab('honor', 'أوائل المدرسة')"><span class="icon">🏆</span><span class="text">أوائل المدرسة</span></button>
+            <button class="nav-link" onclick="openTab('emergency', 'التنبيه العاجل')"><span class="icon">🚨</span><span class="text">تنبيه عاجل</span></button>
+            <button class="nav-link" onclick="openTab('monitor', 'الرقابة الشاملة')"><span class="icon">🔍</span><span class="text">الرقابة الشاملة</span></button>
             
-            <hr style="opacity: 0.1; margin: 20px 0; width: 100%;">
-            <a href="index.html" style="color:#a0aec0; text-decoration:none; display:block; text-align:center; width: 100%;">خروج للرئيسية</a>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0; width: 100%;">
+            <a href="index.html" style="color:#a0aec0; text-decoration:none; display:block; text-align:center; width: 100%; font-weight:bold; background: #2d3748; padding: 12px; border-radius: 10px; transition: 0.3s;">خروج للرئيسية 🏠</a>
         </div>
 
-        <div class="main">
+        <div class="main" id="admin-main">
             <div id="stats" class="tab-content active">
                 <div class="card">
-                    <h2>تحليلات المنصة 📈</h2>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:20px;">
-                        <div class="card" style="border-top:4px solid var(--admin-accent); margin-bottom:0;"><h3>الواجبات</h3><h1 id="total-hw">0</h1></div>
-                        <div class="card" style="border-top:4px solid #4299e1; margin-bottom:0;"><h3>الأخبار</h3><h1 id="total-news">0</h1></div>
-                        <div class="card" style="border-top:4px solid #ed8936; margin-bottom:0;"><h3>الامتحانات</h3><h1 id="total-ex">0</h1></div>
+                    <h2>تحليلات المنصة 📊</h2>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:20px; margin-top: 20px;">
+                        <div class="card" style="border-top:5px solid var(--admin-accent); margin-bottom:0; text-align:center;">
+                            <h3 style="color:#718096; font-size:1.1rem;">الواجبات</h3>
+                            <h1 id="total-hw" style="font-size:3rem; margin:10px 0 0; color:var(--admin-primary);">0</h1>
+                        </div>
+                        <div class="card" style="border-top:5px solid #4299e1; margin-bottom:0; text-align:center;">
+                            <h3 style="color:#718096; font-size:1.1rem;">الأخبار</h3>
+                            <h1 id="total-news" style="font-size:3rem; margin:10px 0 0; color:var(--admin-primary);">0</h1>
+                        </div>
+                        <div class="card" style="border-top:5px solid #ed8936; margin-bottom:0; text-align:center;">
+                            <h3 style="color:#718096; font-size:1.1rem;">الامتحانات</h3>
+                            <h1 id="total-ex" style="font-size:3rem; margin:10px 0 0; color:var(--admin-primary);">0</h1>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,12 +193,12 @@
             <div id="school-news" class="tab-content">
                 <div class="card" style="border-top: 5px solid #3498db;">
                     <h2 style="color: #3498db;">📰 نشر أخبار المدرسة العامة</h2>
-                    <p style="color:gray; font-size:0.85rem;">تظهر هذه الأخبار مباشرة في الصفحة الرئيسية مع إمكانية إرفاق صورة.</p>
+                    <p style="color:gray; font-size:0.9rem;">تظهر هذه الأخبار مباشرة في الصفحة الرئيسية مع إمكانية إرفاق صورة.</p>
                     <input type="text" id="news-title-input" class="input-text" placeholder="عنوان الخبر (مثال: حفل تكريم الطلاب)">
                     <textarea id="news-det-input" class="input-text" rows="4" placeholder="تفاصيل الخبر..."></textarea>
                     
-                    <label style="display:block; margin-top:10px; font-weight:bold; color:#3498db;">إرفاق صورة من الجهاز (اختياري):</label>
-                    <input type="file" id="news-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    <label style="display:block; margin-top:15px; font-weight:bold; color:#3498db;">إرفاق صورة من الجهاز (اختياري):</label>
+                    <input type="file" id="news-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer; padding: 10px;">
                     
                     <button class="btn btn-save" id="btn-news-pub" style="background:#3498db;" onclick="publishSchoolNews()">نشر الخبر للمدرسة 🚀</button>
                 </div>
@@ -124,6 +207,7 @@
             <div id="inbox" class="tab-content">
                 <div class="card">
                     <h2>📩 صندوق تواصل أولياء الأمور</h2>
+                    <p style="color:gray; font-size:0.9rem; margin-bottom: 20px;">الرسائل الواردة من أولياء الأمور عبر التطبيق.</p>
                     <div id="inbox-list">جاري تحميل الرسائل...</div>
                 </div>
             </div>
@@ -133,24 +217,24 @@
                     <h2 style="color: #e84393;">💬 توجيهات ورسائل الكادر التدريسي</h2>
                     <textarea id="chat-msg" class="input-text" rows="3" placeholder="اكتب توجيهاتك للمعلمين هنا..."></textarea>
                     
-                    <label style="display:block; margin-top:10px; font-weight:bold; color:#e84393;">إرفاق صورة للتعميم (اختياري):</label>
-                    <input type="file" id="chat-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    <label style="display:block; margin-top:15px; font-weight:bold; color:#e84393;">إرفاق صورة للتعميم (اختياري):</label>
+                    <input type="file" id="chat-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer; padding: 10px;">
                     
                     <button class="btn btn-save" id="btn-chat-pub" style="background:#e84393;" onclick="sendStaffMessage()">إرسال الرسالة للكادر 🚀</button>
                 </div>
                 <div class="card">
                     <h3>سجل التوجيهات المرسلة للكادر</h3>
-                    <div id="staff-chat-list"></div>
+                    <div id="staff-chat-list" style="margin-top: 15px;"></div>
                 </div>
             </div>
 
             <div id="tab-exhibit" class="tab-content">
                 <div class="card" style="border-top: 5px solid #9b59b6;">
-                    <h3 style="color: #9b59b6;">🎨 نشر في معرض المدرسة حصرياً للإدارة</h3>
+                    <h2 style="color: #9b59b6;">🎨 نشر في معرض المدرسة حصرياً للإدارة</h2>
                     <input type="text" id="exhibit-sub" class="input-text" placeholder="مثال: صور تكريم الأوائل">
                     
-                    <label style="display:block; margin-top:10px; font-weight:bold; color:#9b59b6;">اختر الصورة المراد عرضها:</label>
-                    <input type="file" id="exhibit-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer;">
+                    <label style="display:block; margin-top:15px; font-weight:bold; color:#9b59b6;">اختر الصورة المراد عرضها:</label>
+                    <input type="file" id="exhibit-img-file" accept="image/*" class="input-text" style="background: #f8fafc; cursor: pointer; padding: 10px;">
                     
                     <button class="btn btn-save" id="btn-exhibit-pub" style="background:#9b59b6;" onclick="publishExhibit()">نشر في المعرض الآن 🎨</button>
                 </div>
@@ -158,9 +242,9 @@
 
             <div id="teachers" class="tab-content">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap:10px;">
                         <h2 style="margin: 0;">👨‍🏫 سجل نشاط المعلمين الحقيقي</h2>
-                        <button class="btn btn-del" onclick="clearAllLogs()" style="font-size: 0.8rem; padding: 5px 15px;">🗑️ مسح السجل</button>
+                        <button class="btn btn-del" onclick="clearAllLogs()" style="font-weight:bold;">🗑️ مسح السجل بالكامل</button>
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -174,28 +258,33 @@
             <div id="honor" class="tab-content">
                 <div class="card">
                     <h2>🏆 إدارة أوائل المدرسة</h2>
-                    <div id="honor-list-admin" class="card" style="box-shadow: none; border: 1px solid #eee;"></div>
+                    <p style="color:gray; font-size:0.9rem; margin-bottom: 15px;">الطلاب المضافون من قبل المعلمين يظهرون هنا.</p>
+                    <div id="honor-list-admin" style="display:flex; flex-direction:column; gap:10px;"></div>
                 </div>
             </div>
 
             <div id="emergency" class="tab-content">
-                <div class="card" style="border-right: 10px solid var(--danger);">
-                    <h2>🚨 إرسال تنبيه عاجل للمدرسة</h2>
-                    <textarea id="alert-msg" class="input-text" rows="3" placeholder="نص التنبيه..."></textarea>
-                    <button class="btn btn-save" style="background:var(--danger);" onclick="sendAlert()">تفعيل التنبيه 🚨</button>
-                    <button class="btn btn-save" style="background:#a0aec0; margin-top:10px;" onclick="stopAlert()">إيقاف التنبيه ✖️</button>
+                <div class="card" style="border-top: 5px solid var(--danger); border-right: none;">
+                    <h2 style="color: var(--danger);">🚨 إرسال تنبيه عاجل للمدرسة</h2>
+                    <p style="color:gray; font-size:0.9rem;">سيظهر هذا التنبيه كشريط أحمر أعلى الموقع لجميع الزوار.</p>
+                    <textarea id="alert-msg" class="input-text" rows="3" placeholder="اكتب التنبيه العاجل هنا..."></textarea>
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <button class="btn btn-save" style="background:var(--danger); margin-top:0; flex:1;" onclick="sendAlert()">تفعيل التنبيه 🚨</button>
+                        <button class="btn btn-save" style="background:#a0aec0; margin-top:0; flex:1;" onclick="stopAlert()">إيقاف التنبيه ✖️</button>
+                    </div>
                 </div>
             </div>
 
             <div id="monitor" class="tab-content">
                 <div class="card">
                     <h2>🔍 إدارة شاملة لجميع أقسام المنصة</h2>
-                    <div id="master-list">جاري التحميل...</div>
+                    <p style="color:gray; font-size:0.9rem; margin-bottom: 15px;">من هنا يمكنك التحكم وحذف أي محتوى تم نشره في المدرسة.</p>
+                    <div id="master-list" style="display:flex; flex-direction:column; gap:10px;">جاري التحميل...</div>
                 </div>
             </div>
 
-            <footer style="margin-top: auto; text-align: center; padding: 20px; font-size: 0.85rem; color: #a0aec0; border-top: 1px solid #e2e8f0;">
-                © 2026 مدرسة الطف | تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" style="color: var(--admin-accent); font-weight: bold; text-decoration: none;">اوروك سوفت للحلول البرمجية - مرتضى حسين</a>
+            <footer style="margin-top: auto; text-align: center; padding: 20px; font-size: 0.9rem; color: #a0aec0; border-top: 1px solid #e2e8f0; font-weight: bold;">
+                © 2026 مدرسة الطف | تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" style="color: var(--admin-accent); text-decoration: none;">اوروك سوفت للحلول البرمجية - مرتضى حسين</a>
             </footer>
         </div>
     </div>
@@ -218,96 +307,104 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // المفتاح الخاص بك اللي أرسلته
+        // 🛡️ دالة التعقيم الأمني (لمنع أكواد الاختراق)
+        window.sanitizeHTML = function(str) {
+            if (!str) return "";
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        };
+
         const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
 
-        // دالة الرفع المباشر لخدمة ImgBB
         window.uploadToImgBB = async (fileInputId) => {
             const fileInput = document.getElementById(fileInputId);
             if (!fileInput || fileInput.files.length === 0) return "";
             const file = fileInput.files[0];
             const formData = new FormData();
             formData.append("image", file);
-            
             try {
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
                 const data = await res.json();
                 return data.success ? data.data.url : "";
-            } catch (e) { 
-                console.error("خطأ برفع الصورة:", e);
-                alert("حدث خطأ أثناء رفع الصورة لخدمة الاستضافة."); 
-                return ""; 
-            }
+            } catch (e) { alert("حدث خطأ أثناء رفع الصورة."); return ""; }
         };
 
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
             toast.innerText = msg; toast.style.backgroundColor = msg.includes('🔔') ? '#e53e3e' : 'var(--admin-accent)';
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 4000);
+            toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
         };
 
         window.customConfirm = (msg, onYes) => {
-            const modal = document.getElementById('custom-confirm'); document.getElementById('confirm-msg').innerText = msg; modal.style.display = 'flex';
-            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); }; document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
+            const modal = document.getElementById('custom-confirm'); 
+            document.getElementById('confirm-msg').innerText = msg; 
+            modal.style.display = 'flex';
+            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); }; 
+            document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
         };
 
-        window.openTab = (id) => {
+        window.openTab = (id, titleText) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active');
+            document.getElementById(id).classList.add('active'); 
+            
+            const activeBtn = document.querySelector(`[onclick="openTab('${id}', '${titleText}')"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+            
             if(id === 'monitor') loadMasterList();
+
+            if (window.innerWidth <= 950) {
+                document.getElementById('admin-sidebar').classList.add('mobile-hidden');
+                document.getElementById('admin-main').classList.add('mobile-active');
+                document.getElementById('mobile-back-btn').style.display = 'block';
+                document.getElementById('mobile-header-title').innerText = titleText || 'المدير العام';
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
         };
 
+        window.closeTabMobile = () => {
+            document.getElementById('admin-sidebar').classList.remove('mobile-hidden');
+            document.getElementById('admin-main').classList.remove('mobile-active');
+            document.getElementById('mobile-back-btn').style.display = 'none';
+            document.getElementById('mobile-header-title').innerText = 'المدير العام';
+        };
+
+        // 🛡️ حارس المصادقة المزدوج للإدارة
         onAuthStateChanged(auth, (user) => {
             if(user && (user.email === 'admin1@altaf.com' || user.email === 'admin@altaf.com')) {
                 document.getElementById('admin-status').innerText = '● متصل كمدير عام';
                 loadStats(); loadLogs(); loadHonorRollAdmin(); loadInbox(); loadStaffMessages();
-            } else { window.location.href = "login.html"; }
+            } else { 
+                window.location.replace("login.html"); 
+            }
         });
 
-        // نشر أخبار المدرسة مع الرفع المباشر
         window.publishSchoolNews = async () => {
-            const title = document.getElementById('news-title-input').value;
-            const det = document.getElementById('news-det-input').value;
+            const title = window.sanitizeHTML(document.getElementById('news-title-input').value);
+            const det = window.sanitizeHTML(document.getElementById('news-det-input').value);
             if(!title || !det) return alert("الرجاء كتابة عنوان وتفاصيل الخبر!");
             
-            const btn = document.getElementById('btn-news-pub');
-            btn.innerText = "جاري رفع الصورة والنشر... ⏳"; btn.disabled = true;
-            
+            const btn = document.getElementById('btn-news-pub'); btn.innerText = "جاري الرفع والنشر... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('news-img-file');
             
             try {
-                await addDoc(collection(db, "school_news"), { 
-                    title: title, details: det, imageUrl: imgUrl, publisher: "الإدارة العامة", timestamp: serverTimestamp() 
-                });
+                await addDoc(collection(db, "school_news"), { title: title, details: det, imageUrl: imgUrl, publisher: "الإدارة العامة", timestamp: serverTimestamp() });
                 alert("تم نشر خبر المدرسة بنجاح!"); 
-                document.getElementById('news-title-input').value = ""; 
-                document.getElementById('news-det-input').value = "";
-                document.getElementById('news-img-file').value = "";
-                loadStats();
+                document.getElementById('news-title-input').value = ""; document.getElementById('news-det-input').value = ""; document.getElementById('news-img-file').value = ""; loadStats();
             } catch (e) { alert("حدث خطأ أثناء النشر!"); }
-            
             btn.innerText = "نشر الخبر للمدرسة 🚀"; btn.disabled = false;
         };
 
-        // إرسال تعميم للكادر مع الرفع المباشر
         window.sendStaffMessage = async () => {
-            const text = document.getElementById('chat-msg').value; 
+            const text = window.sanitizeHTML(document.getElementById('chat-msg').value); 
             if(!text) return alert("الرجاء كتابة نص الرسالة!");
-            
-            const btn = document.getElementById('btn-chat-pub');
-            btn.innerText = "جاري الرفع والإرسال... ⏳"; btn.disabled = true;
-            
+            const btn = document.getElementById('btn-chat-pub'); btn.innerText = "جاري الإرسال... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('chat-img-file');
-            
             try {
                 await addDoc(collection(db, "staff_messages"), { text: text, imgUrl: imgUrl, sender: "الإدارة", timestamp: serverTimestamp() });
-                alert("تم إرسال التعميم للكادر بنجاح!"); 
-                document.getElementById('chat-msg').value = ""; 
-                document.getElementById('chat-img-file').value = "";
+                alert("تم إرسال التعميم للكادر!"); document.getElementById('chat-msg').value = ""; document.getElementById('chat-img-file').value = "";
             } catch(e) { alert("حدث خطأ"); }
-            
             btn.innerText = "إرسال الرسالة للكادر 🚀"; btn.disabled = false;
         };
 
@@ -317,12 +414,12 @@
                 snap.forEach(doc => {
                     const d = doc.data(); const isMe = d.sender === "الإدارة";
                     const align = isMe ? "text-align:right; background:#f0fdf4; border-right:4px solid #48bb78;" : "text-align:right; background:#f8fafc; border-right:4px solid #e84393;";
-                    const imgHtml = d.imgUrl ? `<br><img src="${d.imgUrl}" style="max-width:200px; border-radius:8px; margin-top:10px;">` : "";
+                    const imgHtml = d.imgUrl ? `<br><img src="${window.sanitizeHTML(d.imgUrl)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : "";
                     const timeStr = d.timestamp ? new Date(d.timestamp.seconds*1000).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
-                    list.innerHTML += `<div style="padding:10px; border-radius:8px; margin-bottom:10px; ${align}">
-                        <b style="color:${isMe ? '#2f855a' : '#d53f8c'}">${d.sender}</b> <span style="color:gray; font-size:0.7rem;">${timeStr}</span><br>
-                        <p style="margin:5px 0;">${d.text}</p> ${imgHtml}
-                        <button onclick="adminDel('staff_messages', '${doc.id}')" class="btn-del" style="padding:2px 8px; font-size:0.8rem; margin-top:10px;">حذف</button>
+                    list.innerHTML += `<div style="padding:15px; border-radius:10px; margin-bottom:10px; border:1px solid #e2e8f0; ${align}">
+                        <b style="color:${isMe ? '#2f855a' : '#d53f8c'}; font-size:1.1rem;">${window.sanitizeHTML(d.sender)}</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br>
+                        <p style="margin:10px 0; font-weight:bold; color:#2d3748;">${window.sanitizeHTML(d.text)}</p> ${imgHtml}
+                        <button onclick="adminDel('staff_messages', '${doc.id}')" class="btn-del" style="margin-top:10px; border-radius:8px;">حذف 🗑️</button>
                     </div>`;
                 });
             });
@@ -337,52 +434,25 @@
         let initialInbox = true;
         function loadInbox() {
             onSnapshot(query(collection(db, "messages"), orderBy("timestamp", "desc")), (snap) => {
-                const list = document.getElementById('inbox-list'); list.innerHTML = "";
-                const badge = document.getElementById('inbox-badge');
-                
-                let newMsgs = false;
-                snap.docChanges().forEach(change => {
-                    if(change.type === "added" && !initialInbox) {
-                        newMsgs = true;
-                        document.getElementById('notify-sound').play().catch(()=>{});
-                        alert(`🔔 رسالة جديدة من: ${change.doc.data().name}`);
-                    }
-                });
+                const list = document.getElementById('inbox-list'); list.innerHTML = ""; const badge = document.getElementById('inbox-badge');
+                snap.docChanges().forEach(change => { if(change.type === "added" && !initialInbox) { document.getElementById('notify-sound').play().catch(()=>{}); alert(`🔔 رسالة جديدة من: ${window.sanitizeHTML(change.doc.data().name)}`); } });
                 initialInbox = false;
                 if (snap.size > 0) { badge.innerText = snap.size; badge.style.display = 'inline-block'; } else { badge.style.display = 'none'; }
                 if(snap.empty) { list.innerHTML = "<p>لا توجد رسائل حالياً.</p>"; return; }
                 snap.forEach(docSnap => {
                     const d = docSnap.data(); const t = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('ar-EG') : '';
-                    list.innerHTML += `<div class="msg-card"><div><strong style="color:var(--danger)">👤 المرسل: ${d.name}</strong> <small style="color:gray;">(${t})</small><br>
-                        📞 رقم التواصل: <a href="tel:${d.phone}" style="color:var(--admin-accent); font-weight:bold;">${d.phone}</a><br>
-                        <p style="margin-top:10px; background:white; padding:10px; border-radius:5px; border:1px solid #edf2f7;">${d.message}</p></div>
-                        <button class="btn btn-del" onclick="adminDel('messages','${docSnap.id}')">إكمال وحذف</button></div>`;
+                    list.innerHTML += `<div class="msg-card"><div><strong style="color:var(--danger); font-size:1.1rem;">👤 المرسل: ${window.sanitizeHTML(d.name)}</strong> <small style="color:gray;">(${t})</small><br>📞 رقم التواصل: <a href="tel:${window.sanitizeHTML(d.phone)}" style="color:var(--admin-accent); font-weight:bold;">${window.sanitizeHTML(d.phone)}</a><br><p style="margin-top:10px; background:white; padding:12px; border-radius:8px; border:1px solid #edf2f7; font-weight:bold;">${window.sanitizeHTML(d.message)}</p></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('messages','${docSnap.id}')">إكمال وحذف ✔️</button></div>`;
                 });
             });
         }
 
-        // نشر في المعرض مع الرفع المباشر
         window.publishExhibit = async () => {
-            const sub = document.getElementById('exhibit-sub').value; 
+            const sub = window.sanitizeHTML(document.getElementById('exhibit-sub').value); 
             if(!sub) return alert("أدخل عنوان الصورة!");
-            
-            const btn = document.getElementById('btn-exhibit-pub'); 
-            btn.innerText = "جاري الرفع والنشر... ⏳"; btn.disabled = true;
-            
+            const btn = document.getElementById('btn-exhibit-pub'); btn.innerText = "جاري النشر... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('exhibit-img-file');
-            if(!imgUrl) {
-                alert("الرجاء اختيار صورة من جهازك لرفعها في المعرض!");
-                btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false;
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "exhibition"), { title: sub, imageUrl: imgUrl, publisher: "الإدارة", uid: auth.currentUser.uid, timestamp: serverTimestamp() });
-                alert("تم النشر في معرض المدرسة بنجاح!"); 
-                document.getElementById('exhibit-sub').value = ""; 
-                document.getElementById('exhibit-img-file').value = "";
-            } catch (e) { alert("حدث خطأ!"); } 
-            finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
+            if(!imgUrl) { alert("الرجاء اختيار صورة لرفعها!"); btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; return; }
+            try { await addDoc(collection(db, "exhibition"), { title: sub, imageUrl: imgUrl, publisher: "الإدارة", uid: auth.currentUser.uid, timestamp: serverTimestamp() }); alert("تم النشر بنجاح!"); document.getElementById('exhibit-sub').value = ""; document.getElementById('exhibit-img-file').value = ""; } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
         };
 
         function loadLogs() {
@@ -391,42 +461,46 @@
                 snap.forEach(doc => {
                     const l = doc.data(); const t = l.timestamp ? new Date(l.timestamp.seconds * 1000).toLocaleString('ar-EG', {hour:'2-digit', minute:'2-digit', month:'short', day:'numeric'}) : 'الآن';
                     const isRecent = l.timestamp && (new Date() - l.timestamp.toDate()) < 600000;
-                    const statusClass = isRecent ? 'status-online' : 'status-offline'; const statusText = isRecent ? '● متصل الآن' : '● غير متصل';
-                    container.innerHTML += `<tr><td><b>${l.teacherName}</b></td><td>${l.action}</td><td><small>${l.details}</small></td><td><small>${t}</small></td><td class="${statusClass}">${statusText}</td></tr>`;
+                    const statusClass = isRecent ? 'status-online' : 'status-offline'; const statusText = isRecent ? '● متصل' : '● غير متصل';
+                    container.innerHTML += `<tr><td><b>${window.sanitizeHTML(l.teacherName)}</b></td><td><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:0.85rem;">${window.sanitizeHTML(l.action)}</span></td><td><small>${window.sanitizeHTML(l.details)}</small></td><td><small>${t}</small></td><td class="${statusClass}">${statusText}</td></tr>`;
                 });
             });
         }
         
-        window.clearAllLogs = () => { customConfirm("هل أنت متأكد من رغبتك في مسح جميع سجلات النشاط؟", async () => { const snap = await getDocs(collection(db, "activity_logs")); snap.forEach(d => deleteDoc(doc(db, "activity_logs", d.id))); alert("تم مسح السجل بنجاح."); }); };
+        window.clearAllLogs = () => { customConfirm("هل أنت متأكد من مسح جميع السجلات؟", async () => { const snap = await getDocs(collection(db, "activity_logs")); snap.forEach(d => deleteDoc(doc(db, "activity_logs", d.id))); alert("تم مسح السجل بنجاح."); }); };
 
         function loadHonorRollAdmin() {
             onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
                 const list = document.getElementById('honor-list-admin'); list.innerHTML = "";
+                if(snap.empty) { list.innerHTML = "<p>لا يوجد طلاب حالياً.</p>"; return; }
                 snap.forEach(docSnap => {
                     const d = docSnap.data();
-                    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee; flex-wrap:wrap; gap:10px;"><span>⭐ ${d.name} (${d.class}) - <small>${d.badge||'متميز'}</small></span><button class="btn btn-del" style="padding:5px 10px;" onclick="delHonor('${docSnap.id}')">حذف</button></div>`;
+                    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap:wrap; gap:10px;"><div><strong style="color:var(--admin-primary); font-size:1.1rem;">⭐ ${window.sanitizeHTML(d.name)}</strong> <span style="color:gray;">(${window.sanitizeHTML(d.class)})</span><br><span style="background:#feebc8; color:#dd6b20; padding:2px 8px; border-radius:6px; font-size:0.85rem; font-weight:bold; margin-top:5px; display:inline-block;">${window.sanitizeHTML(d.badge||'متميز')}</span></div><button class="btn btn-del" style="border-radius:8px;" onclick="delHonor('${docSnap.id}')">حذف 🗑️</button></div>`;
                 });
             });
         }
 
-        window.delHonor = (id) => { customConfirm("هل تريد بالفعل حذف هذا الطالب من لوحة الشرف؟", async () => { await deleteDoc(doc(db, "honor_roll", id)); alert("تم حذف الطالب."); }); };
-        window.sendAlert = async () => { const text = document.getElementById('alert-msg').value; if(!text) return alert("اكتب التنبيه أولاً!"); await setDoc(doc(db, "settings", "emergency_alert"), { active: true, text: text }); alert("تم إطلاق التنبيه!"); };
+        window.delHonor = (id) => { customConfirm("هل تريد حذف هذا الطالب من لوحة الشرف؟", async () => { await deleteDoc(doc(db, "honor_roll", id)); alert("تم الحذف."); }); };
+        window.sendAlert = async () => { const text = window.sanitizeHTML(document.getElementById('alert-msg').value); if(!text) return alert("اكتب التنبيه أولاً!"); await setDoc(doc(db, "settings", "emergency_alert"), { active: true, text: text }); alert("تم إطلاق التنبيه!"); };
         window.stopAlert = async () => { await setDoc(doc(db, "settings", "emergency_alert"), { active: false, text: "" }); alert("تم إيقاف التنبيه."); };
 
         async function loadMasterList() {
-            const container = document.getElementById('master-list');
+            const container = document.getElementById('master-list'); container.innerHTML = "جاري التحميل...";
             const sections = [{id:'homeworks', l:'واجب'}, {id:'school_news', l:'أخبار المدرسة'}, {id:'exams', l:'امتحان'}, {id:'stories', l:'قصة'}, {id:'exhibition', l:'معرض'}, {id:'library', l:'مكتبة'}, {id:'attendance', l:'سجل غياب'}];
             let all = [];
-            for (const s of sections) { const snap = await getDocs(collection(db, s.id)); snap.forEach(d => all.push({id:d.id, col:s.id, type:s.l, ...d.data()})); }
-            container.innerHTML = "";
-            all.forEach(p => {
-                const postTitle = p.subject || p.title || p.absentNames || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
-                const publisher = p.publisher || p.teacherName || p.teacher || "غير معروف";
-                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; flex-wrap: wrap; gap:10px;"><span><b>[${p.type}]</b> ${postTitle} <small style="color:gray;">(بواسطة: ${publisher})</small></span><button class="btn btn-del" onclick="adminDel('${p.col}','${p.id}')">حذف</button></div>`;
-            });
+            try {
+                for (const s of sections) { const snap = await getDocs(collection(db, s.id)); snap.forEach(d => all.push({id:d.id, col:s.id, type:s.l, ...d.data()})); }
+                container.innerHTML = "";
+                if(all.length === 0) { container.innerHTML = "<p>لا يوجد محتوى منشور.</p>"; return; }
+                all.forEach(p => {
+                    const postTitle = p.subject || p.title || p.absentNames || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
+                    const publisher = p.publisher || p.teacherName || p.teacher || "غير معروف";
+                    container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap: wrap; gap:10px;"><div><span style="background:var(--admin-accent); color:white; padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:bold;">${window.sanitizeHTML(p.type)}</span> <b style="color:var(--admin-primary); margin-right:10px;">${window.sanitizeHTML(postTitle)}</b><br><small style="color:gray; margin-top:5px; display:inline-block;">بواسطة: ${window.sanitizeHTML(publisher)}</small></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('${p.col}','${p.id}')">حذف 🗑️</button></div>`;
+                });
+            } catch(e) { container.innerHTML = "حدث خطأ في الجلب."; }
         }
 
-        window.adminDel = (col, id) => { customConfirm("بصفتك المدير، هل أنت متأكد من حذف هذا المنشور نهائياً؟", async () => { await deleteDoc(doc(db, col, id)); alert("تم الحذف بنجاح"); loadMasterList(); loadStats(); }); };
+        window.adminDel = (col, id) => { customConfirm("هل أنت متأكد من الحذف النهائي؟", async () => { await deleteDoc(doc(db, col, id)); alert("تم الحذف بنجاح"); loadMasterList(); loadStats(); }); };
     </script>
 </body>
 </html>
