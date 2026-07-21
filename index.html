@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
     <script>
-        if(window.location.href.indexOf('?') === -1) { window.location.href = window.location.href + '?v=' + new Date().getTime(); }
+        if(window.location.href.indexOf('?') === -1) { window.location.href = window.location.href + '?v=2026-final-fixed-' + new Date().getTime(); }
         if(localStorage.getItem('theme') === 'dark') { document.documentElement.classList.add('dark-mode'); }
         function toggleTheme(e) { e.preventDefault(); document.documentElement.classList.toggle('dark-mode'); localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light'); updateThemeIcon(); }
         function updateThemeIcon() { const isDark = document.documentElement.classList.contains('dark-mode'); document.querySelectorAll('.theme-toggle-icon').forEach(el => { el.innerText = isDark ? '☀️' : '🌙'; }); }
@@ -23,7 +23,6 @@
     </script>
 
     <style>
-        /* ================= CSS المضغوط ================= */
         html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; scroll-behavior: smooth; font-family: 'Cairo', sans-serif; background-color: #f8fafc; transition: background-color 0.3s;}
         *, *:before, *:after { box-sizing: border-box; }
         .app-splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e293b; color: white; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.5s ease, visibility 0.5s; }
@@ -121,7 +120,6 @@
         .btn-show-more { display: inline-block; padding: 8px 25px; background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd; border-radius: 50px; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: 0.3s; }
         .btn-show-more:hover { background: #bae6fd; color: #0369a1; transform: translateY(-2px); }
         
-        /* أزرار فلترة الغيابات */
         .filter-btn { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 6px 16px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
         .filter-btn:hover { background: #e2e8f0; }
         .filter-btn.active { background: #e67e22; color: #fff; border-color: #d35400; box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3); }
@@ -133,7 +131,6 @@
         .lightbox-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
         .lightbox-btn:hover { background: #3498db; transform: scale(1.1); box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4); }
 
-        /* ================= الفوتر ================= */
         .main-footer { background-color: #1e293b; color: #cbd5e1; padding: 30px 15px; text-align: center; border-top: 4px solid #3498db; margin-top: auto; width: 100%; position: relative; z-index: 10;}
         .main-footer .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;}
         .main-footer .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
@@ -145,7 +142,6 @@
         .main-footer .rights a { color: #3498db; text-decoration: none; font-weight: 800; transition: 0.3s;}
         .main-footer .rights a:hover { color: #fff; }
 
-        /* ================= 📱 واجهة التطبيق للهواتف ================= */
         .mobile-bottom-nav { display: none; }
         .mobile-sidebar { display: none; }
         .sidebar-overlay { display: none; }
@@ -179,7 +175,6 @@
             .main-footer { padding: 25px 15px; padding-bottom: 85px !important; } 
         }
 
-        /* المظهر الليلي */
         html.dark-mode body { --bg-light: #0f172a; --text-main: #f8fafc; background-color: var(--bg-light); color: var(--text-main); }
         html.dark-mode .main-header { background-color: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
         html.dark-mode .logo h1 { color: #f8fafc; }
@@ -519,60 +514,140 @@
         window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); };
         window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); };
 
+        /* ===== دوال الجلب المرنة بالكامل لضمان جلب البيانات برمجياً بدون أخطاء السيرفر ===== */
+
         async function fetchNews() {
-            const { data } = await supabase.from('school_news').select('*').order('timestamp', { ascending: false }).limit(newsLimit);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(newsLimit);
+            
+            if (error) console.error("خطأ جلب الأخبار:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'school_news' || d.type === 'announcements') : [];
+            
             const list = document.getElementById('school-news-list'); const more = document.getElementById('news-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
-            data.forEach(d => { const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : ""; list.innerHTML += `<div class="card card-announce" id="${d.id}">${imgHtml}<h3>${d.title}</h3><div class="card-details">${d.details}</div><div class="post-meta" style="flex-direction: row; gap: 10px;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp)}</span><span class="meta-badge">👤 ${d.publisher || 'الإدارة'}</span></div></div>`; });
-            if (data.length >= newsLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد ⬇️</button>`;
+            data.forEach(d => { const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : ""; list.innerHTML += `<div class="card card-announce" id="${d.id}">${imgHtml}<h3>${d.title || d.subject || 'خبر'}</h3><div class="card-details">${d.details || ''}</div><div class="post-meta" style="flex-direction: row; gap: 10px;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp)}</span><span class="meta-badge">👤 ${d.publisher || 'الإدارة'}</span></div></div>`; });
+            if (rawData && rawData.length >= newsLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد ⬇️</button>`;
         }
 
         async function fetchHomeworks() {
-            const { data } = await supabase.from('homeworks').select('*').order('timestamp', { ascending: false }).limit(100);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(100);
+            
+            if (error) console.error("خطأ جلب الواجبات:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'homeworks') : [];
+            
             if (data) { window.appData.hw = data; if(window.currentView.hw.active) renderFilteredData('hw'); }
         }
 
         async function fetchExams() {
-            const { data } = await supabase.from('exams').select('*').order('timestamp', { ascending: false }).limit(50);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(50);
+            
+            if (error) console.error("خطأ جلب الامتحانات:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'exams') : [];
+            
             const list = document.getElementById('exams-list'); if (!list) return; list.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
             data.forEach(d => { const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5); let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`); list.innerHTML += `<div class="card card-exam" id="${d.id}"><h3>📅 ${d.subject}</h3><div class="card-details"><strong style="color:#2c3e50;">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:#2c3e50;">الموعد:</strong> <span style="color:#e74c3c; font-weight:800;">${d.details}</span><div style="margin-top:12px;">${statusHtml}</div></div><div class="post-meta"><span class="meta-badge" style="color: #2c3e50;">👤 الناشر: ${d.publisher || 'الإدارة'}</span><span class="meta-badge" style="color: #e74c3c;">🕒 وقت النشر: ${formatFullDate(d.timestamp)}</span></div></div>`; });
         }
 
         async function fetchHonorRoll() {
-            const { data } = await supabase.from('honor_roll').select('*').order('timestamp', { ascending: false }).limit(50);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(50);
+            
+            if (error) console.error("خطأ جلب لوحة الشرف:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'honor_roll') : [];
+            
             const list = document.getElementById('honor-list'); if (!list) return; list.innerHTML = "";
             let hasRecords = false; const now = new Date();
-            if (data) { data.forEach(d => { if ((now - new Date(d.timestamp)) <= 7 * 24 * 60 * 60 * 1000) { hasRecords = true; let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡"; list.innerHTML += `<div class="card" id="${d.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid #f59e0b;"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#fef3c7; color:#d97706; padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`; } }); }
+            if (data && data.length > 0) { data.forEach(d => { if ((now - new Date(d.timestamp)) <= 7 * 24 * 60 * 60 * 1000) { hasRecords = true; let badgeIcon = "⭐"; if(d.badge === "بطل الواجبات") badgeIcon = "📝"; else if(d.badge === "نجم الأسبوع") badgeIcon = "🌟"; else if(d.badge === "صديق البيئة") badgeIcon = "🌿"; else if(d.badge === "المبدع") badgeIcon = "💡"; list.innerHTML += `<div class="card" id="${d.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid #f59e0b;"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#fef3c7; color:#d97706; padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`; } }); }
             if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
         }
 
         async function fetchAttendance() {
-            const { data } = await supabase.from('attendance').select('*').order('timestamp', { ascending: false }).limit(50);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(50);
+            
+            if (error) console.error("خطأ جلب الغيابات:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), studentName: item.content?.studentName || item.content?.absentNames, ...item.content }))
+                .filter(d => d.type === 'attendance') : [];
+            
             if (data) { window.appData.attendance = data; renderAttendanceUI(); }
         }
 
         async function fetchLibrary() {
-            const { data } = await supabase.from('library').select('*').order('timestamp', { ascending: false }).limit(libLimit);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(libLimit);
+            
+            if (error) console.error("خطأ جلب المكتبة:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'library') : [];
+            
             const list = document.getElementById('library-list'); const more = document.getElementById('lib-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>قيد التجهيز للمكتبة..</p>"; return; }
             data.forEach(d => { list.innerHTML += `<div class="list-item lib-item" id="${d.id}"><div><strong style="font-size:1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600; font-size:0.85rem;">${d.class}</span></div><a href="${d.url}" target="_blank" class="lib-link">تحميل ⬇️</a></div>`; });
-            if (data.length >= libLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد ⬇️</button>`;
+            if (rawData && rawData.length >= libLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد ⬇️</button>`;
         }
 
         async function fetchExhibit() {
-            const { data } = await supabase.from('exhibition').select('*').order('timestamp', { ascending: false }).limit(exhibitLimit);
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false })
+                .limit(exhibitLimit);
+            
+            if (error) console.error("خطأ جلب المعرض:", error);
+            const data = rawData ? rawData
+                .map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content }))
+                .filter(d => d.type === 'exhibition') : [];
+            
             const list = document.getElementById('exhibit-list'); const more = document.getElementById('exhibit-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
             data.forEach(d => { list.innerHTML += `<div class="card card-gallery" id="${d.id}"><div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div><h3 style="color:#8e44ad; justify-content:center; text-align:center;">${d.title || ''}</h3><div class="post-meta" style="flex-direction: row; justify-content:center;"><span class="meta-badge">🗓 ${timeAgo(d.timestamp)}</span></div></div>`; });
-            if (data.length >= exhibitLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد ⬇️</button>`;
+            if (rawData && rawData.length >= exhibitLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد ⬇️</button>`;
         }
 
         async function fetchSettings() {
-            const { data } = await supabase.from('settings').select('*').eq('id', 'emergency_alert').single();
+            const { data: rawData, error } = await supabase
+                .from('app_data')
+                .select("*")
+                .order('created_at', { ascending: false });
+            
+            if (error) console.error("خطأ جلب التنبيه:", error);
+            const alertItem = rawData ? rawData.find(item => (item.type === 'emergency_alert' || item.content?.type === 'emergency_alert')) : null;
+            const data = alertItem ? { id: alertItem.id, timestamp: alertItem.created_at, ...alertItem.content } : null;
+            
             const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
             if (data && data.active) { textEl.innerText = data.text; banner.style.display = 'flex'; } else { banner.style.display = 'none'; }
         }
@@ -580,14 +655,39 @@
         fetchNews(); fetchHomeworks(); fetchExams(); fetchHonorRoll(); fetchAttendance(); fetchLibrary(); fetchExhibit(); fetchSettings();
 
         supabase.channel('school-live-updates')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'school_news' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `تم نشر خبر مدرسة جديد: ${payload.new.title}`, 'news', payload.new.id); fetchNews(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'homeworks' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `واجب بيتي جديد لمادة ${payload.new.subject} - ${payload.new.class}`, 'hw', payload.new.id, payload.new.class); fetchHomeworks(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'exams' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `جدول موعد امتحان: ${payload.new.subject} - ${payload.new.class}`, 'exams', payload.new.id); fetchExams(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'honor_roll' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `🌟 طالب متميز جديد: ${payload.new.name}`, 'honor', payload.new.id); fetchHonorRoll(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `تنبيه غيابات: تم تسجيل غياب الطالب (${payload.new.studentName})`, 'attendance', ''); fetchAttendance(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'library' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `📚 ملزمة جديدة متاحة للتحميل: ${payload.new.subject}`, 'library', payload.new.id); fetchLibrary(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'exhibition' }, payload => { if (payload.eventType === 'INSERT' && !isInitialLoad) pushPersistentNotification(payload.new.id, `🎨 تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', payload.new.id); fetchExhibit(); })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, payload => { fetchSettings(); if (payload.new && payload.new.active && !isInitialLoad) pushPersistentNotification('emergency_' + Date.now(), '🚨 تنبيه إداري عاجل منشور بالرئيسية!', 'news', ''); })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                const newItem = payload.new;
+                if (!newItem || isInitialLoad) return;
+                
+                const content = newItem.content || {};
+                const type = newItem.type || content.type;
+
+                if (type === 'school_news' || type === 'announcements') {
+                    pushPersistentNotification(newItem.id, `تم نشر خبر مدرسة جديد: ${content.title || content.subject || 'خبر عاجل'}`, 'news', newItem.id);
+                    fetchNews();
+                } else if (type === 'homeworks') {
+                    pushPersistentNotification(newItem.id, `واجب بيتي جديد لمادة ${content.subject} - ${content.class}`, 'hw', newItem.id, content.class);
+                    fetchHomeworks();
+                } else if (type === 'exams') {
+                    pushPersistentNotification(newItem.id, `جدول موعد امتحان: ${content.subject} - ${content.class}`, 'exams', newItem.id);
+                    fetchExams();
+                } else if (type === 'honor_roll') {
+                    pushPersistentNotification(newItem.id, `🌟 طالب متميز جديد: ${content.name}`, 'honor', newItem.id);
+                    fetchHonorRoll();
+                } else if (type === 'attendance') {
+                    pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الطالب (${content.studentName || content.absentNames})`, 'attendance', '');
+                    fetchAttendance();
+                } else if (type === 'library') {
+                    pushPersistentNotification(newItem.id, `📚 ملزمة جديدة متاحة للتحميل: ${content.subject}`, 'library', newItem.id);
+                    fetchLibrary();
+                } else if (type === 'exhibition') {
+                    pushPersistentNotification(newItem.id, `🎨 تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', newItem.id);
+                    fetchExhibit();
+                } else if (type === 'emergency_alert') {
+                    fetchSettings();
+                    if (content.active) pushPersistentNotification('emergency_' + Date.now(), '🚨 تنبيه إداري عاجل منشور بالرئيسية!', 'news', '');
+                }
+            })
             .subscribe();
     </script>
 </body>
