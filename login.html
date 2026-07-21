@@ -9,6 +9,10 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    
+    <!-- 🛡️ إضافة مكتبة Supabase الرسمية -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --bg: #f0f4f8; --text: #333; }
         
@@ -120,22 +124,13 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // 🛡️ استيراد دوال التحكم بالجلسة (Persistence)
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
-            authDomain: "al-taf-1.firebaseapp.com",
-            projectId: "al-taf-1",
-            storageBucket: "al-taf-1.firebasestorage.app",
-            messagingSenderId: "242834897966",
-            appId: "1:242834897966:web:b5cd3bae396f9d978c73bf"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    <script>
+        // 🛡️ تم تغيير اسم المتغير إلى _supabase لمنع التعارض مع اسم المكتبة
+        const supabaseUrl = 'https://poqswuntarhyjobwfkbl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+        
+        // إنشاء الاتصال بالسيرفر الجديد
+        const _supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         const loginUi = document.getElementById('login-ui');
         const loadingUi = document.getElementById('loading-ui');
@@ -158,16 +153,16 @@
         toggleBtn.addEventListener('click', () => {
             const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passInput.setAttribute('type', type);
-            // تغيير شكل العين (اختياري، هنا نعتمد على تغيير الشفافية)
             toggleBtn.style.opacity = type === 'text' ? '1' : '0.5';
         });
 
-        // مراقب حالة التسجيل
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
+        // 🛡️ 1. نظام مراقبة الجلسة التلقائي
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                loadingUi.style.display = "flex";
+                loginUi.style.display = "none";
                 setTimeout(() => {
-                    // التوجيه الذكي حسب نوع المدير أو المعلم
-                    if(user.email === 'admin1@altaf.com' || user.email === 'admin@altaf.com') { 
+                    if(session.user.email === 'admin1@altaf.com' || session.user.email === 'admin@altaf.com') { 
                         window.location.replace("admin.html"); 
                     } else { 
                         window.location.replace("dashboard.html"); 
@@ -179,17 +174,33 @@
             }
         });
 
-        document.getElementById('forceLogout').onclick = (e) => {
+        // 🛡️ 2. حماية طوارئ لفتح الصفحة في حال تأخر الاستجابة
+        setTimeout(() => {
+            if (loginUi.style.display === "none" && loadingUi.style.display !== "none") {
+                loginUi.style.display = "block";
+                loadingUi.style.display = "none";
+            }
+        }, 2000);
+
+        // 🛡️ 3. زر إلغاء وتسجيل الخروج
+        document.getElementById('forceLogout').onclick = async (e) => {
             e.preventDefault();
-            signOut(auth).then(() => { window.location.reload(); });
+            try {
+                await _supabase.auth.signOut();
+            } catch(err) {
+                console.log("تجاوز الخطأ:", err);
+            } finally {
+                localStorage.clear();
+                sessionStorage.clear();
+                loginUi.style.display = "block";
+                loadingUi.style.display = "none";
+            }
         };
 
-        // 🛡️ دالة تسجيل الدخول المحمية
-        window.handleLogin = () => {
-            // تنظيف الإيميل من المسافات الزائدة
+        // 🛡️ 4. دالة تسجيل الدخول المحمية
+        window.handleLogin = async () => {
             const email = document.getElementById('email').value.trim();
             const pass = passInput.value;
-            const rememberMe = document.getElementById('remember-me').checked;
 
             if (!email || !pass) { 
                 alert("يرجى إدخال البريد الإلكتروني وكلمة المرور بالكامل!"); 
@@ -199,20 +210,20 @@
             loginBtn.innerText = "جاري التحقق... ⏳"; 
             loginBtn.disabled = true;
 
-            // تحديد نوع الجلسة (مؤقتة أم دائمة)
-            const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-
-            // تطبيق إعداد الجلسة ثم تسجيل الدخول
-            setPersistence(auth, persistenceType)
-                .then(() => {
-                    return signInWithEmailAndPassword(auth, email, pass);
-                })
-                .catch((error) => {
-                    loginBtn.innerText = "تسجيل الدخول"; 
-                    loginBtn.disabled = false;
-                    // توحيد رسالة الخطأ للأمان
-                    alert("عذراً، البريد الإلكتروني أو كلمة المرور غير صحيحة ❌");
+            try {
+                const { data, error } = await _supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pass,
                 });
+
+                if (error) {
+                    throw error;
+                }
+            } catch (error) {
+                loginBtn.innerText = "تسجيل الدخول"; 
+                loginBtn.disabled = false;
+                alert("عذراً، البريد الإلكتروني أو كلمة المرور غير صحيحة ❌");
+            }
         };
 
         // دعم الدخول عبر زر Enter

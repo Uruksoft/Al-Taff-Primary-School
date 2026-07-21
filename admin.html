@@ -8,43 +8,36 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a202c">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    
+    <!-- 🛡️ إضافة مكتبة Supabase الرسمية -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { --admin-primary: #1a202c; --admin-accent: #805ad5; --danger: #e53e3e; --success: #38a169; --bg: #f7fafc; }
-        
         html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; flex-direction: column; overflow-x: hidden; width: 100%; }
         *, *:before, *:after { box-sizing: border-box; }
-        
         .mobile-header { display: none; }
-        
         .layout-wrapper { display: flex; flex: 1; width: 100%; }
-        
-        /* تصميم الديسكتوب (الشاشات الكبيرة) */
         .sidebar { width: 280px; background: var(--admin-primary); color: white; position: fixed; height: 100%; padding: 25px; box-sizing: border-box; z-index: 100; overflow-y: auto; transition: 0.3s;}
         .sidebar h2 { color: var(--admin-accent); text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; font-size: 1.2rem; font-weight: 800;}
         .nav-link { display: flex; width: 100%; padding: 12px 15px; margin: 8px 0; border: none; background: none; color: #a0aec0; text-align: right; cursor: pointer; font-family: 'Cairo'; border-radius: 10px; transition: 0.3s; font-weight: 700; font-size: 0.95rem; align-items: center; gap: 12px; }
         .nav-link .icon { font-size: 1.3rem; }
         .nav-link .text { flex-grow: 1; }
         .nav-link.active, .nav-link:hover { background: var(--admin-accent); color: white; transform: translateX(-5px); box-shadow: 0 4px 10px rgba(128, 90, 213, 0.3);}
-        
         .main { margin-right: 280px; padding: 30px; width: calc(100% - 280px); max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column; transition: 0.3s;}
-        
         .tab-content { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
-        
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 25px; width: 100%; border: 1px solid #edf2f7; }
         .card h2, .card h3 { color: var(--admin-primary); font-weight: 800; margin-top: 0; }
-        
         .input-text { width: 100%; padding: 12px 15px; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; box-sizing: border-box; font-size: 0.95rem; transition: 0.3s; background: #f8fafc;}
         .input-text:focus { border-color: var(--admin-accent); outline: none; box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.2); background: white;}
-        
         .btn { padding: 12px 20px; border-radius: 10px; cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; font-size: 1rem; }
         .btn:hover { transform: translateY(-2px); }
         .btn-del { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 8px 15px; font-size: 0.9rem;}
         .btn-del:hover { background: #fca5a5; color: white; }
         .btn-save { background: var(--success); color: white; width: 100%; margin-top: 20px; box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);}
         .btn-save:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none;}
-        
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
         th { background: #f8fafc; color: #475569; font-weight: 800; }
@@ -52,15 +45,11 @@
         .status-online { color: var(--success); font-weight: bold; animation: blink 2s infinite; }
         .status-offline { color: var(--danger); font-weight: bold; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
         .msg-card { background: #fffaf0; border-right: 4px solid #ed8936; padding: 20px; margin-bottom: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border: 1px solid #feebc8; transition: 0.3s;}
         .msg-card:hover { transform: translateX(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
         .badge-num { background: #e53e3e; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--admin-accent); color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
-        
-        /* ================= النوافذ المنبثقة (Modals) ================= */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 32, 44, 0.8); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; border-top: 5px solid var(--danger); }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -71,46 +60,22 @@
         .btn-modal-no { background: #e2e8f0; color: #475569; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; flex: 1; transition: 0.2s; }
         .btn-modal-no:hover { background: #cbd5e1; }
 
-        /* ================= تصميم الموبايل الذكي (الشبكة - Grid) ================= */
         @media (max-width: 950px) { 
             .layout-wrapper { flex-direction: column; width: 100%; background: #f8fafc; }
-            
-            /* الهيدر العلوي الخاص بالموبايل */
-            .mobile-header {
-                display: flex; justify-content: space-between; align-items: center;
-                background: var(--admin-primary); padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--admin-accent); color: white;
-            }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; background: var(--admin-primary); padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--admin-accent); color: white; }
             .mobile-header h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
-            
-            /* تحويل القائمة الجانبية إلى شبكة (Grid) */
-            .sidebar { 
-                width: 100%; position: static; height: auto; padding: 20px 15px; 
-                display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; 
-                background: transparent; z-index: 1;
-            }
+            .sidebar { width: 100%; position: static; height: auto; padding: 20px 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: transparent; z-index: 1; }
             .sidebar.mobile-hidden { display: none; }
-            
-            /* إخفاء العناصر غير الضرورية في شبكة الموبايل */
             .sidebar h2, .sidebar img, .sidebar hr, .sidebar a, .sidebar #admin-status { display: none !important; }
-            
-            /* شكل أيقونات الموبايل (المربعات) */
-            .nav-link {
-                background: white; color: var(--admin-primary); flex-direction: column; gap: 8px;
-                padding: 20px 5px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-                margin: 0; align-items: center; justify-content: center; border: 1px solid #e2e8f0;
-            }
+            .nav-link { background: white; color: var(--admin-primary); flex-direction: column; gap: 8px; padding: 20px 5px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin: 0; align-items: center; justify-content: center; border: 1px solid #e2e8f0; }
             .nav-link:active { transform: scale(0.95); }
             .nav-link .icon { font-size: 2.2rem; margin: 0; transition: 0.3s;}
             .nav-link .text { font-size: 0.75rem; font-weight: 800; text-align: center; line-height: 1.3;}
             .nav-link.active, .nav-link:hover { background: white; color: var(--admin-accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(128,90,213,0.15); border-color: var(--admin-accent); }
             .nav-link:hover .icon { transform: scale(1.1); }
-            
-            /* منطقة العمل */
             .main { margin: 0; padding: 15px; width: 100%; display: none; } 
             .main.mobile-active { display: flex; animation: slideIn 0.3s ease-out; }
             @keyframes slideIn { from {opacity: 0; transform: translateX(20px);} to {opacity: 1; transform: translateX(0);} }
-            
             .card { padding: 20px; width: 100%; box-sizing: border-box; }
             table { font-size: 0.85rem; }
             th, td { padding: 10px 5px; }
@@ -124,7 +89,6 @@
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
     <div id="custom-toast"></div>
     
-    <!-- نافذة التأكيد الاحترافية -->
     <div class="modal-overlay" id="custom-confirm">
         <div class="modal-box">
             <h3 id="confirm-msg">تأكيد الإجراء</h3>
@@ -136,7 +100,6 @@
         </div>
     </div>
 
-    <!-- الهيدر الخاص بالموبايل -->
     <div class="mobile-header">
         <div style="display: flex; align-items: center; gap: 10px;">
             <button id="mobile-back-btn" style="display:none; background:var(--admin-accent); color:white; border:none; padding:8px 12px; border-radius:8px; font-family:'Cairo'; font-weight:bold; cursor:pointer;" onclick="closeTabMobile()">رجوع ⬅️</button>
@@ -147,7 +110,6 @@
 
     <div class="layout-wrapper">
         <div class="sidebar" id="admin-sidebar">
-            <!-- تم تصحيح خطأ filter: drop-shadow هنا -->
             <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 75px; display: block; margin: 0 auto 15px auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
             <h2>المدير العام 👑</h2>
             <div id="admin-status" style="text-align:center; color: #48bb78; font-size:0.85rem; margin-bottom: 25px; font-weight:bold; background: rgba(72, 187, 120, 0.1); padding: 5px; border-radius: 8px;">● جاري التحقق...</div>
@@ -289,25 +251,11 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, onSnapshot, query, orderBy, getCountFromServer, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        const supabaseUrl = 'https://poqswuntarhyjobwfkbl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+        const _supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
-            authDomain: "al-taf-1.firebaseapp.com",
-            projectId: "al-taf-1",
-            storageBucket: "al-taf-1.firebasestorage.app",
-            messagingSenderId: "242834897966",
-            appId: "1:242834897966:web:b5cd3bae396f9d978c73bf"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // 🛡️ دالة التعقيم الأمني (لمنع أكواد الاختراق)
         window.sanitizeHTML = function(str) {
             if (!str) return "";
             const temp = document.createElement('div');
@@ -316,13 +264,10 @@
         };
 
         const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
-
         window.uploadToImgBB = async (fileInputId) => {
             const fileInput = document.getElementById(fileInputId);
             if (!fileInput || fileInput.files.length === 0) return "";
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append("image", file);
+            const formData = new FormData(); formData.append("image", fileInput.files[0]);
             try {
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
                 const data = await res.json();
@@ -370,13 +315,18 @@
             document.getElementById('mobile-header-title').innerText = 'المدير العام';
         };
 
-        // 🛡️ حارس المصادقة المزدوج للإدارة
-        onAuthStateChanged(auth, (user) => {
-            if(user && (user.email === 'admin1@altaf.com' || user.email === 'admin@altaf.com')) {
-                document.getElementById('admin-status').innerText = '● متصل كمدير عام';
-                loadStats(); loadLogs(); loadHonorRollAdmin(); loadInbox(); loadStaffMessages();
-            } else { 
-                window.location.replace("login.html"); 
+        let currentUser = null;
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                if (session.user.email === 'admin1@altaf.com' || session.user.email === 'admin@altaf.com') {
+                    currentUser = session.user;
+                    document.getElementById('admin-status').innerText = '● متصل كمدير عام';
+                    loadStats(); loadLogs(); loadHonorRollAdmin(); loadInbox(); loadStaffMessages();
+                } else {
+                    window.location.replace("dashboard.html");
+                }
+            } else {
+                window.location.replace("login.html");
             }
         });
 
@@ -389,7 +339,11 @@
             let imgUrl = await uploadToImgBB('news-img-file');
             
             try {
-                await addDoc(collection(db, "school_news"), { title: title, details: det, imageUrl: imgUrl, publisher: "الإدارة العامة", timestamp: serverTimestamp() });
+                await _supabase.from('app_data').insert([{
+                    type: 'school_news',
+                    content: { title: title, details: det, imageUrl: imgUrl, publisher: "الإدارة العامة" },
+                    user_id: currentUser ? currentUser.id : null
+                }]);
                 alert("تم نشر خبر المدرسة بنجاح!"); 
                 document.getElementById('news-title-input').value = ""; document.getElementById('news-det-input').value = ""; document.getElementById('news-img-file').value = ""; loadStats();
             } catch (e) { alert("حدث خطأ أثناء النشر!"); }
@@ -402,48 +356,55 @@
             const btn = document.getElementById('btn-chat-pub'); btn.innerText = "جاري الإرسال... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('chat-img-file');
             try {
-                await addDoc(collection(db, "staff_messages"), { text: text, imgUrl: imgUrl, sender: "الإدارة", timestamp: serverTimestamp() });
-                alert("تم إرسال التعميم للكادر!"); document.getElementById('chat-msg').value = ""; document.getElementById('chat-img-file').value = "";
+                await _supabase.from('app_data').insert([{
+                    type: 'staff_messages',
+                    content: { text: text, imgUrl: imgUrl, sender: "الإدارة" },
+                    user_id: currentUser ? currentUser.id : null
+                }]);
+                alert("تم إرسال التعميم للكادر!"); document.getElementById('chat-msg').value = ""; document.getElementById('chat-img-file').value = ""; loadStaffMessages();
             } catch(e) { alert("حدث خطأ"); }
             btn.innerText = "إرسال الرسالة للكادر 🚀"; btn.disabled = false;
         };
 
-        function loadStaffMessages() {
-            onSnapshot(query(collection(db, "staff_messages"), orderBy("timestamp", "desc")), (snap) => {
-                const list = document.getElementById('staff-chat-list'); list.innerHTML = "";
-                snap.forEach(doc => {
-                    const d = doc.data(); const isMe = d.sender === "الإدارة";
+        async function loadStaffMessages() {
+            const { data, error } = await _supabase.from('app_data').select('*').eq('type', 'staff_messages').order('created_at', { ascending: false });
+            const list = document.getElementById('staff-chat-list'); list.innerHTML = "";
+            if (data) {
+                data.forEach(item => {
+                    const d = item.content; const isMe = d.sender === "الإدارة";
                     const align = isMe ? "text-align:right; background:#f0fdf4; border-right:4px solid #48bb78;" : "text-align:right; background:#f8fafc; border-right:4px solid #e84393;";
                     const imgHtml = d.imgUrl ? `<br><img src="${window.sanitizeHTML(d.imgUrl)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : "";
-                    const timeStr = d.timestamp ? new Date(d.timestamp.seconds*1000).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
+                    const timeStr = new Date(item.created_at).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
                     list.innerHTML += `<div style="padding:15px; border-radius:10px; margin-bottom:10px; border:1px solid #e2e8f0; ${align}">
                         <b style="color:${isMe ? '#2f855a' : '#d53f8c'}; font-size:1.1rem;">${window.sanitizeHTML(d.sender)}</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br>
                         <p style="margin:10px 0; font-weight:bold; color:#2d3748;">${window.sanitizeHTML(d.text)}</p> ${imgHtml}
-                        <button onclick="adminDel('staff_messages', '${doc.id}')" class="btn-del" style="margin-top:10px; border-radius:8px;">حذف 🗑️</button>
+                        <button onclick="adminDel('${item.id}')" class="btn-del" style="margin-top:10px; border-radius:8px;">حذف 🗑️</button>
                     </div>`;
                 });
-            });
+            }
         }
 
         async function loadStats() {
-            const hw = await getCountFromServer(collection(db, 'homeworks')); document.getElementById('total-hw').innerText = hw.data().count;
-            const news = await getCountFromServer(collection(db, 'school_news')); document.getElementById('total-news').innerText = news.data().count;
-            const ex = await getCountFromServer(collection(db, 'exams')); document.getElementById('total-ex').innerText = ex.data().count;
+            const { count: hwCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'homeworks');
+            document.getElementById('total-hw').innerText = hwCount || 0;
+            const { count: newsCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'school_news');
+            document.getElementById('total-news').innerText = newsCount || 0;
+            const { count: exCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'exams');
+            document.getElementById('total-ex').innerText = exCount || 0;
         }
 
-        let initialInbox = true;
-        function loadInbox() {
-            onSnapshot(query(collection(db, "messages"), orderBy("timestamp", "desc")), (snap) => {
-                const list = document.getElementById('inbox-list'); list.innerHTML = ""; const badge = document.getElementById('inbox-badge');
-                snap.docChanges().forEach(change => { if(change.type === "added" && !initialInbox) { document.getElementById('notify-sound').play().catch(()=>{}); alert(`🔔 رسالة جديدة من: ${window.sanitizeHTML(change.doc.data().name)}`); } });
-                initialInbox = false;
-                if (snap.size > 0) { badge.innerText = snap.size; badge.style.display = 'inline-block'; } else { badge.style.display = 'none'; }
-                if(snap.empty) { list.innerHTML = "<p>لا توجد رسائل حالياً.</p>"; return; }
-                snap.forEach(docSnap => {
-                    const d = docSnap.data(); const t = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('ar-EG') : '';
-                    list.innerHTML += `<div class="msg-card"><div><strong style="color:var(--danger); font-size:1.1rem;">👤 المرسل: ${window.sanitizeHTML(d.name)}</strong> <small style="color:gray;">(${t})</small><br>📞 رقم التواصل: <a href="tel:${window.sanitizeHTML(d.phone)}" style="color:var(--admin-accent); font-weight:bold;">${window.sanitizeHTML(d.phone)}</a><br><p style="margin-top:10px; background:white; padding:12px; border-radius:8px; border:1px solid #edf2f7; font-weight:bold;">${window.sanitizeHTML(d.message)}</p></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('messages','${docSnap.id}')">إكمال وحذف ✔️</button></div>`;
+        async function loadInbox() {
+            const { data } = await _supabase.from('app_data').select('*').eq('type', 'messages').order('created_at', { ascending: false });
+            const list = document.getElementById('inbox-list'); list.innerHTML = ""; const badge = document.getElementById('inbox-badge');
+            if (data && data.length > 0) {
+                badge.innerText = data.length; badge.style.display = 'inline-block';
+                data.forEach(item => {
+                    const d = item.content; const t = new Date(item.created_at).toLocaleString('ar-EG');
+                    list.innerHTML += `<div class="msg-card"><div><strong style="color:var(--danger); font-size:1.1rem;">👤 المرسل: ${window.sanitizeHTML(d.name)}</strong> <small style="color:gray;">(${t})</small><br>📞 رقم التواصل: <a href="tel:${window.sanitizeHTML(d.phone)}" style="color:var(--admin-accent); font-weight:bold;">${window.sanitizeHTML(d.phone)}</a><br><p style="margin-top:10px; background:white; padding:12px; border-radius:8px; border:1px solid #edf2f7; font-weight:bold;">${window.sanitizeHTML(d.message)}</p></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('${item.id}')">إكمال وحذف ✔️</button></div>`;
                 });
-            });
+            } else {
+                badge.style.display = 'none'; list.innerHTML = "<p>لا توجد رسائل حالياً.</p>";
+            }
         }
 
         window.publishExhibit = async () => {
@@ -452,55 +413,59 @@
             const btn = document.getElementById('btn-exhibit-pub'); btn.innerText = "جاري النشر... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('exhibit-img-file');
             if(!imgUrl) { alert("الرجاء اختيار صورة لرفعها!"); btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; return; }
-            try { await addDoc(collection(db, "exhibition"), { title: sub, imageUrl: imgUrl, publisher: "الإدارة", uid: auth.currentUser.uid, timestamp: serverTimestamp() }); alert("تم النشر بنجاح!"); document.getElementById('exhibit-sub').value = ""; document.getElementById('exhibit-img-file').value = ""; } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
+            try { 
+                await _supabase.from('app_data').insert([{
+                    type: 'exhibition',
+                    content: { title: sub, imageUrl: imgUrl, publisher: "الإدارة" },
+                    user_id: currentUser ? currentUser.id : null
+                }]);
+                alert("تم النشر بنجاح!"); document.getElementById('exhibit-sub').value = ""; document.getElementById('exhibit-img-file').value = ""; 
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "نشر في المعرض الآن 🎨"; btn.disabled = false; }
         };
 
-        function loadLogs() {
-            onSnapshot(query(collection(db, "activity_logs"), orderBy("timestamp", "desc")), (snap) => {
-                const container = document.getElementById('activity-logs'); container.innerHTML = "";
-                snap.forEach(doc => {
-                    const l = doc.data(); const t = l.timestamp ? new Date(l.timestamp.seconds * 1000).toLocaleString('ar-EG', {hour:'2-digit', minute:'2-digit', month:'short', day:'numeric'}) : 'الآن';
-                    const isRecent = l.timestamp && (new Date() - l.timestamp.toDate()) < 600000;
+        async function loadLogs() {
+            const { data } = await _supabase.from('app_data').select('*').eq('type', 'activity_logs').order('created_at', { ascending: false });
+            const container = document.getElementById('activity-logs'); container.innerHTML = "";
+            if (data) {
+                data.forEach(item => {
+                    const l = item.content; const logTime = new Date(item.created_at);
+                    const t = logTime.toLocaleString('ar-EG', {hour:'2-digit', minute:'2-digit', month:'short', day:'numeric'});
+                    const isRecent = (new Date() - logTime) < 600000;
                     const statusClass = isRecent ? 'status-online' : 'status-offline'; const statusText = isRecent ? '● متصل' : '● غير متصل';
                     container.innerHTML += `<tr><td><b>${window.sanitizeHTML(l.teacherName)}</b></td><td><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:0.85rem;">${window.sanitizeHTML(l.action)}</span></td><td><small>${window.sanitizeHTML(l.details)}</small></td><td><small>${t}</small></td><td class="${statusClass}">${statusText}</td></tr>`;
                 });
-            });
+            }
         }
         
-        window.clearAllLogs = () => { customConfirm("هل أنت متأكد من مسح جميع السجلات؟", async () => { const snap = await getDocs(collection(db, "activity_logs")); snap.forEach(d => deleteDoc(doc(db, "activity_logs", d.id))); alert("تم مسح السجل بنجاح."); }); };
+        window.clearAllLogs = () => { customConfirm("هل أنت متأكد من مسح جميع السجلات؟", async () => { await _supabase.from('app_data').delete().eq('type', 'activity_logs'); alert("تم مسح السجل بنجاح."); loadLogs(); }); };
 
-        function loadHonorRollAdmin() {
-            onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
-                const list = document.getElementById('honor-list-admin'); list.innerHTML = "";
-                if(snap.empty) { list.innerHTML = "<p>لا يوجد طلاب حالياً.</p>"; return; }
-                snap.forEach(docSnap => {
-                    const d = docSnap.data();
-                    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap:wrap; gap:10px;"><div><strong style="color:var(--admin-primary); font-size:1.1rem;">⭐ ${window.sanitizeHTML(d.name)}</strong> <span style="color:gray;">(${window.sanitizeHTML(d.class)})</span><br><span style="background:#feebc8; color:#dd6b20; padding:2px 8px; border-radius:6px; font-size:0.85rem; font-weight:bold; margin-top:5px; display:inline-block;">${window.sanitizeHTML(d.badge||'متميز')}</span></div><button class="btn btn-del" style="border-radius:8px;" onclick="delHonor('${docSnap.id}')">حذف 🗑️</button></div>`;
-                });
+        async function loadHonorRollAdmin() {
+            const { data } = await _supabase.from('app_data').select('*').eq('type', 'honor_roll').order('created_at', { ascending: false });
+            const list = document.getElementById('honor-list-admin'); list.innerHTML = "";
+            if(!data || data.length === 0) { list.innerHTML = "<p>لا يوجد طلاب حالياً.</p>"; return; }
+            data.forEach(item => {
+                const d = item.content;
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap:wrap; gap:10px;"><div><strong style="color:var(--admin-primary); font-size:1.1rem;">⭐ ${window.sanitizeHTML(d.name)}</strong> <span style="color:gray;">(${window.sanitizeHTML(d.class)})</span><br><span style="background:#feebc8; color:#dd6b20; padding:2px 8px; border-radius:6px; font-size:0.85rem; font-weight:bold; margin-top:5px; display:inline-block;">${window.sanitizeHTML(d.badge||'متميز')}</span></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('${item.id}')">حذف 🗑️</button></div>`;
             });
         }
 
-        window.delHonor = (id) => { customConfirm("هل تريد حذف هذا الطالب من لوحة الشرف؟", async () => { await deleteDoc(doc(db, "honor_roll", id)); alert("تم الحذف."); }); };
-        window.sendAlert = async () => { const text = window.sanitizeHTML(document.getElementById('alert-msg').value); if(!text) return alert("اكتب التنبيه أولاً!"); await setDoc(doc(db, "settings", "emergency_alert"), { active: true, text: text }); alert("تم إطلاق التنبيه!"); };
-        window.stopAlert = async () => { await setDoc(doc(db, "settings", "emergency_alert"), { active: false, text: "" }); alert("تم إيقاف التنبيه."); };
+        window.sendAlert = async () => { const text = window.sanitizeHTML(document.getElementById('alert-msg').value); if(!text) return alert("اكتب التنبيه أولاً!"); await _supabase.from('app_data').insert([{ type: 'emergency_alert', content: { active: true, text: text } }]); alert("تم إطلاق التنبيه!"); };
+        window.stopAlert = async () => { await _supabase.from('app_data').delete().eq('type', 'emergency_alert'); alert("تم إيقاف التنبيه."); };
 
         async function loadMasterList() {
             const container = document.getElementById('master-list'); container.innerHTML = "جاري التحميل...";
-            const sections = [{id:'homeworks', l:'واجب'}, {id:'school_news', l:'أخبار المدرسة'}, {id:'exams', l:'امتحان'}, {id:'stories', l:'قصة'}, {id:'exhibition', l:'معرض'}, {id:'library', l:'مكتبة'}, {id:'attendance', l:'سجل غياب'}];
-            let all = [];
-            try {
-                for (const s of sections) { const snap = await getDocs(collection(db, s.id)); snap.forEach(d => all.push({id:d.id, col:s.id, type:s.l, ...d.data()})); }
-                container.innerHTML = "";
-                if(all.length === 0) { container.innerHTML = "<p>لا يوجد محتوى منشور.</p>"; return; }
-                all.forEach(p => {
-                    const postTitle = p.subject || p.title || p.absentNames || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
-                    const publisher = p.publisher || p.teacherName || p.teacher || "غير معروف";
-                    container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap: wrap; gap:10px;"><div><span style="background:var(--admin-accent); color:white; padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:bold;">${window.sanitizeHTML(p.type)}</span> <b style="color:var(--admin-primary); margin-right:10px;">${window.sanitizeHTML(postTitle)}</b><br><small style="color:gray; margin-top:5px; display:inline-block;">بواسطة: ${window.sanitizeHTML(publisher)}</small></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('${p.col}','${p.id}')">حذف 🗑️</button></div>`;
-                });
-            } catch(e) { container.innerHTML = "حدث خطأ في الجلب."; }
+            const { data } = await _supabase.from('app_data').select('*').order('created_at', { ascending: false });
+            container.innerHTML = "";
+            if(!data || data.length === 0) { container.innerHTML = "<p>لا يوجد محتوى منشور.</p>"; return; }
+            data.forEach(item => {
+                const p = item.content; const tLabel = item.type;
+                const postTitle = p.subject || p.title || p.absentNames || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف");
+                const publisher = p.publisher || p.teacherName || p.teacher || "غير معروف";
+                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; flex-wrap: wrap; gap:10px;"><div><span style="background:var(--admin-accent); color:white; padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:bold;">${window.sanitizeHTML(tLabel)}</span> <b style="color:var(--admin-primary); margin-right:10px;">${window.sanitizeHTML(postTitle)}</b><br><small style="color:gray; margin-top:5px; display:inline-block;">بواسطة: ${window.sanitizeHTML(publisher)}</small></div><button class="btn btn-del" style="border-radius:8px;" onclick="adminDel('${item.id}')">حذف 🗑️</button></div>`;
+            });
         }
 
-        window.adminDel = (col, id) => { customConfirm("هل أنت متأكد من الحذف النهائي؟", async () => { await deleteDoc(doc(db, col, id)); alert("تم الحذف بنجاح"); loadMasterList(); loadStats(); }); };
+        window.adminDel = (id) => { customConfirm("هل أنت متأكد من الحذف النهائي؟", async () => { await _supabase.from('app_data').delete().eq('id', id); alert("تم الحذف بنجاح"); loadMasterList(); loadStats(); loadInbox(); loadStaffMessages(); loadHonorRollAdmin(); }); };
     </script>
 </body>
 </html>

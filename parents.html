@@ -20,6 +20,9 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.1/index.min.js"></script>
 
+    <!-- 🛡️ إضافة مكتبة Supabase الرسمية -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { 
             --bg-1: #f8fafc; --bg-2: #f1f5f9; --bg-3: #e2e8f0; 
@@ -270,11 +273,13 @@
     <footer>إدارة مدرسة الطف | نظام متابعة التلميذ الإلكتروني © 2026</footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // استدعاء مكتبة Supabase الرسمية بدل فايربيس
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-        const firebaseConfig = { apiKey: "AIzaSyDBMqHv6elH7q9S0niigrv7y7p8ZkEsOVE", authDomain: "altaf-students-portal.firebaseapp.com", projectId: "altaf-students-portal" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+        const SUPABASE_URL = 'https://poqswuntarhyjobwfkbl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+        
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }
 
@@ -384,12 +389,23 @@
             });
         };
 
+        // تعديل البحث عبر جدول students في Supabase
         document.getElementById('search-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const id = document.getElementById('student-id').value.trim(); const resSec = document.getElementById('result-section'); const err = document.getElementById('error-msg'); const load = document.getElementById('loading-msg');
             resSec.style.display = 'none'; err.style.display = 'none'; load.style.display = 'block';
             if(isOverviewMode) toggleBtn.click();
 
-            try { const snap = await getDoc(doc(db, "students", id)); if (snap.exists()) { currentStudentData = snap.data(); renderParentView(); resSec.style.display = 'block'; } else { err.style.display = 'block'; } } catch (ex) { err.textContent = "خطأ في الاتصال بالشبكة."; err.style.display = 'block'; } finally { load.style.display = 'none'; }
+            try { 
+                const { data, error } = await supabase.from('students').select('*').eq('id', id).single();
+                if (error || !data) throw error;
+                currentStudentData = data; 
+                renderParentView(); 
+                resSec.style.display = 'block'; 
+            } catch (ex) { 
+                err.style.display = 'block'; 
+            } finally { 
+                load.style.display = 'none'; 
+            }
         });
 
         document.getElementById('month-dropdown').addEventListener('change', () => { if(isOverviewMode) toggleBtn.click(); renderGradesGrid(); });

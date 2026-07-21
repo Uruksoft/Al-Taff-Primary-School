@@ -8,108 +8,71 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    
+    <!-- 🛡️ إضافة مكتبة Supabase الرسمية -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #f4f7f6; }
-        
         html, body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; min-height: 100vh; overflow-x: hidden; width: 100%; }
         *, *:before, *:after { box-sizing: border-box; }
-        
         .mobile-header { display: none; }
-        
-        /* تصميم الديسكتوب (الشاشات الكبيرة) */
         .sidebar { width: 260px; background: var(--primary); color: white; position: fixed; height: 100%; padding: 20px; box-sizing: border-box; z-index: 100; overflow-y: auto; transition: 0.3s;}
         .sidebar h2 { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-weight: 800;}
         .nav-btn { width: 100%; padding: 12px 15px; margin-bottom: 8px; border: none; background: none; color: #bdc3c7; text-align: right; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; border-radius: 10px; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-weight: 700;}
         .nav-btn .icon { font-size: 1.3rem; }
         .nav-btn .text { flex-grow: 1; }
         .nav-btn.active, .nav-btn:hover { background: var(--accent); color: white; transform: translateX(-5px); box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);}
-        
         .main { margin-right: 260px; padding: 30px; width: calc(100% - 260px); box-sizing: border-box; display: flex; flex-direction: column; }
         .header { background: white; padding: 20px 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
         .header h2 { margin: 0; color: var(--primary); font-weight: 800; }
-        
         .stats-container { display: flex; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
         .stat-card { flex: 1; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center; min-width: 150px; border-bottom: 4px solid var(--accent);}
         .stat-card h3 { margin: 0; color: #7f8c8d; font-size: 1rem; font-weight: 700;}
         .stat-card h1 { margin: 10px 0 0 0; font-size: 2.5rem; color: var(--primary); font-weight: 800;}
-
         .tab-content { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
-
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; width: 100%; border: 1px solid #f1f5f9;}
         .card h3 { margin-top: 0; color: var(--primary); font-weight: 800; font-size: 1.3rem;}
         label { display: block; margin-top: 15px; font-weight: bold; color: #475569; font-size: 0.95rem;}
         input, textarea, select { width: 100%; padding: 12px 15px; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: 'Cairo'; box-sizing: border-box; font-size: 0.95rem; transition: 0.3s; background: #f8fafc;}
         input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); background: white;}
-        
         .btn-pub { background: var(--success); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: 800; margin-top: 25px; font-size: 1.1rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);}
         .btn-pub:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); }
-        
         .post-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--accent); flex-wrap: wrap; gap: 10px; transition: 0.3s;}
         .post-item:hover { transform: translateX(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .del-btn { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.2s;}
         .del-btn:hover { background: #fca5a5; color: white; }
         .edit-btn { background: #fef3c7; color: #d97706; border: 1px solid #fcd34d; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; margin-left: 5px; font-weight: bold; transition: 0.2s;}
         .edit-btn:hover { background: #fcd34d; color: white; }
-
         .fab-support { position: fixed; bottom: 20px; left: 20px; background: #25D366; color: white; border-radius: 50px; padding: 12px 20px; font-family: 'Cairo'; font-size: 0.95rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 1000; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .fab-support:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6); }
-
         .badge-num { background: #e74c3c; color: white; border-radius: 50px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
         #custom-toast { visibility: hidden; min-width: 250px; background-color: #3498db; color: white; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
-
-        /* ================= تصميم الموبايل الذكي (شبكة الأيقونات) ================= */
         @media (max-width: 950px) {
             body { flex-direction: column; background: #f8fafc; }
-            
-            /* الهيدر العلوي الخاص بالموبايل */
-            .mobile-header {
-                display: flex; justify-content: space-between; align-items: center;
-                background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-                position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent);
-            }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
             .mobile-header h3 { margin: 0; color: var(--primary); font-size: 1.2rem; font-weight: 800; }
-            
-            /* تحويل القائمة الجانبية إلى شبكة (Grid) */
-            .sidebar { 
-                width: 100%; position: static; height: auto; padding: 20px 15px; 
-                display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; 
-                background: transparent; z-index: 1;
-            }
-            .sidebar.mobile-hidden { display: none; } /* يختفي عند فتح قسم معين */
-            
-            /* إخفاء العناصر غير الضرورية في شبكة الموبايل */
+            .sidebar { width: 100%; position: static; height: auto; padding: 20px 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: transparent; z-index: 1; }
+            .sidebar.mobile-hidden { display: none; }
             .sidebar h2, .sidebar #teacher-name, .sidebar hr, .sidebar a { display: none !important; }
-            
-            /* شكل أيقونات الموبايل (المربعات) */
-            .nav-btn {
-                background: white; color: var(--primary); flex-direction: column; gap: 8px;
-                padding: 20px 5px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-                margin: 0; align-items: center; justify-content: center; border: 1px solid #f1f5f9;
-            }
+            .nav-btn { background: white; color: var(--primary); flex-direction: column; gap: 8px; padding: 20px 5px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin: 0; align-items: center; justify-content: center; border: 1px solid #f1f5f9; }
             .nav-btn:active { transform: scale(0.95); }
             .nav-btn .icon { font-size: 2.2rem; margin: 0; transition: 0.3s;}
             .nav-btn .text { font-size: 0.8rem; font-weight: 800; text-align: center; line-height: 1.3;}
             .nav-btn.active, .nav-btn:hover { background: white; color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(52,152,219,0.15); border-color: var(--accent); }
             .nav-btn:hover .icon { transform: scale(1.1); }
-            
-            /* زر الخروج بالموبايل */
             .logout-btn-desktop { display: none !important; }
-            
-            /* منطقة العمل (تكون مخفية بالموبايل حتى يتم اختيار قسم) */
             .main { margin: 0; padding: 15px; width: 100%; display: none; }
             .main.mobile-active { display: flex; animation: slideIn 0.3s ease-out; }
             @keyframes slideIn { from {opacity: 0; transform: translateX(20px);} to {opacity: 1; transform: translateX(0);} }
-            
-            .header { display: none; } /* إخفاء هيدر الديسكتوب الداخلي */
+            .header { display: none; }
             .card { padding: 20px; }
             .post-item { flex-direction: column; align-items: flex-start; }
             .post-item div { width: 100%; display: flex; justify-content: space-between; margin-top: 10px; }
         }
-
-        /* ================= تصميم النوافذ المنبثقة (مهم جداً) ================= */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Cairo'; animation: fadeInScale 0.3s; }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -125,7 +88,6 @@
     <div id="custom-toast"></div>
     <a href="https://wa.me/009647815202022" class="fab-support" target="_blank">📞 دعم فني</a>
 
-    <!-- الهيدر الخاص بالموبايل (يظهر فقط في الشاشات الصغيرة) -->
     <div class="mobile-header">
         <div style="display: flex; align-items: center; gap: 10px;">
             <button id="mobile-back-btn" style="display:none; background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:8px; font-family:'Cairo'; font-weight:bold; cursor:pointer;" onclick="closeTabMobile()">رجوع ⬅️</button>
@@ -134,7 +96,6 @@
         <button id="logoutBtnMobile" style="background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; padding:6px 12px; border-radius:8px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">خروج</button>
     </div>
 
-    <!-- القائمة الجانبية (أو شبكة الأيقونات في الموبايل) -->
     <div class="sidebar" id="sidebar-menu">
         <h2>لوحة المعلم 🏫</h2>
         <div id="teacher-name" style="text-align: center; color: var(--accent); margin-bottom: 20px; font-weight: bold; font-size: 0.9rem;"></div>
@@ -161,7 +122,6 @@
         <button class="logout-btn-desktop" id="logoutBtnDesktop" style="width: 100%; padding: 12px; margin-top: 15px; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition:0.3s;">تسجيل الخروج 🚪</button>
     </div>
 
-    <!-- منطقة العمل (مخفية بالموبايل حتى يتم اختيار قسم) -->
     <div class="main" id="main-content">
         <div class="header">
             <h2>أهلاً بك يا أستاذ 👋</h2>
@@ -180,7 +140,7 @@
                 <label>المادة</label><input type="text" id="hw-sub" placeholder="مثلاً: القراءة">
                 <label>الصف</label><select id="hw-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
                 <label>التفاصيل</label><textarea id="hw-det" rows="4" placeholder="اكتب نص الواجب بدقة..."></textarea>
-                <button class="btn-pub" onclick="sendToFirebase('homeworks', 'hw')" id="btn-hw">نشر الواجب الآن</button>
+                <button class="btn-pub" onclick="sendToSupabase('homeworks', 'hw')" id="btn-hw">نشر الواجب الآن</button>
             </div>
         </div>
 
@@ -190,7 +150,7 @@
                 <label>عنوان الإعلان</label><input type="text" id="news-sub" placeholder="مثلاً: تنبيه هام بخصوص الزي">
                 <label>نص الإعلان</label><textarea id="news-det" rows="5" placeholder="اكتب تفاصيل الإعلان هنا..."></textarea>
                 <input type="hidden" id="news-cls" value="عام">
-                <button class="btn-pub" style="background:var(--accent)" onclick="sendToFirebase('announcements', 'news')" id="btn-news">نشر الإعلان للجميع</button>
+                <button class="btn-pub" style="background:var(--accent)" onclick="sendToSupabase('announcements', 'news')" id="btn-news">نشر الإعلان للجميع</button>
             </div>
         </div>
 
@@ -200,7 +160,7 @@
                 <label>المادة</label><input type="text" id="ex-sub" placeholder="مثلاً: الرياضيات (الفصل الأول)">
                 <label>تاريخ ووقت الامتحان الدقيق</label><input type="datetime-local" id="ex-det" style="font-family: inherit;">
                 <label>الصف</label><select id="ex-cls"><option>الأول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option></select>
-                <button class="btn-pub" style="background:var(--primary)" onclick="sendToFirebase('exams', 'ex')" id="btn-ex">حفظ وتعميم الموعد</button>
+                <button class="btn-pub" style="background:var(--primary)" onclick="sendToSupabase('exams', 'ex')" id="btn-ex">حفظ وتعميم الموعد</button>
             </div>
         </div>
 
@@ -223,7 +183,6 @@
             </div>
         </div>
 
-        <!-- 🏆 قسم الأوائل المطور والفعال بالكامل 🏆 -->
         <div id="tab-badge" class="tab-content">
             <div class="card" style="border-top: 4px solid #f1c40f;">
                 <h3 style="color: #f1c40f;">🌟 إدارة لوحة الشرف والأوائل</h3>
@@ -231,10 +190,8 @@
                 
                 <label>اسم الطالب المتميز (الثلاثي)</label>
                 <input type="text" id="badge-name" placeholder="مثال: علي حسين محمد">
-                
                 <label>الصف والشعبة</label>
                 <input type="text" id="badge-cls" placeholder="مثال: الخامس (أ)">
-                
                 <label>نوع الوسام أو اللقب</label>
                 <select id="badge-type">
                     <option value="نجم الأسبوع">🌟 نجم الأسبوع</option>
@@ -285,7 +242,6 @@
         </footer>
     </div>
 
-    <!-- نافذة تأكيد الحذف وتعديل النصوص -->
     <div class="modal-overlay" id="custom-confirm">
         <div class="modal-box">
             <h3 id="confirm-msg">هل أنت متأكد؟</h3>
@@ -306,25 +262,11 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, getCountFromServer, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        const supabaseUrl = 'https://poqswuntarhyjobwfkbl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+        const _supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBespAE9-XTjHSiRoXRL11dkYCN4s1_SdY",
-            authDomain: "al-taf-1.firebaseapp.com",
-            projectId: "al-taf-1",
-            storageBucket: "al-taf-1.firebasestorage.app",
-            messagingSenderId: "242834897966",
-            appId: "1:242834897966:web:b5cd3bae396f9d978c73bf"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // 🛡️ دالة تنظيف النصوص لحماية المنصة (XSS)
         window.sanitizeHTML = function(str) {
             if (!str) return "";
             const temp = document.createElement('div');
@@ -332,42 +274,34 @@
             return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         };
 
-        // 🛡️ حارس المصادقة (بوابة الأمان)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userName = user.email.split('@')[0];
-                document.getElementById('teacher-name').innerText = "الحساب: " + user.email;
+        let currentUser = null;
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                currentUser = session.user;
+                const userName = currentUser.email.split('@')[0];
+                document.getElementById('teacher-name').innerText = "الحساب: " + currentUser.email;
                 loadStatistics();
+                loadStaffMessages();
+                loadHonorRoll();
                 if(!sessionStorage.getItem('welcomed')) { alert("أهلاً بك يا أستاذ " + userName); sessionStorage.setItem('welcomed', 'true'); }
             } else { 
                 window.location.replace("login.html"); 
             }
         });
 
-        // دوال تسجيل الخروج
-        const doLogout = () => signOut(auth).then(() => window.location.replace("login.html"));
+        const doLogout = () => _supabase.auth.signOut().then(() => window.location.replace("login.html"));
         document.getElementById('logoutBtnDesktop').addEventListener('click', doLogout);
         document.getElementById('logoutBtnMobile').addEventListener('click', doLogout);
 
-        // ==========================================
-        // 🚀 نظام الملاحة الذكي (يتحسس الموبايل والديسكتوب)
-        // ==========================================
         window.openTab = (id, titleText) => {
-            // إخفاء كل الأقسام وإزالة التفعيل
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            // تفعيل القسم المطلوب
             document.getElementById(id).classList.add('active'); 
-            
-            // تفعيل الزر الذي تم النقر عليه
             const activeBtn = document.querySelector(`[onclick="openTab('${id}', '${titleText}')"]`);
             if(activeBtn) activeBtn.classList.add('active');
-            
             if(id === 'tab-chat') document.getElementById('chat-badge').style.display = 'none';
             if(id === 'tab-manage') loadManageList();
 
-            // إذا كان المستخدم يفتح من موبايل، شغل وضع التطبيق
             if (window.innerWidth <= 950) {
                 document.getElementById('sidebar-menu').classList.add('mobile-hidden');
                 document.getElementById('main-content').classList.add('mobile-active');
@@ -377,7 +311,6 @@
             }
         };
 
-        // دالة زر الرجوع في الموبايل
         window.closeTabMobile = () => {
             document.getElementById('sidebar-menu').classList.remove('mobile-hidden');
             document.getElementById('main-content').classList.remove('mobile-active');
@@ -385,7 +318,6 @@
             document.getElementById('mobile-header-title').innerText = 'لوحة الإدارة';
         };
 
-        // خدمات الرفع والصور والإشعارات المساعدة
         const IMGBB_API_KEY = "15f06ddce1cdabb739cf274694553cac";
         window.uploadToImgBB = async (fileInputId) => {
             const fileInput = document.getElementById(fileInputId);
@@ -414,125 +346,149 @@
         };
 
         async function reportActivity(actionType, detail) {
-            if(!auth.currentUser) return;
-            await addDoc(collection(db, "activity_logs"), { teacherName: auth.currentUser.email.split('@')[0], action: actionType, details: detail, timestamp: serverTimestamp() });
+            if(!currentUser) return;
+            await _supabase.from('app_data').insert([{
+                type: 'activity_logs',
+                content: { teacherName: currentUser.email.split('@')[0], action: actionType, details: detail },
+                user_id: currentUser.id
+            }]);
         }
 
         async function loadStatistics() {
-            if(!auth.currentUser) return;
-            const uid = auth.currentUser.uid;
-            const hwCount = await getCountFromServer(query(collection(db, 'homeworks'), where("uid", "==", uid))); document.getElementById('total-hw').innerText = hwCount.data().count;
-            const newsCount = await getCountFromServer(query(collection(db, 'announcements'), where("uid", "==", uid))); document.getElementById('total-news').innerText = newsCount.data().count;
-            const exCount = await getCountFromServer(query(collection(db, 'exams'), where("uid", "==", uid))); document.getElementById('total-ex').innerText = exCount.data().count;
+            if(!currentUser) return;
+            const { count: hwCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'homeworks').eq('user_id', currentUser.id);
+            document.getElementById('total-hw').innerText = hwCount || 0;
+            const { count: newsCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'announcements').eq('user_id', currentUser.id);
+            document.getElementById('total-news').innerText = newsCount || 0;
+            const { count: exCount } = await _supabase.from('app_data').select('*', { count: 'exact', head: true }).eq('type', 'exams').eq('user_id', currentUser.id);
+            document.getElementById('total-ex').innerText = exCount || 0;
         }
 
-        // ==========================================
-        // 🏆 برمجة إدارة قسم الأوائل (لوحة الشرف) 🏆
-        // ==========================================
         window.grantBadge = async () => {
             const n = window.sanitizeHTML(document.getElementById('badge-name').value); 
             const c = window.sanitizeHTML(document.getElementById('badge-cls').value); 
             const b = document.getElementById('badge-type').value;
-            
             if(!n || !c) return alert("الرجاء كتابة اسم الطالب والصف بشكل صحيح!");
-            
             const btn = document.getElementById('btn-badge'); btn.innerText = "جاري الإضافة..."; btn.disabled = true;
             try {
-                await addDoc(collection(db, "honor_roll"), { name: n, class: c, badge: b, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() });
+                await _supabase.from('app_data').insert([{
+                    type: 'honor_roll',
+                    content: { name: n, class: c, badge: b, publisher: currentUser.email.split('@')[0] },
+                    user_id: currentUser.id
+                }]);
                 reportActivity("وسام شرف", `أضاف الطالب (${n}) للوحة الشرف`); alert("تمت إضافة الطالب للوحة الشرف بنجاح! 🌟");
-                document.getElementById('badge-name').value = ""; document.getElementById('badge-cls').value = "";
+                document.getElementById('badge-name').value = ""; document.getElementById('badge-cls').value = ""; loadHonorRoll();
             } catch (e) { alert("حدث خطأ أثناء الإضافة!"); } finally { btn.innerText = "إضافة الطالب للوحة الشرف 🏆"; btn.disabled = false; }
         };
 
-        // جلب قائمة الأوائل مع إمكانية الحذف
-        onSnapshot(query(collection(db, "honor_roll"), orderBy("timestamp", "desc")), (snap) => {
-            const list = document.getElementById('admin-honor-list');
-            if(!list) return;
-            list.innerHTML = "";
-            
-            if(snap.empty) { list.innerHTML = "<p style='color:gray; font-size:0.9rem;'>لا يوجد طلاب مضافين في لوحة الشرف حالياً.</p>"; return; }
-            
-            snap.forEach(docSnap => {
-                const d = docSnap.data();
-                list.innerHTML += `
-                <div style="background:#f8fafc; padding:15px; margin-bottom:10px; border:1px solid #e2e8f0; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong style="color:#2c3e50; font-size: 1.1rem;">${window.sanitizeHTML(d.name || '')}</strong> <span style="color:#94a3b8; font-size:0.85rem;">- ${window.sanitizeHTML(d.class || '')}</span> <br>
-                        <span style="background:#fef3c7; color:#d97706; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; font-weight:bold; display:inline-block; margin-top:6px;">${window.sanitizeHTML(d.badge || '')}</span>
-                    </div>
-                    <button onclick="removeHonorStudent('${docSnap.id}')" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Cairo'; transition:0.2s;">حذف 🗑️</button>
-                </div>`;
+        async function loadHonorRoll() {
+            const { data } = await _supabase.from('app_data').select('*').eq('type', 'honor_roll').order('created_at', { ascending: false });
+            const list = document.getElementById('admin-honor-list'); if(!list) return; list.innerHTML = "";
+            if(!data || data.length === 0) { list.innerHTML = "<p style='color:gray; font-size:0.9rem;'>لا يوجد طلاب مضافين في لوحة الشرف حالياً.</p>"; return; }
+            data.forEach(item => {
+                const d = item.content;
+                list.innerHTML += `<div style="background:#f8fafc; padding:15px; margin-bottom:10px; border:1px solid #e2e8f0; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong style="color:#2c3e50; font-size: 1.1rem;">${window.sanitizeHTML(d.name || '')}</strong> <span style="color:#94a3b8; font-size:0.85rem;">- ${window.sanitizeHTML(d.class || '')}</span> <br><span style="background:#fef3c7; color:#d97706; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; font-weight:bold; display:inline-block; margin-top:6px;">${window.sanitizeHTML(d.badge || '')}</span></div>
+                    <button onclick="removeHonorStudent('${item.id}')" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Cairo'; transition:0.2s;">حذف 🗑️</button></div>`;
             });
-        });
+        }
 
         window.removeHonorStudent = async (id) => {
             customConfirm("هل أنت متأكد من حذف هذا الطالب من لوحة الشرف بالرئيسية؟", async () => {
-                try { await deleteDoc(doc(db, "honor_roll", id)); alert("تم حذف الطالب بنجاح."); } catch(e) { alert("حدث خطأ أثناء الحذف."); }
+                try { await _supabase.from('app_data').delete().eq('id', id); alert("تم حذف الطالب بنجاح."); loadHonorRoll(); } catch(e) { alert("حدث خطأ أثناء الحذف."); }
             });
         };
 
-        // ==========================================
-        // بقية دوال النشر والمكتبة
-        // ==========================================
-        window.publishLibrary = async () => { /* ... (نفس الكود الأصلي) ... */
+        window.publishLibrary = async () => {
             const sub = window.sanitizeHTML(document.getElementById('lib-sub').value); const cls = document.getElementById('lib-cls').value; const url = document.getElementById('lib-url').value;
             if(!sub || !url) return alert("أدخل اسم الملزمة والرابط!");
             const btn = document.getElementById('btn-lib'); btn.innerText = "جاري الرفع..."; btn.disabled = true;
-            try { await addDoc(collection(db, "library"), { subject: sub, class: cls, url: url, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() }); alert("تم الرفع للمكتبة الرقمية بنجاح!"); document.getElementById('lib-sub').value = ""; document.getElementById('lib-url').value = ""; } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "رفع للمكتبة ⬇️"; btn.disabled = false; }
+            try { 
+                await _supabase.from('app_data').insert([{ type: 'library', content: { subject: sub, class: cls, url: url, publisher: currentUser.email.split('@')[0] }, user_id: currentUser.id }]); 
+                alert("تم الرفع للمكتبة الرقمية بنجاح!"); document.getElementById('lib-sub').value = ""; document.getElementById('lib-url').value = ""; 
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "رفع للمكتبة ⬇️"; btn.disabled = false; }
         };
 
-        window.submitAttendance = async () => { /* ... (نفس الكود الأصلي) ... */
+        window.submitAttendance = async () => {
             const c = window.sanitizeHTML(document.getElementById('att-cls').value); const n = window.sanitizeHTML(document.getElementById('att-names').value);
             if(!c || !n) return alert("اكمل الصف وأسماء الغياب!");
             const btn = document.getElementById('btn-att'); btn.innerText = "جاري الإرسال..."; btn.disabled = true;
-            try { const today = new Date().toLocaleDateString('ar-IQ'); await addDoc(collection(db, "attendance"), { class: c, absentNames: n, date: today, teacher: auth.currentUser.email.split('@')[0], timestamp: serverTimestamp() }); alert("تم رفع سجل الغياب للرئيسية."); document.getElementById('att-cls').value = ""; document.getElementById('att-names').value = ""; } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "إرسال سجل الغياب"; btn.disabled = false; }
+            try { 
+                const today = new Date().toLocaleDateString('ar-IQ'); 
+                await _supabase.from('app_data').insert([{ type: 'attendance', content: { class: c, absentNames: n, date: today, teacher: currentUser.email.split('@')[0] }, user_id: currentUser.id }]); 
+                alert("تم رفع سجل الغياب للرئيسية."); document.getElementById('att-cls').value = ""; document.getElementById('att-names').value = ""; 
+            } catch (e) { alert("حدث خطأ!"); } finally { btn.innerText = "إرسال سجل الغياب"; btn.disabled = false; }
         };
 
-        window.publishStory = async () => { /* ... (نفس الكود الأصلي) ... */
+        window.publishStory = async () => {
             const txt = window.sanitizeHTML(document.getElementById('story-text').value); const fileInput = document.getElementById('story-img-file');
             if(fileInput.files.length === 0 && !txt) return alert("الرجاء إرفاق صورة أو كتابة نص!");
             const btn = document.getElementById('btn-story'); btn.innerText = "جاري الرفع... ⏳"; btn.disabled = true;
             let imgUrl = await uploadToImgBB('story-img-file');
-            try { await addDoc(collection(db, "stories"), { imageUrl: imgUrl, textContent: txt, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() }); alert("تم النشر بنجاح!"); document.getElementById('story-img-file').value = ""; document.getElementById('story-text').value = ""; } catch (e) { alert("فشل النشر"); } finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
+            try { 
+                await _supabase.from('app_data').insert([{ type: 'stories', content: { imageUrl: imgUrl, textContent: txt, publisher: currentUser.email.split('@')[0] }, user_id: currentUser.id }]); 
+                alert("تم النشر بنجاح!"); document.getElementById('story-img-file').value = ""; document.getElementById('story-text').value = ""; 
+            } catch (e) { alert("فشل النشر"); } finally { btn.innerText = "نشر القصة الآن"; btn.disabled = false; }
         };
 
-        window.sendToFirebase = async (col, pre) => {
+        window.sendToSupabase = async (colType, pre) => {
             const subject = window.sanitizeHTML(document.getElementById(pre+'-sub').value); const details = window.sanitizeHTML(document.getElementById(pre+'-det').value); const classRoom = document.getElementById(pre+'-cls').value;
             const btn = document.getElementById('btn-'+pre);
             if(!subject || !details) return alert("الرجاء إكمال كافة الحقول!");
             btn.innerText = "جاري النشر... ⏳"; btn.disabled = true;
-            try { await addDoc(collection(db, col), { subject, details, class: classRoom, publisher: auth.currentUser.email.split('@')[0], uid: auth.currentUser.uid, timestamp: serverTimestamp() }); alert("تم النشر بنجاح!"); document.getElementById(pre+'-sub').value = ""; document.getElementById(pre+'-det').value = ""; loadStatistics(); } catch (e) { alert("فشل النشر!"); } finally { btn.innerText = "نشر المحتوى"; btn.disabled = false; }
+            try { 
+                await _supabase.from('app_data').insert([{ type: colType, content: { subject, details, class: classRoom, publisher: currentUser.email.split('@')[0] }, user_id: currentUser.id }]); 
+                alert("تم النشر بنجاح!"); document.getElementById(pre+'-sub').value = ""; document.getElementById(pre+'-det').value = ""; loadStatistics(); 
+            } catch (e) { alert("فشل النشر!"); } finally { btn.innerText = "نشر المحتوى"; btn.disabled = false; }
         };
 
-        // استماع رسائل الإدارة
-        let initialTeacherChat = true;
-        onSnapshot(query(collection(db, "staff_messages"), orderBy("timestamp", "desc")), (snap) => {
-            const list = document.getElementById('teacher-chat-list'); list.innerHTML = ""; let newCount = 0; const badge = document.getElementById('chat-badge');
-            snap.docChanges().forEach(change => { if(change.type === "added" && !initialTeacherChat) { const d = change.doc.data(); if(d.sender === "الإدارة") { document.getElementById('notify-sound').play().catch(()=>{}); alert(`🔔 تعميم إداري جديد`); newCount++; } } }); initialTeacherChat = false;
-            if (snap.size > 0 && !document.getElementById('tab-chat').classList.contains('active')) { badge.innerText = snap.size; badge.style.display = 'inline-block'; }
-            if(snap.empty) { list.innerHTML = "<p>لا توجد توجيهات.</p>"; return; }
-            snap.forEach(doc => { const d = doc.data(); if(d.sender === "الإدارة") { const safeText = window.sanitizeHTML(d.text); const imgHtml = d.imgUrl ? `<br><img src="${window.sanitizeHTML(d.imgUrl)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : ""; const timeStr = d.timestamp ? new Date(d.timestamp.seconds*1000).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : ''; list.innerHTML += `<div style="padding:15px; border-radius:8px; margin-bottom:15px; text-align:right; background:#fdf2f8; border-right:5px solid #e84393;"><b style="color:#d53f8c; font-size:1.1rem;">👑 الإدارة العامة</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br><p style="margin:10px 0; font-weight:bold; font-size:1rem; color:#333;">${safeText}</p> ${imgHtml}</div>`; } });
-        });
-
-        // إدارة المنشورات
-        async function loadManageList() {
-            const container = document.getElementById('all-posts'); container.innerHTML = "جاري التحميل..."; const userUid = auth.currentUser ? auth.currentUser.uid : null; if(!userUid) return;
-            const cols = [{ id: 'homeworks', label: 'واجب' }, { id: 'announcements', label: 'إعلان' }, { id: 'exams', label: 'امتحان' }, { id: 'stories', label: 'قصة' }, { id: 'library', label: 'مكتبة' }]; let allPosts = [];
-            try {
-                for (const col of cols) { const q = query(collection(db, col.id), where("uid", "==", userUid)); const snapshot = await getDocs(q); snapshot.forEach(doc => { allPosts.push({ id: doc.id, col: col.id, typeLabel: col.label, ...doc.data() }); }); }
-                allPosts.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)); container.innerHTML = "";
-                if(allPosts.length === 0) { container.innerHTML = "<p style='text-align:center;'>لا توجد منشورات.</p>"; return; }
-                allPosts.forEach(p => {
-                    const dateStr = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleDateString('ar-EG') : 'غير معروف';
-                    const rawTitle = p.subject || p.title || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف"); const postTitle = window.sanitizeHTML(rawTitle); const postClass = p.class ? `(${window.sanitizeHTML(p.class)})` : ""; const safeDetails = window.sanitizeHTML(p.details || "");
-                    const editBtnHtml = (p.col !== 'stories' && p.col !== 'library') ? `<button class="edit-btn" onclick="editPost('${p.col}', '${p.id}', '${safeDetails}', '${postTitle}')">تعديل ✏️</button>` : "";
-                    container.innerHTML += `<div class="post-item"><div><span style="background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${p.typeLabel}</span> <b>${postTitle}</b> ${postClass} <br><small style="color:gray">التاريخ: ${dateStr}</small></div><div>${editBtnHtml}<button class="del-btn" onclick="removePost('${p.col}', '${p.id}', '${postTitle}')">حذف 🗑️</button></div></div>`;
+        async function loadStaffMessages() {
+            const { data } = await _supabase.from('app_data').select('*').eq('type', 'staff_messages').order('created_at', { ascending: false });
+            const list = document.getElementById('teacher-chat-list'); list.innerHTML = ""; const badge = document.getElementById('chat-badge');
+            if(data && data.length > 0) {
+                if (!document.getElementById('tab-chat').classList.contains('active')) { badge.innerText = data.length; badge.style.display = 'inline-block'; }
+                data.forEach(item => { 
+                    const d = item.content; 
+                    if(d.sender === "الإدارة") { 
+                        const safeText = window.sanitizeHTML(d.text); const imgHtml = d.imgUrl ? `<br><img src="${window.sanitizeHTML(d.imgUrl)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : ""; const timeStr = new Date(item.created_at).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); 
+                        list.innerHTML += `<div style="padding:15px; border-radius:8px; margin-bottom:15px; text-align:right; background:#fdf2f8; border-right:5px solid #e84393;"><b style="color:#d53f8c; font-size:1.1rem;">👑 الإدارة العامة</b> <span style="color:gray; font-size:0.8rem; margin-right:10px;">${timeStr}</span><br><p style="margin:10px 0; font-weight:bold; font-size:1rem; color:#333;">${safeText}</p> ${imgHtml}</div>`; 
+                    } 
                 });
-            } catch (e) { container.innerHTML = "حدث خطأ."; }
+            } else {
+                list.innerHTML = "<p>لا توجد توجيهات.</p>";
+            }
         }
 
-        window.removePost = (col, id, title) => { customConfirm("هل أنت متأكد من حذف هذا المنشور نهائياً؟", async () => { await deleteDoc(doc(db, col, id)); loadManageList(); loadStatistics(); alert("تم الحذف بنجاح"); }); };
-        window.editPost = (col, id, oldTxt, title) => { customPrompt("تعديل تفاصيل المنشور:", oldTxt, async (newTxt) => { if(newTxt && newTxt !== oldTxt) { await updateDoc(doc(db, col, id), { details: newTxt }); alert("تم التعديل بنجاح"); loadManageList(); } }); };
+        async function loadManageList() {
+            const container = document.getElementById('all-posts'); container.innerHTML = "جاري التحميل..."; if(!currentUser) return;
+            const { data } = await _supabase.from('app_data').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+            container.innerHTML = "";
+            if(!data || data.length === 0) { container.innerHTML = "<p style='text-align:center;'>لا توجد منشورات.</p>"; return; }
+            const labels = { 'homeworks': 'واجب', 'announcements': 'إعلان', 'exams': 'امتحان', 'stories': 'قصة', 'library': 'مكتبة', 'honor_roll': 'لوحة شرف', 'attendance': 'سجل غياب' };
+            data.forEach(item => {
+                const p = item.content; const typeLabel = labels[item.type] || item.type;
+                const dateStr = new Date(item.created_at).toLocaleDateString('ar-EG');
+                const rawTitle = p.subject || p.title || p.name || (p.textContent ? p.textContent.substring(0,20)+'...' : "صورة/ملف"); const postTitle = window.sanitizeHTML(rawTitle); const postClass = p.class ? `(${window.sanitizeHTML(p.class)})` : ""; const safeDetails = window.sanitizeHTML(p.details || "");
+                const editBtnHtml = (item.type !== 'stories' && item.type !== 'library' && item.type !== 'honor_roll' && item.type !== 'attendance') ? `<button class="edit-btn" onclick="editPost('${item.id}', '${safeDetails}', '${postTitle}')">تعديل ✏️</button>` : "";
+                container.innerHTML += `<div class="post-item"><div><span style="background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${typeLabel}</span> <b>${postTitle}</b> ${postClass} <br><small style="color:gray">التاريخ: ${dateStr}</small></div><div>${editBtnHtml}<button class="del-btn" onclick="removePost('${item.id}', '${postTitle}')">حذف 🗑️</button></div></div>`;
+            });
+        }
+
+        window.removePost = (id, title) => { customConfirm("هل أنت متأكد من حذف هذا المنشور نهائياً؟", async () => { await _supabase.from('app_data').delete().eq('id', id); loadManageList(); loadStatistics(); alert("تم الحذف بنجاح"); }); };
+        
+        window.editPost = (id, oldTxt, title) => { 
+            customPrompt("تعديل تفاصيل المنشور:", oldTxt, async (newTxt) => { 
+                if(newTxt && newTxt !== oldTxt) { 
+                    const { data } = await _supabase.from('app_data').select('content').eq('id', id).single();
+                    if(data) {
+                        let updatedContent = data.content;
+                        updatedContent.details = newTxt;
+                        await _supabase.from('app_data').update({ content: updatedContent }).eq('id', id);
+                        alert("تم التعديل بنجاح"); loadManageList(); 
+                    }
+                } 
+            }); 
+        };
 
         document.getElementById('date').innerText = new Date().toLocaleDateString('ar-EG');
     </script>
