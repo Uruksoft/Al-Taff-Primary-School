@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جولة تعريفية - منصة مدرسة الطف</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --accent: #f6ad55;
+            --bg-light: #f8fafc;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08);
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+        }
+
+        .onboarding-wrapper {
+            width: 100%; max-width: 550px;
+            background: #ffffff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            margin: 15px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .skip-btn {
+            position: absolute; top: 20px; left: 20px;
+            background: transparent; border: none;
+            color: var(--text-muted); font-family: 'Cairo';
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            transition: 0.3s;
+        }
+        .skip-btn:hover { color: var(--primary); }
+
+        .slide-card {
+            display: none;
+            flex-direction: column; align-items: center;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        .slide-card.active { display: flex; }
+
+        .card-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            background: #f0f9ff;
+            width: 100px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 15px rgba(14, 165, 233, 0.15);
+            animation: pulse 2s infinite;
+        }
+
+        h2 {
+            color: var(--text-main);
+            font-size: 1.5rem; font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1rem; line-height: 1.7;
+            font-weight: 600; margin-bottom: 30px;
+        }
+
+        .dots-container {
+            display: flex; justify-content: center; gap: 8px;
+            margin-bottom: 25px;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background-color: var(--border-color); transition: 0.3s;
+        }
+        .dot.active {
+            width: 25px; border-radius: 5px;
+            background-color: var(--primary);
+        }
+
+        .actions-row {
+            display: flex; gap: 12px; width: 100%;
+        }
+        .btn-action {
+            flex: 1; padding: 12px; border-radius: 12px;
+            font-family: 'Cairo'; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: 0.3s; border: none;
+        }
+        .btn-next {
+            background-color: var(--primary); color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+        .btn-next:hover { background-color: #0284c7; transform: translateY(-2px); }
+        
+        .btn-prev {
+            background-color: #f1f5f9; color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .btn-prev:hover { background-color: #e2e8f0; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="onboarding-wrapper">
+        <button class="skip-btn" onclick="finishOnboarding()">تخطي الكل</button>
+
+        <!-- البطاقة الأولى -->
+        <div class="slide-card active" data-index="0">
+            <div class="card-icon" style="color: var(--accent); background: #fff7ed;"><i class="fa-solid fa-hands-bound"></i></div>
+            <h2>مدرسة حكومية بجهود ذاتية</h2>
+            <p>هذا العمل والمنصة المتميزة هي مبادرة بجهود ذاتية خالصة من قبل المعلم المطور للمنصة (مرتضى حسين).</p>
+        </div>
+
+        <!-- البطاقة الثانية -->
+        <div class="slide-card" data-index="1">
+            <div class="card-icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <h2>شرح عمل المنصة الرقمية</h2>
+            <p>تتضمن المنصة أقساماً متكاملة لنشر الواجبات البيتية، مواعيد الامتحانات، لوحة الشرف للأوائل، والغيابات.</p>
+        </div>
+
+        <!-- البطاقة الثالثة -->
+        <div class="slide-card" data-index="2">
+            <div class="card-icon" style="color: #10b981; background: #ecfdf5;"><i class="fa-solid fa-user-graduate"></i></div>
+            <h2>نظام متابعة أولياء الأمور</h2>
+            <p>من خلال إدخال كود التلميذ الخاص، يستطيع ولي الأمر الإطلاع على تقييمات الدرجات الشهرية ونصف السنة.</p>
+        </div>
+
+        <!-- البطاقة الرابعة -->
+        <div class="slide-card" data-index="3">
+            <div class="card-icon" style="color: #8b5cf6; background: #f3e8ff;"><i class="fa-solid fa-headset"></i></div>
+            <h2>دعم فني وتواصل مستمر</h2>
+            <p>نوفر حلقة وصل مباشرة بين الإدارة، المعلمين، والأهالي مع دعم فني متواصل لضمان استقرار المنصة.</p>
+        </div>
+
+        <!-- مؤشرات النقاط -->
+        <div class="dots-container" id="dotsContainer">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <!-- أزرار التحكم -->
+        <div class="actions-row">
+            <button class="btn-action btn-prev" id="prevBtn" onclick="changeSlide(-1)" style="display: none;">السابق</button>
+            <button class="btn-action btn-next" id="nextBtn" onclick="changeSlide(1)">التالي</button>
+        </div>
+    </div>
+
+    <script>
+        // حماية إضافية: إذا دخل المستخدم هنا ولديه ذاكرة مسجلة، نرجعه للصفحة الرئيسية مباشرة
+        if (localStorage.getItem('altaf_onboarding_shown') === 'true') {
+            window.location.replace('index.html');
+        }
+
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.slide-card');
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                dots[i].classList.toggle('active', i === index);
+            });
+
+            prevBtn.style.display = index === 0 ? 'none' : 'block';
+
+            if (index === slides.length - 1) {
+                nextBtn.textContent = 'ابدأ الاستخدام 🚀';
+            } else {
+                nextBtn.textContent = 'التالي';
+            }
+        }
+
+        function changeSlide(direction) {
+            currentIndex += direction;
+            if (currentIndex >= slides.length) {
+                finishOnboarding();
+            } else if (currentIndex < 0) {
+                currentIndex = 0;
+            } else {
+                updateSlide(currentIndex);
+            }
+        }
+
+        function finishOnboarding() {
+            // حفظ الذاكرة بأن البطاقات ظهرت ولن تظهر مرة أخرى أبداً
+            localStorage.setItem('altaf_onboarding_shown', 'true');
+            // التوجيه النهائي للصفحة الرئيسية
+            window.location.replace('index.html');
+        }
+    </script>
+</body>
+</html>

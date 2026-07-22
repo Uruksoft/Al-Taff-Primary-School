@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك في منصة مدرسة الطف</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- مكتبة Lottie للأنيميشن -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --bg-light: #f8fafc;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08);
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+        }
+
+        .welcome-wrapper {
+            width: 100%; max-width: 500px;
+            background: #ffffff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            padding: 40px 30px;
+            text-align: center;
+            margin: 15px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .lottie-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 5px auto;
+        }
+
+        .loading-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: pulseText 1.5s infinite ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulseText {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-wrapper">
+        <!-- حاوية الأنيميشن -->
+        <div id="lottieAnimation" class="lottie-container"></div>
+        
+        <!-- النص المطلوب تحت الأنيميشن -->
+        <div class="loading-text">جاري تحميل بيانات منصة مدرسة الطف</div>
+    </div>
+
+   <script>
+        // اختبار بأنيميشن جاهز من الإنترنت
+        lottie.loadAnimation({
+            container: document.getElementById('lottieAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json' // رابط أنيميشن شغال 100%
+        });
+
+        setTimeout(function() {
+            if (localStorage.getItem('altaf_onboarding_shown') === 'true') {
+                window.location.replace('index.html');
+            } else {
+                window.location.replace('onboarding.html');
+            }
+        }, 3000);
+    </script>
