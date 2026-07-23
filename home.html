@@ -15,6 +15,9 @@
     <meta name="theme-color" content="#0369a1">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
+    <!-- مشغل Lottie بنقاء SVG الكريستالي الفائق HD -->
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+
     <script>
         if(localStorage.getItem('theme') === 'dark') { document.documentElement.classList.add('dark-mode'); }
         function toggleTheme(e) { e.preventDefault(); document.documentElement.classList.toggle('dark-mode'); localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light'); updateThemeIcon(); }
@@ -62,7 +65,7 @@
         .sub-title { font-weight: 600; font-size: 0.85rem; color: #7f8c8d; }
         .main-nav ul { list-style: none; display: flex; gap: 12px; align-items: center; margin: 0; padding: 0;}
         .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;}
-        .btn-login { background-color: var(--accent); color: #fff !important; cursor: pointer; }
+        .btn-login { background-color: var(--accent); color: #fff !important; cursor: pointer; user-select: none; }
         .btn-header-contact { background-color: var(--orange); color: #fff !important; box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3); cursor: pointer; }
         
         .notif-container { position: relative; display: flex; align-items: center; }
@@ -82,8 +85,41 @@
         .top-navbar a { color: #cbd5e1; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 50px; transition: 0.3s; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;}
         .top-navbar a:hover { color: white; background: rgba(255,255,255,0.1); }
         .top-navbar a.active { background: var(--orange); color: white; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); border-color: #ea580c;}
-        .hero { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 30px 15px; text-align: center; margin-bottom: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
-        .hero h2 { margin: 0 0 8px 0; font-weight: 800; font-size: 1.5rem;}
+        
+        .hero { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 16px 12px; text-align: center; margin-bottom: 18px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
+        .hero h2 { margin: 0 0 4px 0; font-weight: 800; font-size: 1.25rem;}
+        .hero p { margin: 0; font-size: 0.88rem; opacity: 0.92; }
+
+        #emergency-banner {
+            display: none;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%);
+            border: 1px solid #fecdd3;
+            border-right: 5px solid #ef4444;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.08);
+            animation: pulseAlert 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseAlert {
+            0%, 100% { box-shadow: 0 6px 18px rgba(239, 68, 68, 0.08); }
+            50% { box-shadow: 0 8px 24px rgba(239, 68, 68, 0.18); }
+        }
+        #emergency-banner i {
+            font-size: 2rem;
+            color: #ef4444;
+            flex-shrink: 0;
+            animation: bellRing 2s infinite ease-in-out;
+        }
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0); }
+            10%, 30% { transform: rotate(12deg); }
+            20%, 40% { transform: rotate(-12deg); }
+            50% { transform: rotate(0); }
+        }
+
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; align-items: start; }
         .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
         .class-card { background: #fff; border: 2px solid #e2e8f0; padding: 15px 10px; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; font-weight: 800; color: #334155; cursor: pointer; transition: 0.3s; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
@@ -130,6 +166,36 @@
         .lightbox-controls { display: flex; gap: 20px; }
         .lightbox-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
         .lightbox-btn:hover { background: var(--accent); transform: scale(1.1); box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
+
+        /* تنسيق قسم من نحن HD الكريستالي */
+        .about-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 720px;
+            margin: 10px auto 0 auto;
+            padding: 10px 15px;
+        }
+        dotlottie-player {
+            width: clamp(280px, 85vw, 380px) !important;
+            height: clamp(280px, 85vw, 380px) !important;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .about-wrapper h2 {
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 1.6rem;
+            margin: 10px 0 15px 0;
+        }
+        .about-wrapper p {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.95;
+            margin-bottom: 25px;
+        }
 
         .main-footer { background-color: var(--primary); color: #cbd5e1; padding: 30px 15px; text-align: center; border-top: 4px solid var(--orange); margin-top: auto; width: 100%; position: relative; z-index: 10;}
         .main-footer .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;}
@@ -185,7 +251,7 @@
         html.dark-mode .notif-item:hover { background: #475569; }
         html.dark-mode .card { background-color: #1e293b; color: #e2e8f0; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.4);}
         html.dark-mode .card h3 { color: #f8fafc; }
-        html.dark-mode .card-details { color: #cbd5e1; }
+        html.dark-mode .card-details, html.dark-mode .about-wrapper p { color: #cbd5e1; }
         html.dark-mode .post-meta { border-top-color: #334155; }
         html.dark-mode .meta-badge { background: #334155; color: #94a3b8; }
         html.dark-mode .list-item { background: #1e293b; border-color: #334155; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
@@ -209,6 +275,7 @@
         html.dark-mode .filter-btn { background: #1e293b; color: #cbd5e1; border-color: #334155; }
         html.dark-mode .filter-btn:hover { background: #334155; }
         html.dark-mode .filter-btn.active { background: var(--orange); color: #fff; border-color: #ea580c; }
+        html.dark-mode #emergency-banner { background: linear-gradient(135deg, #451a1a 0%, #2a1212 100%); border-color: #7f1d1d; }
     </style>
 </head>
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
@@ -230,12 +297,12 @@
         </div>
     </div>
 
-    <!-- نافذة تأمين وحماية زر دخول الكادر لمنع تتطفل المستخدمين -->
+    <!-- نافذة تأمين وحماية زر دخول الكادر -->
     <div class="modal-overlay" id="staff-lock-modal" onclick="if(event.target === this) this.style.display='none'">
         <div class="modal-box" onclick="event.stopPropagation()" style="text-align: center;">
-            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"><i class='bx bxs-lock-alt'></i></div>
-            <h3 style="color: var(--primary); margin-top:0; font-weight: 800; font-size: 1.3rem;">بوابة الكادر المدرسية</h3>
-            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px; line-height: 1.6;">هذه المنطقة مخصصة حصرياً لمعلمي وإدارة مدرسة الطف. هل أنت من أعضاء الكادر التدريسي؟</p>
+            <div style="font-size: 2.8rem; color: var(--primary); margin-bottom: 8px;"><i class='bx bxs-lock-alt'></i></div>
+            <h3 style="color: var(--primary); margin-top:0; font-weight: 800; font-size: 1.25rem;">بوابة الكادر المدرسية</h3>
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 20px; line-height: 1.6;">هذه المنطقة مخصصة حصرياً لمعلمي وإدارة مدرسة الطف. هل أنت من أعضاء الكادر التدريسي؟</p>
             <div style="display: flex; gap: 10px;">
                 <button onclick="window.location.href='login.html'" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">متابعة للدخول <i class='bx bx-right-arrow-alt'></i></button>
                 <button onclick="document.getElementById('staff-lock-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
@@ -276,9 +343,10 @@
             <a onclick="showTab('attendance', this); closeSideMenu();" class="side-item"><i class='bx bx-user-x'></i> الغيابات اليومية</a>
             <a onclick="showTab('library', this); closeSideMenu();" class="side-item"><i class='bx bx-library'></i> المكتبة الرقمية</a>
             <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item"><i class='bx bx-images'></i> معرض الصور</a>
+            <a onclick="showTab('about', this); closeSideMenu();" class="side-item"><i class='bx bx-info-circle'></i> من نحن</a>
             <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;"><i class='bx bx-envelope'></i> تواصل مع الإدارة</a>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <a onclick="openStaffLockModal(); closeSideMenu();" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
+            <a href="javascript:void(0)" onclick="handleStaffLoginClick(event); closeSideMenu();" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
         </div>
     </div>
 
@@ -312,7 +380,7 @@
                         </div>
                     </li>
                     <li><a onclick="document.getElementById('contact-modal').style.display='flex'" class="btn-header-contact"><i class='bx bx-envelope'></i> تواصل معنا</a></li>
-                    <li><a onclick="openStaffLockModal()" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
+                    <li><a href="javascript:void(0)" onclick="handleStaffLoginClick(event)" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
                 </ul>
             </nav>
         </div>
@@ -326,6 +394,7 @@
         <a onclick="showTab('attendance', this)">الغيابات اليومية</a>
         <a onclick="showTab('library', this)">المكتبة الرقمية</a>
         <a onclick="showTab('exhibit', this)">معرض الصور</a>
+        <a onclick="showTab('about', this)">من نحن</a>
         <a href="parents.html" style="background: var(--orange); color: #fff; border: none; font-weight: 800; margin-right: 10px;">نظام متابعة التلاميذ</a>
     </nav>
 
@@ -337,20 +406,22 @@
         <a onclick="openSideMenu()" class="nav-item"><i class='bx bx-menu'></i><span>المزيد</span></a>
     </div>
 
+    <!-- الهيدر الترحيبي المصغر -->
     <section class="hero">
         <div class="container">
             <h2>مرحباً بكم في منصة مدرسة الطف الإلكترونية</h2>
-            <p style="margin-bottom: 0; font-size: 1rem; opacity: 0.9;">نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
+            <p>نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
         </div>
     </section>
 
     <div class="container" style="padding-top: 5px; flex-grow: 1; padding-bottom: 40px;">
 
-        <div id="emergency-banner" style="display: none;">
-            <i class='bx bx-alarm-exclamation' style="font-size: 2rem; color: #e74c3c;"></i>
+        <!-- شريط التنبيه الإداري العاجل بتصميم مميز وأنيق -->
+        <div id="emergency-banner">
+            <i class='bx bx-alarm-exclamation'></i>
             <div>
-                <strong style="font-size: 1.1rem; display: block; margin-bottom: 3px;">تنبيه إداري عاجل</strong>
-                <span id="emergency-text" style="font-weight: 600; line-height: 1.4; font-size: 0.9rem;"></span>
+                <strong style="font-size: 1.05rem; display: block; margin-bottom: 2px; color: #be123c;">تنبيه إداري عاجل</strong>
+                <span id="emergency-text" style="font-weight: 700; line-height: 1.4; font-size: 0.92rem; color: #881337;"></span>
             </div>
         </div>
 
@@ -414,6 +485,20 @@
             <div id="exhibit-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
         </div>
 
+        <!-- قسم من نحن المحدث بمكون dotlottie-player ذو العرض المتجه الحاد SVG -->
+        <div id="tab-about" class="main-tab">
+            <div class="about-wrapper">
+                <dotlottie-player src="https://lottie.host/7b0463c3-e44c-4025-8542-5e072e8255d4/3njYmLuzyv.lottie" autoplay loop renderer="svg"></dotlottie-player>
+                <h2>من نحن | مطور المنصة</h2>
+                <p>
+                    هلو اني مرتضى حسين معلم جامعي في مدرسة الطف الابتدائية للبنين في النجف حي ميسان مطور برامج قدمت وطورت هاي المنصة بجهودي الذاتية مع اخذ الموافقات من مديرية التربية وادارة المدرسة وطورت هاي المنصة خدمة للتلاميذ وأولياء امور التلاميذ والصالح العام.
+                </p>
+                <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank" class="btn-show-more" style="background: var(--primary); color: #ffffff; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 800; padding: 12px 30px; font-size: 1rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(3, 105, 161, 0.3);">
+                    <i class='bx bx-globe' style="font-size: 1.3rem;"></i> زيارة اوروك سوفت للحلول البرمجية
+                </a>
+            </div>
+        </div>
+
     </div>
 
     <footer class="main-footer">
@@ -456,6 +541,19 @@
 
         window.openStaffLockModal = function() {
             document.getElementById('staff-lock-modal').style.display = 'flex';
+        };
+
+        // النقر المزدوج الصامت حصراً لتأمين دخول الكادر بدون أي تنبيهات إطلاقا
+        let lastStaffClick = 0;
+        window.handleStaffLoginClick = function(e) {
+            if(e) e.preventDefault();
+            const now = Date.now();
+            if (now - lastStaffClick < 500) {
+                openStaffLockModal();
+                lastStaffClick = 0;
+            } else {
+                lastStaffClick = now;
+            }
         };
 
         function unlockIOSAudio() { const sound = document.getElementById('notify-sound'); if (sound) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }).catch(e => console.log(e)); } document.removeEventListener('click', unlockIOSAudio); document.removeEventListener('touchstart', unlockIOSAudio); }
@@ -567,24 +665,26 @@
         }
 
         window.sendParentMsg = async () => { 
-            const n = document.getElementById('parent-name').value; 
-            const p = document.getElementById('parent-phone').value; 
-            const m = document.getElementById('parent-msg').value; 
+            const n = document.getElementById('parent-name').value.trim(); 
+            const p = document.getElementById('parent-phone').value.trim(); 
+            const m = document.getElementById('parent-msg').value.trim(); 
             if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة بشكل صحيح."); 
             try { 
-                const { error } = await supabase.from('messages').insert([{ name: n, phone: p, message: m }]);
+                const { error } = await supabase.from('app_data').insert([{
+                    type: 'messages',
+                    content: { name: n, phone: p, message: m }
+                }]);
                 if (error) throw error;
                 alert("تم إرسال رسالتك للإدارة بنجاح ✔️"); 
                 document.getElementById('contact-modal').style.display = 'none'; 
                 document.getElementById('parent-name').value = ''; 
                 document.getElementById('parent-phone').value = ''; 
                 document.getElementById('parent-msg').value = ''; 
-            } catch (e) { alert("حدث خطأ في الإرسال! " + e.message); } 
+            } catch (e) { alert("حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى."); } 
         };
 
         let isInitialLoad = true; setTimeout(() => { isInitialLoad = false; }, 4000); 
 
-        // تفعيل زر عرض المزيد في الأخبار بعد 5 منشورات
         let newsLimit = 5, libLimit = 10, exhibitLimit = 6;
         window.loadMoreNews = () => { newsLimit += 5; fetchNews(); };
         window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); };
