@@ -346,7 +346,8 @@
             <a onclick="showTab('about', this); closeSideMenu();" class="side-item"><i class='bx bx-info-circle'></i> من نحن</a>
             <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;"><i class='bx bx-envelope'></i> تواصل مع الإدارة</a>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <a href="javascript:void(0)" onclick="handleStaffLoginClick(event); closeSideMenu();" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
+            <!-- تعديل: إزالة closeSideMenu() المباشرة لكي يتسنى للمستخدم الضغط الضغطة الثانية بدون اختفاء القائمة -->
+            <a href="javascript:void(0)" onclick="handleStaffLoginClick(event)" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
         </div>
     </div>
 
@@ -543,13 +544,14 @@
             document.getElementById('staff-lock-modal').style.display = 'flex';
         };
 
-        // النقر المزدوج الصامت حصراً لتأمين دخول الكادر بدون أي تنبيهات إطلاقا
+        // تعديل: النقر المزدوج يعمل بسلاسة على الهواتف والآيباد وتُغلق القائمة فقط بعد إكمال الضغطتين
         let lastStaffClick = 0;
         window.handleStaffLoginClick = function(e) {
             if(e) e.preventDefault();
             const now = Date.now();
-            if (now - lastStaffClick < 500) {
+            if (now - lastStaffClick < 500 && now - lastStaffClick > 0) {
                 openStaffLockModal();
+                if(typeof closeSideMenu === 'function') closeSideMenu();
                 lastStaffClick = 0;
             } else {
                 lastStaffClick = now;
