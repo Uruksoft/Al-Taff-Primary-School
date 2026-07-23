@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مرحباً بك في منصة مدرسة الطف</title>
+    <title>دليل منصة مدرسة الطف</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    
+    <!-- مشغل Lottie بنقاء SVG الكريستالي HD -->
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
 
     <style>
         :root {
-            --primary-blue: #0369a1;
-            --accent-blue: #0284c7;
-            --orange: #f97316;
+            --primary: #2c3e50;
+            --accent: #3498db;
             --bg-light: #f8fafc;
-            --text-dark: #1e293b;
+            --text-main: #334155;
             --text-muted: #64748b;
+            --orange: #f97316;
+            --radius: 14px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0; padding: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-light);
-            color: var(--text-dark);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -35,169 +39,266 @@
             align-items: center;
             overflow: hidden;
             position: relative;
-            padding: 20px 0;
+            padding: 20px 15px;
         }
 
-        .ambient-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: clamp(280px, 80vw, 420px);
-            height: clamp(280px, 80vw, 420px);
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(249, 115, 22, 0.08) 60%, transparent 80%);
-            border-radius: 50%;
-            filter: blur(50px);
-            z-index: 1;
-        }
-
-        .splash-card {
-            position: relative;
-            z-index: 10;
+        .skip-header {
+            width: 100%;
+            max-width: 500px;
             display: flex;
+            justify-content: flex-end;
+            z-index: 10;
+        }
+
+        .skip-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px 10px;
+        }
+
+        .skip-btn:hover {
+            color: var(--orange);
+        }
+
+        .slider-container {
+            width: 100%;
+            max-width: 520px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .slide {
+            display: none;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 10px 20px;
-            max-width: 500px;
-            width: 95%;
-            margin: auto 0;
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
-        /* تجاوب حجم الأنيميشن مع كافة الشاشات والموبايلات */
-        dotlottie-wc {
-            width: clamp(240px, 70vw, 320px) !important;
-            height: clamp(240px, 70vw, 320px) !important;
-            margin-bottom: 5px;
+        .slide.active {
+            display: flex;
         }
 
-        .brand-title {
-            color: var(--primary-blue);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        dotlottie-player {
+            width: clamp(280px, 80vw, 360px) !important;
+            height: clamp(280px, 80vw, 360px) !important;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .slide-title {
+            color: var(--primary);
             font-size: clamp(1.4rem, 5vw, 1.8rem);
             font-weight: 900;
-            margin-bottom: 2px;
+            margin-bottom: 10px;
         }
 
-        .brand-subtitle {
+        .slide-desc {
+            color: var(--text-muted);
+            font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+            font-weight: 600;
+            line-height: 1.65;
+            max-width: 450px;
+            padding: 0 10px;
+        }
+
+        .slide-desc span {
             color: var(--orange);
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
             font-weight: 800;
-            margin-bottom: 15px;
         }
 
-        .counter-wrapper {
+        .footer-nav {
+            width: 100%;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            margin-top: 5px;
-        }
-
-        .counter-display {
-            font-size: clamp(1.5rem, 5vw, 1.8rem);
-            font-weight: 900;
-            color: var(--primary-blue);
-            display: flex;
-            align-items: baseline;
-            gap: 2px;
-        }
-
-        .counter-percent {
-            font-size: 1.1rem;
-            color: var(--orange);
-        }
-
-        .status-text {
-            font-size: clamp(0.75rem, 3vw, 0.85rem);
-            font-weight: 700;
-            color: var(--text-muted);
-            min-height: 22px;
-        }
-
-        .splash-footer {
-            position: relative;
+            gap: 16px;
+            padding-bottom: 10px;
             z-index: 10;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #94a3b8;
-            text-align: center;
-            padding-bottom: 15px;
         }
 
-        .splash-footer span {
-            color: var(--orange);
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 28px;
+            border-radius: 6px;
+            background-color: var(--orange);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
             font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .btn-prev {
+            background-color: #ffffff;
+            color: var(--text-muted);
+            border: 1px solid #cbd5e1;
+            display: none;
+        }
+
+        .btn-prev:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .btn-next:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-glow"></div>
+    <div class="skip-header">
+        <button class="skip-btn" onclick="finishIntro()">تخطي الكل</button>
+    </div>
 
-    <div class="splash-card">
-        <dotlottie-wc src="https://lottie.host/0dbc4ccd-6734-4740-9a4f-2179ecb0c289/wv9aFYb6z1.lottie" autoplay loop></dotlottie-wc>
+    <div class="slider-container">
+        
+        <!-- 1. الجهود الذاتية -->
+        <div class="slide active" data-index="0">
+            <dotlottie-player src="https://lottie.host/a1d2d889-454a-4bfc-96c8-a13f59a71e36/iK47zRnvjF.lottie" autoplay loop renderer="svg"></dotlottie-player>
+            <h2 class="slide-title">مبادرة تعليمية رقمية</h2>
+            <p class="slide-desc">تم إنشاء هذه المنصة بجهود ذاتية من قبل المعلم المطور <span>مرتضى حسين</span> لخدمة الصالح العام وأبنائنا التلاميذ.</p>
+        </div>
 
-        <h1 class="brand-title">مدرسة الطَّف الابتدائية للبنين</h1>
-        <div class="brand-subtitle">المنصة الرقمية</div>
+        <!-- 2. الواجبات والدروس -->
+        <div class="slide" data-index="1">
+            <dotlottie-player src="https://lottie.host/7633e1bb-5810-4883-894c-85c8a192f699/j9fJoilCsc.lottie" autoplay loop renderer="svg"></dotlottie-player>
+            <h2 class="slide-title">الواجبات والدروس اليومية</h2>
+            <p class="slide-desc">متابعة دقيقة وجدول يومي منظم للواجبات المدرسية، الدروس، والملخصات الصفية أولاً بأول من هاتفك.</p>
+        </div>
 
-        <div class="counter-wrapper">
-            <div class="counter-display">
-                <span id="counterNum">0</span><span class="counter-percent">%</span>
-            </div>
-            <div class="status-text" id="statusText">جاري الاتصال بالمنصة...</div>
+        <!-- 3. الدعم 24/7 -->
+        <div class="slide" data-index="2">
+            <dotlottie-player src="https://lottie.host/83349f9a-76cb-4531-a059-4f6ee4d27060/TTvaHHSWnt.lottie" autoplay loop renderer="svg"></dotlottie-player>
+            <h2 class="slide-title">دعم تقني متواصل 24/7</h2>
+            <p class="slide-desc">نحن معكم دائماً! نظام دعم متواصل على مدار الساعة لمعالجة أي خطأ تقني وضمان تجربة استخدام سلسة.</p>
+        </div>
+
+        <!-- 4. حلقة الوصل -->
+        <div class="slide" data-index="3">
+            <dotlottie-player src="https://lottie.host/f57fa894-1b11-4504-bae6-444d2848938d/KGuvLmpGsl.lottie" autoplay loop renderer="svg"></dotlottie-player>
+            <h2 class="slide-title">حلقة وصل وتواصل فعّال</h2>
+            <p class="slide-desc">جسر تواصل مباشر يربط المعلمين الكرام بأولياء الأمور لمتابعة مستويات الأبناء والارتقاء برحلتهم التعليمية.</p>
+        </div>
+
+        <!-- 5. الدرجات والنتائج -->
+        <div class="slide" data-index="4">
+            <dotlottie-player src="https://lottie.host/df7eb503-bd4b-4601-b0d2-92a1b05df22a/oTNy9AO3ML.lottie" autoplay loop renderer="svg"></dotlottie-player>
+            <h2 class="slide-title">نتائج ودرجات التلاميذ</h2>
+            <p class="slide-desc">استعرض تقييمات ابنك، نتائج الاختبارات الشهرية والشفهية ومستوى حضورك بدقة وشفافية كاملة.</p>
+        </div>
+
+    </div>
+
+    <div class="footer-nav">
+        <div class="dots-container">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-prev" id="prevBtn" onclick="changeSlide(-1)">السابق</button>
+            <button class="btn btn-next" id="nextBtn" onclick="changeSlide(1)">التالي</button>
         </div>
     </div>
 
-    <div class="splash-footer">
-        تم تطوير هذه المنصة بواسطة <span>مرتضى حسين</span>
-    </div>
-
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const totalDuration = 8000; 
-            const intervalTime = 75; 
-            const totalSteps = totalDuration / intervalTime;
-            let currentStep = 0;
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-            const counter = document.getElementById('counterNum');
-            const statusText = document.getElementById('statusText');
+        function updateSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                dots[i].classList.toggle('active', i === index);
+            });
 
-            const statusPhrases = [
-                { pct: 0, text: "جاري الاتصال بالمنصة..." },
-                { pct: 25, text: "تحديث جدول الواجبات والدروس..." },
-                { pct: 60, text: "تهيئة بيانات التلاميذ الكرام..." },
-                { pct: 88, text: "أهلاً بك في مدرسة الطف!..." }
-            ];
+            if (index === 0) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+            }
 
-            const timer = setInterval(() => {
-                currentStep++;
-                const progress = Math.min(Math.round((currentStep / totalSteps) * 100), 100);
-                counter.innerText = progress;
+            if (index === slides.length - 1) {
+                nextBtn.innerText = 'ابدأ الآن';
+            } else {
+                nextBtn.innerText = 'التالي';
+            }
+        }
 
-                for (let i = statusPhrases.length - 1; i >= 0; i--) {
-                    if (progress >= statusPhrases[i].pct) {
-                        statusText.innerText = statusPhrases[i].text;
-                        break;
-                    }
-                }
+        function changeSlide(direction) {
+            currentSlide += direction;
 
-                if (progress >= 100) {
-                    clearInterval(timer);
-                    setTimeout(() => {
-                        // تحويل ذكي بناءً على زيارات المستخدم السابقة
-                        const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+            if (currentSlide >= slides.length) {
+                finishIntro();
+                return;
+            }
 
-                        if (hasSeenOnboarding === 'true') {
-                            // دخول سابق -> توجيه مباشر للصفحة الرئيسية
-                            window.location.replace('home.html');
-                        } else {
-                            // أول دخول -> توجيه لدليل المنصة
-                            window.location.replace('onboarding.html');
-                        }
-                    }, 400);
-                }
-            }, intervalTime);
-        });
+            if (currentSlide < 0) {
+                currentSlide = 0;
+            }
+
+            updateSlide(currentSlide);
+        }
+
+        // عند الانتهاء أو التخطي: يحفظ في ذاكرة المتصفح ويحول للرئيسية
+        function finishIntro() {
+            localStorage.setItem('hasSeenOnboarding', 'true');
+            window.location.replace('home.html');
+        }
     </script>
 </body>
 </html>

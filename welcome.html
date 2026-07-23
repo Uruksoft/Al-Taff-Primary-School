@@ -154,8 +154,8 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const totalDuration = 8000; 
-            const intervalTime = 75; 
+            const totalDuration = 5000; // مدة أسرع لتجربة مستخدم أفضل
+            const intervalTime = 50; 
             const totalSteps = totalDuration / intervalTime;
             let currentStep = 0;
 
@@ -184,17 +184,15 @@
                 if (progress >= 100) {
                     clearInterval(timer);
                     setTimeout(() => {
-                        // تحويل ذكي بناءً على زيارات المستخدم السابقة
                         const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
 
                         if (hasSeenOnboarding === 'true') {
-                            // دخول سابق -> توجيه مباشر للصفحة الرئيسية
+                            // استخدام replace لمنع مشاكل زر الرجوع في الهاتف
                             window.location.replace('home.html');
                         } else {
-                            // أول دخول -> توجيه لدليل المنصة
                             window.location.replace('onboarding.html');
                         }
-                    }, 400);
+                    }, 300);
                 }
             }, intervalTime);
         });
