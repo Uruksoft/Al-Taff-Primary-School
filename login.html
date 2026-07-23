@@ -13,7 +13,7 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
-    <!-- مشغل Lottie الجديد والمحدث -->
+    <!-- مشغل Lottie بنقاء HD -->
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -42,7 +42,7 @@
         .login-wrapper { 
             display: flex; align-items: center; justify-content: center; 
             width: 100%; max-width: 900px; padding: 20px; 
-            gap: 40px; flex-wrap: wrap; 
+            gap: 30px; flex-wrap: wrap; 
         }
         
         .login-box { 
@@ -54,7 +54,7 @@
         }
 
         .animation-container {
-            flex: 1; max-width: 350px; text-align: center;
+            flex: 1; max-width: 380px; text-align: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             order: 2; 
         }
@@ -63,6 +63,7 @@
             width: 280px !important;
             height: 280px !important;
             display: block;
+            margin: 0 auto;
         }
 
         .login-box h2 { margin-top: 5px; color: var(--text-main); font-weight: 800; font-size: 1.4rem; }
@@ -93,11 +94,13 @@
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--danger); color: white; text-align: center; border-radius: 8px; padding: 14px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: var(--shadow); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
+        /* حل تناسق الأنيميشن التام في شاشات الجوال */
         @media (max-width: 768px) {
-            .login-wrapper { flex-direction: column; gap: 15px; padding: 10px; }
-            .animation-container { max-width: 220px; }
+            .login-wrapper { flex-direction: column; gap: 15px; padding: 15px 10px; justify-content: center; }
+            .animation-container { order: -1; width: 100%; max-width: 240px; margin: 0 auto; }
             .animation-container h3, .animation-container p { display: none; }
-            dotlottie-wc { width: 180px !important; height: 180px !important; }
+            dotlottie-wc { width: 200px !important; height: 200px !important; }
+            .login-box { padding: 25px 20px; }
         }
     </style>
 </head>
@@ -149,16 +152,15 @@
             </div>
         </div>
 
-        <!-- أنيميشن تسجيل الدخول الجديد -->
+        <!-- أنيميشن تسجيل الدخول -->
         <div class="animation-container">
-            <dotlottie-wc src="https://lottie.host/a7722a60-a8c8-4757-8a57-b1358eee8bd8/0NctHm9jKz.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+            <dotlottie-wc src="https://lottie.host/a7722a60-a8c8-4757-8a57-b1358eee8bd8/0NctHm9jKz.lottie" autoplay loop></dotlottie-wc>
             <h3 style="color: var(--primary); font-weight: 800; margin-top: 10px;">بوابة الكادر التدريسي</h3>
             <p style="color: var(--text-muted); font-size: 0.9rem;">إدارة الواجبات، الأوائل، والأنشطة المدرسية بكل سهولة.</p>
         </div>
     </div>
 
     <script>
-        // التحقق التلقائي من الاتصال بالإنترنت
         function checkConnection() {
             if (!navigator.onLine) {
                 window.location.replace("offline.html");

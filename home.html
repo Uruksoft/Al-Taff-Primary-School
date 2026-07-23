@@ -62,7 +62,7 @@
         .sub-title { font-weight: 600; font-size: 0.85rem; color: #7f8c8d; }
         .main-nav ul { list-style: none; display: flex; gap: 12px; align-items: center; margin: 0; padding: 0;}
         .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;}
-        .btn-login { background-color: var(--accent); color: #fff !important; }
+        .btn-login { background-color: var(--accent); color: #fff !important; cursor: pointer; }
         .btn-header-contact { background-color: var(--orange); color: #fff !important; box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3); cursor: pointer; }
         
         .notif-container { position: relative; display: flex; align-items: center; }
@@ -230,6 +230,19 @@
         </div>
     </div>
 
+    <!-- نافذة تأمين وحماية زر دخول الكادر لمنع تتطفل المستخدمين -->
+    <div class="modal-overlay" id="staff-lock-modal" onclick="if(event.target === this) this.style.display='none'">
+        <div class="modal-box" onclick="event.stopPropagation()" style="text-align: center;">
+            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"><i class='bx bxs-lock-alt'></i></div>
+            <h3 style="color: var(--primary); margin-top:0; font-weight: 800; font-size: 1.3rem;">بوابة الكادر المدرسية</h3>
+            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px; line-height: 1.6;">هذه المنطقة مخصصة حصرياً لمعلمي وإدارة مدرسة الطف. هل أنت من أعضاء الكادر التدريسي؟</p>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="window.location.href='login.html'" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">متابعة للدخول <i class='bx bx-right-arrow-alt'></i></button>
+                <button onclick="document.getElementById('staff-lock-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="contact-modal" onclick="if(event.target === this) this.style.display='none'">
         <div class="modal-box" onclick="event.stopPropagation()">
             <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem; text-align: center;">إرسال رسالة للإدارة</h3>
@@ -256,7 +269,7 @@
         </div>
         <div class="sidebar-content">
             <a onclick="showTab('news', this); closeSideMenu();" class="side-item active"><i class='bx bx-news'></i> الرئيسية والأخبار</a>
-            <a href="parents.html" target="_blank" class="side-item" style="background:#fff7ed; color:var(--orange); border: 1px solid #fed7aa;"><i class='bx bx-child'></i> نظام متابعة التلاميذ</a>
+            <a href="parents.html" class="side-item" style="background:#fff7ed; color:var(--orange); border: 1px solid #fed7aa;"><i class='bx bx-child'></i> نظام متابعة التلاميذ</a>
             <a onclick="showTab('hw', this); closeSideMenu();" class="side-item"><i class='bx bx-edit'></i> الواجبات البيتية</a>
             <a onclick="showTab('exams', this); closeSideMenu();" class="side-item"><i class='bx bx-calendar-event'></i> مواعيد الامتحانات</a>
             <a onclick="showTab('honor', this); closeSideMenu();" class="side-item"><i class='bx bx-trophy'></i> لوحة الشرف</a>
@@ -265,7 +278,7 @@
             <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item"><i class='bx bx-images'></i> معرض الصور</a>
             <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;"><i class='bx bx-envelope'></i> تواصل مع الإدارة</a>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <a href="login.html" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
+            <a onclick="openStaffLockModal(); closeSideMenu();" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
         </div>
     </div>
 
@@ -299,7 +312,7 @@
                         </div>
                     </li>
                     <li><a onclick="document.getElementById('contact-modal').style.display='flex'" class="btn-header-contact"><i class='bx bx-envelope'></i> تواصل معنا</a></li>
-                    <li><a href="login.html" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
+                    <li><a onclick="openStaffLockModal()" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
                 </ul>
             </nav>
         </div>
@@ -313,7 +326,7 @@
         <a onclick="showTab('attendance', this)">الغيابات اليومية</a>
         <a onclick="showTab('library', this)">المكتبة الرقمية</a>
         <a onclick="showTab('exhibit', this)">معرض الصور</a>
-        <a href="parents.html" target="_blank" style="background: var(--orange); color: #fff; border: none; font-weight: 800; margin-right: 10px;">نظام متابعة التلاميذ</a>
+        <a href="parents.html" style="background: var(--orange); color: #fff; border: none; font-weight: 800; margin-right: 10px;">نظام متابعة التلاميذ</a>
     </nav>
 
     <div class="mobile-bottom-nav">
@@ -424,7 +437,6 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-        // فحص التوجيه الفوري لصفحة الخطأ عند انقطاع الإنترنت
         function checkNetworkStatus() {
             if (!navigator.onLine) {
                 window.location.replace("offline.html");
@@ -441,6 +453,10 @@
         window.appData = { hw: [], attendance: [] }; 
         window.currentView = { hw: { active: false, keyword: "" } };
         window.currentAttendanceFilter = 'الكل';
+
+        window.openStaffLockModal = function() {
+            document.getElementById('staff-lock-modal').style.display = 'flex';
+        };
 
         function unlockIOSAudio() { const sound = document.getElementById('notify-sound'); if (sound) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }).catch(e => console.log(e)); } document.removeEventListener('click', unlockIOSAudio); document.removeEventListener('touchstart', unlockIOSAudio); }
         document.addEventListener('click', unlockIOSAudio); document.addEventListener('touchstart', unlockIOSAudio);
@@ -568,8 +584,9 @@
 
         let isInitialLoad = true; setTimeout(() => { isInitialLoad = false; }, 4000); 
 
-        let newsLimit = 6, libLimit = 10, exhibitLimit = 6;
-        window.loadMoreNews = () => { newsLimit += 6; fetchNews(); };
+        // تفعيل زر عرض المزيد في الأخبار بعد 5 منشورات
+        let newsLimit = 5, libLimit = 10, exhibitLimit = 6;
+        window.loadMoreNews = () => { newsLimit += 5; fetchNews(); };
         window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); };
         window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); };
 
