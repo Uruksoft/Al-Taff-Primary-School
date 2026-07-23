@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مرحباً بك في منصة مدرسة الطف</title>
 
-    <!-- خط Cairo المعتمد -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- مكتبة Lottie للأنيميشن -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
     <style>
@@ -176,6 +173,7 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', () => {
+            // تشغيل الأنيميشن الخاص بك عبر مساره المحلي بالطريقة الصحيحة
             lottie.loadAnimation({
                 container: document.getElementById('lottieContainer'),
                 renderer: 'svg',
@@ -214,7 +212,6 @@
                 if (progress >= 100) {
                     clearInterval(timer);
                     setTimeout(() => {
-                        // التوجيه إلى الصفحة الرئيسية بعد تعديلها لتصبح home.html
                         window.location.replace('home.html');
                     }, 300);
                 }
