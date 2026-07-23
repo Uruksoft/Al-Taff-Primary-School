@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>مدرسة الطف الابتدائية - المنصة الرقمية</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0369a1">
+    <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
+    
+    <script>
+        if(localStorage.getItem('theme') === 'dark') { document.documentElement.classList.add('dark-mode'); }
+        function toggleTheme(e) { e.preventDefault(); document.documentElement.classList.toggle('dark-mode'); localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light'); updateThemeIcon(); }
+        function updateThemeIcon() { const isDark = document.documentElement.classList.contains('dark-mode'); document.querySelectorAll('.theme-toggle-icon').forEach(el => { el.innerHTML = isDark ? "<i class='bx bx-sun'></i>" : "<i class='bx bx-moon'></i>"; }); }
+        window.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+
+    <style>
+        :root {
+            --primary: #0369a1;      
+            --accent: #0284c7;       
+            --orange: #f97316;       
+        }
+        html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; scroll-behavior: smooth; font-family: 'Cairo', sans-serif; background-color: #ffffff; transition: background-color 0.3s;}
+        *, *:before, *:after { box-sizing: border-box; }
+        
+        .install-top-banner { display: none; position: sticky; top: 0; left: 0; right: 0; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 12px 15px; z-index: 1005; box-shadow: 0 4px 15px rgba(0,0,0,0.15); justify-content: space-between; align-items: center; font-family: 'Cairo'; border-bottom: 2px solid var(--orange); animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        .install-banner-text { font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
+        .install-banner-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-banner-install { background: #2ecc71; color: white; border: none; padding: 6px 16px; border-radius: 20px; font-family: 'Cairo'; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3); }
+        .btn-banner-install:hover { background: #27ae60; }
+        .btn-banner-close { background: rgba(255,255,255,0.15); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        .skeleton-card { background: #fff; border-radius: 12px; padding: 20px; height: 240px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .skeleton-block { background: #e2e8f0; border-radius: 6px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
+        .skeleton-img { height: 120px; margin: -20px -20px 10px -20px; border-radius: 12px 12px 0 0; }
+        .skeleton-title { height: 24px; width: 70%; }
+        .skeleton-text { height: 16px; width: 95%; }
+        .skeleton-meta { height: 20px; width: 40%; margin-top: auto; border-radius: 20px; }
+        @keyframes skeleton-pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.85); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s ease; }
+        .modal-box { background: #fff; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(0); display: flex; flex-direction: column; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Cairo'; font-size: 0.95rem; outline: none; transition: 0.3s; }
+        .modal-box input:focus, .modal-box textarea:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(2, 132, 199, 0.3); }
+        .toast-msg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; transition: all 0.4s ease; opacity: 0; visibility: hidden; }
+        
+        .main-header { background-color: #fff; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: relative; z-index: 1010; border-bottom: 2px solid var(--accent); }
+        .container { width: 95%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .school-logo { width: 45px; height: 45px; object-fit: contain; }
+        .logo h1 { margin: 0; color: var(--primary); font-size: 1.3rem; font-weight: 800; line-height: 1.2;}
+        .sub-title { font-weight: 600; font-size: 0.85rem; color: #7f8c8d; }
+        .main-nav ul { list-style: none; display: flex; gap: 12px; align-items: center; margin: 0; padding: 0;}
+        .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;}
+        .btn-login { background-color: var(--accent); color: #fff !important; }
+        .btn-header-contact { background-color: var(--orange); color: #fff !important; box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3); cursor: pointer; }
+        
+        .notif-container { position: relative; display: flex; align-items: center; }
+        .bell-btn { font-size: 1.4rem; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; text-decoration: none; color: var(--orange); animation: gentle-ring 3s infinite; }
+        .bell-btn:hover { transform: scale(1.1); }
+        @keyframes gentle-ring { 0%, 100% { transform: rotate(0deg); } 5%, 15% { transform: rotate(10deg); } 10%, 20% { transform: rotate(-10deg); } 25% { transform: rotate(0deg); } }
+        .notif-badge { display: none; position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: 800; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .notif-dropdown { display: none; position: absolute; top: 45px; left: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; width: 290px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; overflow: hidden; text-align: right; cursor: default;}
+        .notif-dropdown.show { display: block; animation: fadeIn 0.2s ease-out; }
+        .notif-header { background: #f8fafc; padding: 12px 15px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: var(--primary); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;}
+        .notif-list { max-height: 300px; overflow-y: auto; padding: 10px; }
+        .notif-item { padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; color: #475569; border-radius: 8px; margin-bottom: 5px; background: #f0f9ff; transition: 0.3s; line-height: 1.5; cursor: pointer;}
+        .notif-item:hover { background: #e0f2fe; transform: translateX(-3px); }
+        
+        .top-navbar { display: flex; overflow-x: auto; background: var(--primary); padding: 10px 15px; gap: 10px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.1); white-space: nowrap; align-items: center; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-bottom: 3px solid var(--accent);}
+        .top-navbar::-webkit-scrollbar { display: none; }
+        .top-navbar a { color: #cbd5e1; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 50px; transition: 0.3s; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;}
+        .top-navbar a:hover { color: white; background: rgba(255,255,255,0.1); }
+        .top-navbar a.active { background: var(--orange); color: white; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); border-color: #ea580c;}
+        .hero { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 30px 15px; text-align: center; margin-bottom: 25px; border-radius: 0 0 20px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+        .hero h2 { margin: 0 0 8px 0; font-weight: 800; font-size: 1.5rem;}
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; align-items: start; }
+        .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        .class-card { background: #fff; border: 2px solid #e2e8f0; padding: 15px 10px; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; font-weight: 800; color: #334155; cursor: pointer; transition: 0.3s; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .class-card:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 5px 12px rgba(2, 132, 199, 0.1); }
+        .back-btn { background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; border-radius: 50px; font-family: 'Cairo'; font-weight: 700; cursor: pointer; margin-bottom: 20px; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+        .back-btn:hover { background: #e2e8f0; color: var(--primary); }
+        
+        .card { background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(149, 157, 165, 0.08); transition: all 0.5s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #f1f5f9; } 
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(149, 157, 165, 0.15); }
+        .card::before { content: ""; position: absolute; top: 0; right: 0; width: 4px; height: 100%; }
+        .card-announce::before { background: linear-gradient(to bottom, var(--accent), var(--primary)); }
+        .card-hw::before { background: linear-gradient(to bottom, #2ecc71, #27ae60); }
+        .card-exam::before { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
+        .card-gallery::before { background: linear-gradient(to bottom, #9b59b6, #8e44ad); }
+        .card-img-wrapper { margin: -15px -15px 15px -15px; width: calc(100% + 30px); position: relative; overflow: hidden; }
+        .card-img-wrapper img { width: 100%; height: 160px; object-fit: cover; display: block; border-radius: 12px 12px 0 0; transition: transform 0.3s ease; }
+        .card h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 6px;}
+        .card-announce h3 { color: var(--primary); }
+        .card-hw h3 { color: #27ae60; }
+        .card-exam h3 { color: #e74c3c; }
+        .card-details { font-weight: 600; color: #475569; line-height: 1.5; flex-grow: 1; font-size: 0.9rem;}
+        .post-meta { display: flex; font-size: 0.8rem; color: #94a3b8; margin-top: 15px; border-top: 1px dashed #e2e8f0; padding-top: 10px; font-weight: 700; flex-direction: column; gap: 6px;}
+        .meta-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 50px; color: #64748b; display: inline-flex; align-items: center; width: fit-content; gap: 5px;}
+        .main-tab { display: none; animation: fadeIn 0.3s ease-out; width: 100%; }
+        .sub-tab { display: none; animation: fadeIn 0.2s ease-out; width: 100%; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+        .list-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; position: relative; overflow: hidden;}
+        .list-item:hover { transform: translateX(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .list-item::before { content: ""; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #cbd5e1; }
+        .list-item.lib-item::before { background: var(--accent); }
+        .honor-badge { font-size: 1.8rem; flex-shrink: 0; background: #fffbeb; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fde68a; color: var(--orange);}
+        .lib-link { background: var(--accent); color: white; padding: 6px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px;}
+        .lib-link:hover { background: var(--primary); transform: translateY(-2px); }
+        .btn-show-more { display: inline-block; padding: 8px 25px; background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd; border-radius: 50px; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: 0.3s; }
+        .btn-show-more:hover { background: #bae6fd; color: #0369a1; transform: translateY(-2px); }
+        
+        .filter-btn { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 6px 16px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
+        .filter-btn:hover { background: #e2e8f0; }
+        .filter-btn.active { background: var(--orange); color: #fff; border-color: #ea580c; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3); }
+
+        .lightbox-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease; }
+        .lightbox-content { position: relative; max-width: 90%; max-height: 85%; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .lightbox-img { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .lightbox-controls { display: flex; gap: 20px; }
+        .lightbox-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
+        .lightbox-btn:hover { background: var(--accent); transform: scale(1.1); box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
+
+        .main-footer { background-color: var(--primary); color: #cbd5e1; padding: 30px 15px; text-align: center; border-top: 4px solid var(--orange); margin-top: auto; width: 100%; position: relative; z-index: 10;}
+        .main-footer .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;}
+        .main-footer .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
+        .main-footer .tel-btn { background-color: #2ea4d9; }
+        .main-footer .tel-btn:hover { background-color: #228ebb; transform: translateY(-3px);}
+        .main-footer .fb-btn { background-color: #1877f2; }
+        .main-footer .fb-btn:hover { background-color: #166fe5; transform: translateY(-3px);}
+        .main-footer .rights { font-size: 0.9rem; line-height: 1.8;}
+        .main-footer .rights a { color: var(--orange); text-decoration: none; font-weight: 800; transition: 0.3s;}
+        .main-footer .rights a:hover { color: #fff; }
+
+        .mobile-bottom-nav { display: none; }
+        .mobile-sidebar { display: none; }
+        .sidebar-overlay { display: none; }
+        @media screen and (max-width: 1024px) {
+            .top-navbar { display: none !important; }
+            .mobile-bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 1000; justify-content: space-around; padding: 8px 5px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid #f1f5f9; }
+            .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; font-size: 0.75rem; font-weight: 800; gap: 4px; transition: 0.3s; cursor: pointer; }
+            .nav-item.active { color: var(--orange); transform: translateY(-3px); }
+            .nav-item i { font-size: 1.5rem; }
+            .mobile-sidebar { display: flex; flex-direction: column; position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: #fff; z-index: 2000; box-shadow: -5px 0 25px rgba(0,0,0,0.15); transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); overflow-y: auto; padding-bottom: 20px; }
+            .mobile-sidebar.open { right: 0; }
+            .sidebar-header { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 25px 20px; color: #fff; display: flex; flex-direction: column; gap: 10px; position: relative; }
+            .sidebar-header .close-btn { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+            .sidebar-content { padding: 15px; display: flex; flex-direction: column; gap: 5px; }
+            .side-item { padding: 12px 15px; color: #475569; text-decoration: none; font-weight: 800; font-size: 1rem; border-radius: 10px; transition: 0.3s; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+            .side-item i { font-size: 1.2rem; }
+            .side-item:hover, .side-item.active { background: #fff7ed; color: var(--orange); }
+            .sidebar-overlay { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); z-index: 1999; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: 0.4s; }
+            .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+            .header-content { flex-direction: row !important; justify-content: space-between !important; padding: 10px 15px !important; }
+            .logo { flex-direction: row !important; gap: 10px !important; }
+            .school-logo { width: 38px !important; height: 38px !important; margin:0 !important;}
+            .logo h1 { font-size: 1.1rem !important; }
+            .sub-title { display: none; } 
+            .main-nav ul { gap: 15px; }
+            .main-nav ul li:not(.notif-container):not(.mobile-icon-nav) { display: none; } 
+            .mobile-icon-nav { display: block !important; font-size: 1.5rem; cursor: pointer; }
+            .notif-dropdown { width: 300px; left: 5px; right: auto; transform: none; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .card-img-wrapper img { height: 180px; }
+            .class-grid { grid-template-columns: repeat(2, 1fr); }
+            .main-footer { padding: 25px 15px; padding-bottom: 85px !important; } 
+        }
+
+        /* الوضع الليلي */
+        html.dark-mode body { --bg-light: #0f172a; --text-main: #f8fafc; background-color: var(--bg-light); color: var(--text-main); }
+        html.dark-mode .main-header { background-color: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
+        html.dark-mode .logo h1 { color: #f8fafc; }
+        html.dark-mode .notif-dropdown { background: #1e293b; border-color: #334155; }
+        html.dark-mode .notif-header { background: #0f172a; color: #f8fafc; border-color: #334155; }
+        html.dark-mode .notif-item { background: #334155; color: #cbd5e1; border-color: #475569; }
+        html.dark-mode .notif-item:hover { background: #475569; }
+        html.dark-mode .card { background-color: #1e293b; color: #e2e8f0; border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.4);}
+        html.dark-mode .card h3 { color: #f8fafc; }
+        html.dark-mode .card-details { color: #cbd5e1; }
+        html.dark-mode .post-meta { border-top-color: #334155; }
+        html.dark-mode .meta-badge { background: #334155; color: #94a3b8; }
+        html.dark-mode .list-item { background: #1e293b; border-color: #334155; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        html.dark-mode .class-card { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        html.dark-mode .class-card:hover { border-color: var(--accent); color: #fff; }
+        html.dark-mode .back-btn { background: #334155; color: #cbd5e1; }
+        html.dark-mode .back-btn:hover { background: #475569; color: #fff; }
+        html.dark-mode .main-footer { background-color: #0b1120; border-color: #1e293b; }
+        html.dark-mode .modal-box { background: #1e293b; color: #f8fafc; box-shadow: 0 15px 30px rgba(0,0,0,0.6);}
+        html.dark-mode .modal-box input, html.dark-mode .modal-box textarea { background: #0f172a; color: #fff; border-color: #334155; }
+        html.dark-mode .modal-box input:focus, html.dark-mode .modal-box textarea:focus { border-color: var(--accent); }
+        html.dark-mode .mobile-bottom-nav { background: #1e293b; border-top-color: #0f172a; }
+        html.dark-mode .mobile-sidebar { background: #0f172a; }
+        html.dark-mode .side-item { color: #cbd5e1; }
+        html.dark-mode .side-item:hover, html.dark-mode .side-item.active { background: #1e293b; color: var(--orange); }
+        html.dark-mode .btn-show-more { background: #1e293b; color: #38bdf8; border-color: #334155; }
+        html.dark-mode .btn-show-more:hover { background: #0f172a; border-color: #38bdf8; }
+        html.dark-mode .skeleton-card { background: #1e293b; border-color: #334155; }
+        html.dark-mode .skeleton-block { background: #334155; }
+        html.dark-mode .install-top-banner { background: linear-gradient(135deg, #0f172a, #1e293b); border-bottom-color: var(--accent); }
+        html.dark-mode .filter-btn { background: #1e293b; color: #cbd5e1; border-color: #334155; }
+        html.dark-mode .filter-btn:hover { background: #334155; }
+        html.dark-mode .filter-btn.active { background: var(--orange); color: #fff; border-color: #ea580c; }
+    </style>
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+
+    <audio id="notify-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="custom-toast" class="toast-msg">تمت العملية بنجاح</div>
+
+    <div id="install-top-banner" class="install-top-banner">
+        <div class="install-banner-text">
+            🚀 <b>هل تريد تثبيت منصة مدرسة الطف بجهازك؟</b><br>
+            <span style="font-size:0.75rem; opacity:0.9;">لتصفح أسرع، ومتابعة فورية.</span>
+        </div>
+        <div class="install-banner-actions">
+            <button class="btn-banner-install" onclick="installApp()">تثبيت <i class='bx bx-mobile'></i></button>
+            <button class="btn-banner-close" onclick="document.getElementById('install-top-banner').style.display='none'"><i class='bx bx-x'></i></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="contact-modal" onclick="if(event.target === this) this.style.display='none'">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem; text-align: center;">إرسال رسالة للإدارة</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px; text-align: center;">رسالتك ستصل مباشرة وبسرية إلى مكتب السيد المدير.</p>
+            <input type="text" id="parent-name" placeholder="اسم ولي الأمر (أو الطالب)">
+            <input type="tel" id="parent-phone" placeholder="رقم الهاتف للتواصل">
+            <textarea id="parent-msg" rows="4" placeholder="اكتب استفسارك أو شكواك هنا..."></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="sendParentMsg()" style="background: var(--orange); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;"><i class='bx bx-send'></i> إرسال</button>
+                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSideMenu()"></div>
+    <div class="mobile-sidebar" id="mobile-sidebar">
+        <div class="sidebar-header">
+            <button class="close-btn" onclick="closeSideMenu()"><i class='bx bx-x'></i></button>
+            <img src="https://b.top4top.io/p_3738g1q971.png" style="width:60px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));">
+            <div>
+                <h3 style="margin:0; font-size:1.3rem;">مدرسة الطف</h3>
+                <span style="font-size:0.85rem; opacity:0.9;">المنصة الرقمية للبنين</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <a onclick="showTab('news', this); closeSideMenu();" class="side-item active"><i class='bx bx-news'></i> الرئيسية والأخبار</a>
+            <a href="parents.html" target="_blank" class="side-item" style="background:#fff7ed; color:var(--orange); border: 1px solid #fed7aa;"><i class='bx bx-child'></i> نظام متابعة التلاميذ</a>
+            <a onclick="showTab('hw', this); closeSideMenu();" class="side-item"><i class='bx bx-edit'></i> الواجبات البيتية</a>
+            <a onclick="showTab('exams', this); closeSideMenu();" class="side-item"><i class='bx bx-calendar-event'></i> مواعيد الامتحانات</a>
+            <a onclick="showTab('honor', this); closeSideMenu();" class="side-item"><i class='bx bx-trophy'></i> لوحة الشرف</a>
+            <a onclick="showTab('attendance', this); closeSideMenu();" class="side-item"><i class='bx bx-user-x'></i> الغيابات اليومية</a>
+            <a onclick="showTab('library', this); closeSideMenu();" class="side-item"><i class='bx bx-library'></i> المكتبة الرقمية</a>
+            <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item"><i class='bx bx-images'></i> معرض الصور</a>
+            <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;"><i class='bx bx-envelope'></i> تواصل مع الإدارة</a>
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
+            <a href="login.html" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
+        </div>
+    </div>
+
+    <div id="lightbox-overlay" class="lightbox-overlay" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img id="lightbox-img" class="lightbox-img" src="" alt="معاينة">
+            <div class="lightbox-controls">
+                <a id="lightbox-download" class="lightbox-btn" href="#" download="school_image.jpg" title="تحميل الصورة"><i class='bx bx-download'></i></a>
+                <button class="lightbox-btn" onclick="closeLightbox()" title="إغلاق"><i class='bx bx-x'></i></button>
+            </div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo">
+                <img src="https://b.top4top.io/p_3738g1q971.png" alt="شعار المدرسة" class="school-logo">
+                <div>
+                    <h1>مدرسة الطف</h1>
+                    <span class="sub-title">الابتدائية للبنين</span>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li class="mobile-icon-nav"><a href="#" onclick="toggleTheme(event)" class="theme-toggle-icon"><i class='bx bx-moon'></i></a></li>
+                    <li class="notif-container">
+                        <a href="#" onclick="toggleNotif(event)" class="bell-btn"><i class='bx bxs-bell'></i><span id="notif-badge" class="notif-badge">0</span></a>
+                        <div id="notif-dropdown" class="notif-dropdown">
+                            <div class="notif-header">الإشعارات <button onclick="clearNotifs(event)" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold;">تصفير</button></div>
+                            <div id="notif-list" class="notif-list"></div>
+                        </div>
+                    </li>
+                    <li><a onclick="document.getElementById('contact-modal').style.display='flex'" class="btn-header-contact"><i class='bx bx-envelope'></i> تواصل معنا</a></li>
+                    <li><a href="login.html" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="top-navbar">
+        <a onclick="showTab('news', this)" class="active">الرئيسية والأخبار</a>
+        <a onclick="showTab('hw', this)">الواجبات البيتية</a>
+        <a onclick="showTab('exams', this)">مواعيد الامتحانات</a>
+        <a onclick="showTab('honor', this)">لوحة الشرف</a>
+        <a onclick="showTab('attendance', this)">الغيابات اليومية</a>
+        <a onclick="showTab('library', this)">المكتبة الرقمية</a>
+        <a onclick="showTab('exhibit', this)">معرض الصور</a>
+        <a href="parents.html" target="_blank" style="background: var(--orange); color: #fff; border: none; font-weight: 800; margin-right: 10px;">نظام متابعة التلاميذ</a>
+    </nav>
+
+    <div class="mobile-bottom-nav">
+        <a onclick="showTab('news', this)" class="nav-item active"><i class='bx bx-home'></i><span>الرئيسية</span></a>
+        <a onclick="showTab('hw', this)" class="nav-item"><i class='bx bx-edit'></i><span>الواجبات</span></a>
+        <a onclick="showTab('exams', this)" class="nav-item"><i class='bx bx-calendar-event'></i><span>الامتحانات</span></a>
+        <a onclick="showTab('honor', this)" class="nav-item"><i class='bx bx-trophy'></i><span>الشرف</span></a>
+        <a onclick="openSideMenu()" class="nav-item"><i class='bx bx-menu'></i><span>المزيد</span></a>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <h2>مرحباً بكم في منصة مدرسة الطف الإلكترونية</h2>
+            <p style="margin-bottom: 0; font-size: 1rem; opacity: 0.9;">نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
+        </div>
+    </section>
+
+    <div class="container" style="padding-top: 5px; flex-grow: 1; padding-bottom: 40px;">
+
+        <div id="emergency-banner" style="display: none;">
+            <i class='bx bx-alarm-exclamation' style="font-size: 2rem; color: #e74c3c;"></i>
+            <div>
+                <strong style="font-size: 1.1rem; display: block; margin-bottom: 3px;">تنبيه إداري عاجل</strong>
+                <span id="emergency-text" style="font-weight: 600; line-height: 1.4; font-size: 0.9rem;"></span>
+            </div>
+        </div>
+
+        <div id="tab-news" class="main-tab" style="display: block;">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">آخر أخبار المدرسة</h2>
+            <div id="school-news-list" class="cards-grid"></div>
+            <div id="news-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
+        </div>
+
+        <div id="tab-hw" class="main-tab">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">الواجبات البيتيّة الحديثة</h2>
+            <div id="hw-classes" class="class-grid" style="display: grid;">
+                <button class="class-card" onclick="openClassView('hw', 'الأول', 'الواجبات - الصف الأول الابتدائي')">الصف الأول</button>
+                <button class="class-card" onclick="openClassView('hw', 'الثاني', 'الواجبات - الصف الثاني الابتدائي')">الصف الثاني</button>
+                <button class="class-card" onclick="openClassView('hw', 'الثالث', 'الواجبات - الصف الثالث الابتدائي')">الصف الثالث</button>
+                <button class="class-card" onclick="openClassView('hw', 'الرابع', 'الواجبات - الصف الرابع الابتدائي')">الصف الرابع</button>
+                <button class="class-card" onclick="openClassView('hw', 'الخامس', 'الواجبات - الصف الخامس الابتدائي')">الصف الخامس</button>
+                <button class="class-card" onclick="openClassView('hw', 'السادس', 'الواجبات - الصف السادس الابتدائي')">الصف السادس</button>
+            </div>
+            <div id="hw-details" class="sub-tab">
+                <button class="back-btn" onclick="closeClassView('hw')"><i class='bx bx-right-arrow-alt'></i> عودة</button>
+                <h3 id="hw-class-title" style="color: #27ae60; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.2rem;"></h3>
+                <div id="homeworks-list" class="cards-grid"></div>
+            </div>
+        </div>
+
+        <div id="tab-exams" class="main-tab">
+            <h2 style="color: inherit; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">مواعيد الامتحانات القادمة</h2>
+            <div id="exams-list" class="cards-grid"></div>
+        </div>
+
+        <div id="tab-honor" class="main-tab">
+            <h2 style="color: var(--orange); margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">أبطال لوحة الشرف</h2>
+            <div id="honor-list" class="cards-grid"></div>
+        </div>
+
+        <div id="tab-attendance" class="main-tab">
+            <h2 style="color: var(--orange); margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">سجل الغيابات اليومي</h2>
+            <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 15px;">
+                <button class="filter-btn active" onclick="filterAttendance('الكل', this)">الكل</button>
+                <button class="filter-btn" onclick="filterAttendance('الأول', this)">الأول</button>
+                <button class="filter-btn" onclick="filterAttendance('الثاني', this)">الثاني</button>
+                <button class="filter-btn" onclick="filterAttendance('الثالث', this)">الثالث</button>
+                <button class="filter-btn" onclick="filterAttendance('الرابع', this)">الرابع</button>
+                <button class="filter-btn" onclick="filterAttendance('الخامس', this)">الخامس</button>
+                <button class="filter-btn" onclick="filterAttendance('السادس', this)">السادس</button>
+            </div>
+            <div id="attendance-list" class="cards-grid"></div>
+        </div>
+
+        <div id="tab-library" class="main-tab">
+            <h2 style="color: var(--accent); margin-top: 0; margin-bottom: 5px; font-weight: 800; font-size: 1.4rem;">المكتبة الرقمية</h2>
+            <p style="color: #64748b; font-weight: 600; font-size: 0.9rem; margin-bottom: 20px;">ملازم، ملخصات للتحميل المباشر</p>
+            <div id="library-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            <div id="lib-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
+        </div>
+
+        <div id="tab-exhibit" class="main-tab">
+            <h2 style="color: #9b59b6; margin-top: 0; margin-bottom: 20px; font-weight: 800; font-size: 1.4rem;">معرض صور المدرسة</h2>
+            <div id="exhibit-list" class="cards-grid"></div>
+            <div id="exhibit-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
+        </div>
+
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="social-links">
+                <a href="https://t.me/Altaf2025" target="_blank" class="social-btn tel-btn">
+                    <i class='bx bxl-telegram'></i> قناة التليكرام
+                </a>
+                <a href="https://www.facebook.com/share/1CZHXhUgYb/" target="_blank" class="social-btn fb-btn">
+                    <i class='bx bxl-facebook-circle'></i> صفحة الفيسبوك
+                </a>
+            </div>
+            <div class="rights">
+                © 2026 مدرسة الطف الابتدائية للبنين | جميع الحقوق محفوظة.
+                <br>
+                <small>تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank">اوروك سوفت للحلول البرمجية - مرتضى حسين</a></small>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        const SUPABASE_URL = 'https://poqswuntarhyjobwfkbl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+        
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        window.appData = { hw: [], attendance: [] }; 
+        window.currentView = { hw: { active: false, keyword: "" } };
+        window.currentAttendanceFilter = 'الكل';
+
+        function unlockIOSAudio() { const sound = document.getElementById('notify-sound'); if (sound) { sound.play().then(() => { sound.pause(); sound.currentTime = 0; }).catch(e => console.log(e)); } document.removeEventListener('click', unlockIOSAudio); document.removeEventListener('touchstart', unlockIOSAudio); }
+        document.addEventListener('click', unlockIOSAudio); document.addEventListener('touchstart', unlockIOSAudio);
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+        window.addEventListener('load', () => { 
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone; 
+            if (!isStandalone) { document.getElementById('install-top-banner').style.display = 'flex'; } 
+        });
+
+        window.installApp = async () => { 
+            if (deferredPrompt) { 
+                document.getElementById('install-top-banner').style.display = 'none'; 
+                deferredPrompt.prompt(); 
+                await deferredPrompt.userChoice; 
+                deferredPrompt = null; 
+            } else { 
+                alert('📲 طريقة التثبيت:\n\n- للحاسوب/الأندرويد: ابحث عن أيقونة التثبيت في شريط العنوان أو القائمة العلوية للمتصفح.\n- للآيفون/الآيباد (Safari): اضغط على زر "المشاركة" بالأسفل ثم "إضافة للشاشة الرئيسية".'); 
+            } 
+        };
+
+        function injectSkeletons(containerId, count = 3, hasImg = false) { const container = document.getElementById(containerId); if (!container) return; container.innerHTML = ""; for (let i = 0; i < count; i++) { container.innerHTML += `<div class="skeleton-card">${hasImg ? '<div class="skeleton-block skeleton-img"></div>' : ''}<div class="skeleton-block skeleton-title"></div><div class="skeleton-block skeleton-text"></div><div class="skeleton-block skeleton-text" style="width:80%;"></div><div class="skeleton-block skeleton-meta"></div></div>`; } }
+        injectSkeletons('school-news-list', 3, true); injectSkeletons('exams-list', 3, false); injectSkeletons('honor-list', 3, false); injectSkeletons('library-list', 3, false); injectSkeletons('exhibit-list', 3, true);
+
+        window.openLightbox = function(src) { const overlay = document.getElementById('lightbox-overlay'); document.getElementById('lightbox-img').src = src; document.getElementById('lightbox-download').href = src; overlay.style.display = 'flex'; document.body.style.overflow = 'hidden'; };
+        window.closeLightbox = function() { document.getElementById('lightbox-overlay').style.display = 'none'; if (!document.getElementById('mobile-sidebar').classList.contains('open')) { document.body.style.overflow = ''; } };
+        window.openSideMenu = function() { document.getElementById('mobile-sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; };
+        window.closeSideMenu = function() { document.getElementById('mobile-sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); document.body.style.overflow = ''; };
+        window.showTab = function(tabId, el) { document.querySelectorAll('.main-tab').forEach(tab => tab.style.display = 'none'); document.getElementById('tab-' + tabId).style.display = 'block'; document.querySelectorAll('.top-navbar a, .nav-item, .side-item').forEach(a => a.classList.remove('active')); document.querySelectorAll(`[onclick*="'${tabId}'"]`).forEach(a => { if(!a.classList.contains('bell-btn')) a.classList.add('active'); }); window.scrollTo({top: 0, behavior: 'smooth'}); };
+        window.openClassView = function(type, gradeKeyword, gradeTitle) { document.getElementById(type + '-classes').style.display = 'none'; document.getElementById(type + '-details').style.display = 'block'; document.getElementById(type + '-class-title').innerText = gradeTitle; window.currentView[type] = { active: true, keyword: gradeKeyword }; renderFilteredData(type); };
+        window.closeClassView = function(type) { document.getElementById(type + '-classes').style.display = 'grid'; document.getElementById(type + '-details').style.display = 'none'; window.currentView[type] = { active: false, keyword: "" }; };
+
+        let storedNotifs = JSON.parse(localStorage.getItem('altaf_cached_notifs')) || [];
+        window.toggleNotif = function(e) { e.preventDefault(); document.getElementById('notif-dropdown').classList.toggle('show'); document.getElementById('notif-badge').style.display = 'none'; document.getElementById('notif-badge').innerText = '0'; };
+        window.clearNotifs = function(e) { e.preventDefault(); storedNotifs = []; localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs)); renderNotificationsUI(); };
+        window.openAndDestroyNotif = function(id, tabId, docId, className) { storedNotifs = storedNotifs.filter(n => n.id !== id); localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs)); renderNotificationsUI(); showTab(tabId, null); if (tabId === 'hw' && className) { let gradeKeyword = className.split(' ')[0]; openClassView('hw', gradeKeyword, 'الواجبات - ' + className); } setTimeout(() => { if(docId) { const postEl = document.getElementById(docId); if (postEl) { postEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); postEl.style.transition = '0.5s'; postEl.style.boxShadow = '0 0 25px rgba(249, 115, 22, 0.8)'; setTimeout(() => { postEl.style.boxShadow = ''; }, 2000); } } }, 400); };
+        function pushPersistentNotification(id, text, tabId, docId, className = '') { if (storedNotifs.some(n => n.id === id)) return; const timeNow = new Date().toLocaleTimeString('ar-IQ', { hour: 'numeric', minute: '2-digit', hour12: true }); storedNotifs.unshift({ id, text, tabId, docId, className, time: timeNow }); localStorage.setItem('altaf_cached_notifs', JSON.stringify(storedNotifs)); renderNotificationsUI(); const sound = document.getElementById('notify-sound'); if(sound) sound.play().catch(()=>{}); }
+        function renderNotificationsUI() { const list = document.getElementById('notif-list'); const badge = document.getElementById('notif-badge'); if (!list || !badge) return; list.innerHTML = ""; if (storedNotifs.length === 0) { list.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.85rem; margin: 15px 0;">لا توجد إشعارات جديدة.</p>'; badge.style.display = 'none'; badge.innerText = '0'; return; } badge.innerText = storedNotifs.length; badge.style.display = 'inline-block'; storedNotifs.forEach(n => { list.innerHTML += `<div class="notif-item" onclick="openAndDestroyNotif('${n.id}', '${n.tabId}', '${n.docId}', '${n.className}')"><strong><i class='bx bx-bell'></i> تنبيه جديد:</strong><br>${n.text}<br><small style="color:gray; font-size:0.75rem; display:block; margin-top:5px;">${n.time}</small></div>`; }); }
+        renderNotificationsUI();
+
+        window.alert = function(msg) { const toast = document.getElementById('custom-toast'); if(!toast) return; toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible'; setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 4000); };
+        function formatFullDate(dateStr) { if(!dateStr) return "غير محدد"; const date = new Date(dateStr); const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]; const dayName = days[date.getDay()]; const dateNum = date.toLocaleDateString('ar-IQ', { year: 'numeric', month: 'numeric', day: 'numeric' }); const timeStr = date.toLocaleTimeString('ar-IQ', { hour: 'numeric', minute: '2-digit', hour12: true }); return `${dayName} - ${dateNum} - ${timeStr}`; }
+        function timeAgo(dateStr) { const date = new Date(dateStr); const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 3600; if (interval >= 1) return Math.floor(interval) + " ساعة"; interval = seconds / 60; if (interval >= 1) return Math.floor(interval) + " دقيقة"; return "لحظات"; }
+
+        function renderFilteredData(type) { if (type === 'hw') { const list = document.getElementById('homeworks-list'); list.innerHTML = ""; let data = window.appData.hw; if (window.currentView.hw.active) { data = data.filter(d => d.class && d.class.includes(window.currentView.hw.keyword)); } if (data.length === 0) { list.innerHTML = "<p style='font-size:1rem; font-weight:700; color:#64748b;'>لا توجد واجبات مسجلة حالياً لهذا الصف.</p>"; return; } data.forEach(d => { const dateString = formatFullDate(d.timestamp); list.innerHTML += `<div class="card card-hw" id="${d.id}"><h3><i class='bx bx-edit'></i> ${d.subject}</h3><div class="card-details">${d.details}</div><div class="post-meta"><span class="meta-badge" style="color: #2c3e50;"><i class='bx bx-user'></i> الناشر: ${d.publisher || 'المعلم'}</span><span class="meta-badge" style="color: #27ae60;"><i class='bx bx-time'></i> ${dateString}</span></div></div>`; }); } }
+
+        window.filterAttendance = function(grade, btnEl) { window.currentAttendanceFilter = grade; document.querySelectorAll('#tab-attendance .filter-btn').forEach(b => b.classList.remove('active')); if(btnEl) btnEl.classList.add('active'); renderAttendanceUI(); };
+        function renderAttendanceUI() { const list = document.getElementById('attendance-list'); if (!list) return; list.innerHTML = ""; let data = window.appData.attendance; if (window.currentAttendanceFilter !== 'الكل') { data = data.filter(d => d.class && d.class.includes(window.currentAttendanceFilter)); } if (data.length === 0) { list.innerHTML = "<div class='card' style='grid-column: 1/-1; text-align:center; padding: 30px;'><p style='margin:0; font-weight:700; color:#64748b;'>لا توجد غيابات مسجلة لهذا اليوم</p></div>"; return; } data.forEach(d => { const dateString = new Date(d.timestamp).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'short', day: 'numeric' }); list.innerHTML += `<div class="card" id="${d.id}" style="border-right: 4px solid var(--orange);"><h3 style="color: var(--orange); margin-bottom: 5px;"><i class='bx bx-user'></i> ${d.studentName}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">السبب / التبرير:</strong> <span style="color:#475569;">${d.reason || 'بدون عذر مبين'}</span></div><div class="post-meta"><span class="meta-badge" style="color:var(--orange);"><i class='bx bx-calendar'></i> التاريخ: ${dateString}</span></div></div>`; }); }
+
+        window.sendParentMsg = async () => { 
+            const n = document.getElementById('parent-name').value; 
+            const p = document.getElementById('parent-phone').value; 
+            const m = document.getElementById('parent-msg').value; 
+            if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة بشكل صحيح."); 
+            try { 
+                const { error } = await supabase.from('messages').insert([{ name: n, phone: p, message: m }]);
+                if (error) throw error;
+                alert("تم إرسال رسالتك للإدارة بنجاح ✔️"); 
+                document.getElementById('contact-modal').style.display = 'none'; 
+                document.getElementById('parent-name').value = ''; 
+                document.getElementById('parent-phone').value = ''; 
+                document.getElementById('parent-msg').value = ''; 
+            } catch (e) { alert("حدث خطأ في الإرسال! " + e.message); } 
+        };
+
+        let isInitialLoad = true; setTimeout(() => { isInitialLoad = false; }, 4000); 
+
+        let newsLimit = 6, libLimit = 10, exhibitLimit = 6;
+        window.loadMoreNews = () => { newsLimit += 6; fetchNews(); };
+        window.loadMoreLib = () => { libLimit += 10; fetchLibrary(); };
+        window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); };
+
+        async function fetchNews() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(newsLimit);
+            if (error) console.error("خطأ جلب الأخبار:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'school_news' || d.type === 'announcements') : [];
+            const list = document.getElementById('school-news-list'); const more = document.getElementById('news-more-btn-container');
+            if (!list) return; list.innerHTML = ""; more.innerHTML = "";
+            if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
+            data.forEach(d => { const imgHtml = d.imageUrl ? `<div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div>` : ""; list.innerHTML += `<div class="card card-announce" id="${d.id}">${imgHtml}<h3><i class='bx bx-news'></i> ${d.title || d.subject || 'خبر'}</h3><div class="card-details">${d.details || ''}</div><div class="post-meta" style="flex-direction: row; gap: 10px;"><span class="meta-badge"><i class='bx bx-time-five'></i> ${timeAgo(d.timestamp)}</span><span class="meta-badge"><i class='bx bx-user'></i> ${d.publisher || 'الإدارة'}</span></div></div>`; });
+            if (rawData && rawData.length >= newsLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreNews()">عرض المزيد <i class='bx bx-chevron-down'></i></button>`;
+        }
+
+        async function fetchHomeworks() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(100);
+            if (error) console.error("خطأ جلب الواجبات:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'homeworks') : [];
+            if (data) { window.appData.hw = data; if(window.currentView.hw.active) renderFilteredData('hw'); }
+        }
+
+        async function fetchExams() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            if (error) console.error("خطأ جلب الامتحانات:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'exams') : [];
+            const list = document.getElementById('exams-list'); if (!list) return; list.innerHTML = "";
+            if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
+            data.forEach(d => { const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5); let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`); list.innerHTML += `<div class="card card-exam" id="${d.id}"><h3><i class='bx bx-calendar'></i> ${d.subject}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">الموعد:</strong> <span style="color:#e74c3c; font-weight:800;">${d.details}</span><div style="margin-top:12px;">${statusHtml}</div></div><div class="post-meta"><span class="meta-badge" style="color: var(--primary);"><i class='bx bx-user'></i> الناشر: ${d.publisher || 'الإدارة'}</span><span class="meta-badge" style="color: #e74c3c;"><i class='bx bx-time'></i> وقت النشر: ${formatFullDate(d.timestamp)}</span></div></div>`; });
+        }
+
+        async function fetchHonorRoll() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            if (error) console.error("خطأ جلب لوحة الشرف:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'honor_roll') : [];
+            const list = document.getElementById('honor-list'); if (!list) return; list.innerHTML = "";
+            let hasRecords = false; const now = new Date();
+            if (data && data.length > 0) { data.forEach(d => { if ((now - new Date(d.timestamp)) <= 7 * 24 * 60 * 60 * 1000) { hasRecords = true; let badgeIcon = "<i class='bx bx-star'></i>"; if(d.badge === "بطل الواجبات") badgeIcon = "<i class='bx bx-edit'></i>"; else if(d.badge === "نجم الأسبوع") badgeIcon = "<i class='bx bx-medal'></i>"; else if(d.badge === "صديق البيئة") badgeIcon = "<i class='bx bx-leaf'></i>"; else if(d.badge === "المبدع") badgeIcon = "<i class='bx bx-bulb'></i>"; list.innerHTML += `<div class="card" id="${d.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid var(--orange);"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#ffedd5; color:var(--orange); padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`; } }); }
+            if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
+        }
+
+        async function fetchAttendance() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            if (error) console.error("خطأ جلب الغيابات:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), studentName: item.content?.studentName || item.content?.absentNames, ...item.content })) : [];
+            if (data) { window.appData.attendance = data; renderAttendanceUI(); }
+        }
+
+        async function fetchLibrary() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(libLimit);
+            if (error) console.error("خطأ جلب المكتبة:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'library') : [];
+            const list = document.getElementById('library-list'); const more = document.getElementById('lib-more-btn-container');
+            if (!list) return; list.innerHTML = ""; more.innerHTML = "";
+            if (!data || data.length === 0) { list.innerHTML = "<p>قيد التجهيز للمكتبة..</p>"; return; }
+            data.forEach(d => { list.innerHTML += `<div class="list-item lib-item" id="${d.id}"><div><strong style="font-size:1rem; color:inherit;">${d.subject}</strong><br><span style="color:#64748b; font-weight:600; font-size:0.85rem;">${d.class}</span></div><a href="${d.url}" target="_blank" class="lib-link"><i class='bx bx-download'></i> تحميل</a></div>`; });
+            if (rawData && rawData.length >= libLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreLib()">عرض المزيد <i class='bx bx-chevron-down'></i></button>`;
+        }
+
+        async function fetchExhibit() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(exhibitLimit);
+            if (error) console.error("خطأ جلب المعرض:", error);
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'exhibition') : [];
+            const list = document.getElementById('exhibit-list'); const more = document.getElementById('exhibit-more-btn-container');
+            if (!list) return; list.innerHTML = ""; more.innerHTML = "";
+            if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
+            data.forEach(d => { list.innerHTML += `<div class="card card-gallery" id="${d.id}"><div class="card-img-wrapper"><img src="${d.imageUrl}" onclick="openLightbox('${d.imageUrl}')" style="cursor:pointer;" loading="lazy"></div><h3 style="color:#8e44ad; justify-content:center; text-align:center;">${d.title || ''}</h3><div class="post-meta" style="flex-direction: row; justify-content:center;"><span class="meta-badge"><i class='bx bx-calendar'></i> ${timeAgo(d.timestamp)}</span></div></div>`; });
+            if (rawData && rawData.length >= exhibitLimit) more.innerHTML = `<button class="btn-show-more" onclick="loadMoreExhibit()">عرض المزيد <i class='bx bx-chevron-down'></i></button>`;
+        }
+
+        async function fetchSettings() {
+            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false });
+            if (error) console.error("خطأ جلب التنبيه:", error);
+            const alertItem = rawData ? rawData.find(item => (item.type === 'emergency_alert' || item.content?.type === 'emergency_alert')) : null;
+            const data = alertItem ? { id: alertItem.id, timestamp: alertItem.created_at, ...alertItem.content } : null;
+            const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
+            if (data && data.active) { textEl.innerText = data.text; banner.style.display = 'flex'; } else { banner.style.display = 'none'; }
+        }
+
+        fetchNews(); fetchHomeworks(); fetchExams(); fetchHonorRoll(); fetchAttendance(); fetchLibrary(); fetchExhibit(); fetchSettings();
+
+        supabase.channel('school-live-updates').on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                const newItem = payload.new; if (!newItem || isInitialLoad) return;
+                const content = newItem.content || {}; const type = newItem.type || content.type;
+                if (type === 'school_news' || type === 'announcements') { pushPersistentNotification(newItem.id, `تم نشر خبر مدرسة جديد: ${content.title || content.subject || 'خبر عاجل'}`, 'news', newItem.id); fetchNews(); } 
+                else if (type === 'homeworks') { pushPersistentNotification(newItem.id, `واجب بيتي جديد لمادة ${content.subject} - ${content.class}`, 'hw', newItem.id, content.class); fetchHomeworks(); } 
+                else if (type === 'exams') { pushPersistentNotification(newItem.id, `جدول موعد امتحان: ${content.subject} - ${content.class}`, 'exams', newItem.id); fetchExams(); } 
+                else if (type === 'honor_roll') { pushPersistentNotification(newItem.id, `طالب متميز جديد: ${content.name}`, 'honor', newItem.id); fetchHonorRoll(); } 
+                else if (type === 'attendance') { pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الطالب (${content.studentName || content.absentNames})`, 'attendance', ''); fetchAttendance(); } 
+                else if (type === 'library') { pushPersistentNotification(newItem.id, `ملزمة جديدة متاحة للتحميل: ${content.subject}`, 'library', newItem.id); fetchLibrary(); } 
+                else if (type === 'exhibition') { pushPersistentNotification(newItem.id, `تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', newItem.id); fetchExhibit(); } 
+                else if (type === 'emergency_alert') { fetchSettings(); if (content.active) pushPersistentNotification('emergency_' + Date.now(), 'تنبيه إداري عاجل منشور بالرئيسية!', 'news', ''); }
+            }).subscribe();
+    </script>
+</body>
+</html>
