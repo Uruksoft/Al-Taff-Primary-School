@@ -1,15 +1,15 @@
 {
-  "name": "مدرسة الطف الابتدائية",
-  "short_name": "مدرسة الطف",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#1e293b",
-  "theme_color": "#2c3e50",
-  "icons": [
-    {
-      "src": "https://b.top4top.io/p_3738g1q971.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "مدرسة الطف الابتدائية",
+    "short_name": "مدرسة الطف",
+    "start_url": "./welcome.html",
+    "display": "standalone",
+    "background_color": "#f8fafc",
+    "theme_color": "#0369a1",
+    "icons": [
+        {
+            "src": "https://b.top4top.io/p_3738g1q971.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        }
+    ]
 }
