@@ -2,11 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لا يوجد اتصال - مدرسة الطف</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- مشغل Lottie -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+
     <style>
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Cairo', sans-serif;
             background-color: #f8fafc;
             color: #334155;
             margin: 0;
@@ -21,26 +27,25 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .icon-box {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px auto;
-        }
-
-        .icon-box svg {
-            width: 100%;
-            height: 100%;
+        dotlottie-wc {
+            width: clamp(240px, 70vw, 300px) !important;
+            height: clamp(240px, 70vw, 300px) !important;
+            margin-bottom: 10px;
+            display: block;
         }
 
         h2 {
             color: #0ea5e9;
             font-size: 1.5rem;
-            font-weight: 800;
-            margin: 0 0 10px 0;
+            font-weight: 900;
+            margin: 10px 0;
         }
 
         p {
@@ -48,55 +53,48 @@
             font-size: 0.95rem;
             line-height: 1.6;
             margin: 0 0 25px 0;
-            font-weight: 600;
+            font-weight: 700;
         }
 
+        /* تصميم زر إعادة المحاولة المطور بدون رموز */
         .btn {
-            background-color: #0ea5e9;
-            color: white;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #ffffff;
             border: none;
-            padding: 12px 32px;
+            padding: 14px 42px;
             border-radius: 50px;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 800;
+            font-family: 'Cairo', sans-serif;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-            transition: 0.2s;
+            box-shadow: 0 8px 20px -4px rgba(14, 165, 233, 0.4);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px -4px rgba(14, 165, 233, 0.5);
+            filter: brightness(1.05);
         }
 
         .btn:active {
-            transform: scale(0.97);
-        }
-
-        /* أنيميشن نبض خفيف لإشارة الواي فاي */
-        @keyframes wifiPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .pulse {
-            animation: wifiPulse 2s infinite ease-in-out;
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 4px 12px -2px rgba(14, 165, 233, 0.3);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- رسم الواي فاي المقطوع أوفلاين 100% -->
-        <div class="icon-box">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path class="pulse" d="M15 35 C35 15, 65 15, 85 35" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
-                <path d="M28 48 C40 33, 60 33, 72 48" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
-                <path d="M41 62 C46 54, 54 54, 59 62" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="50" cy="75" r="5" fill="#f97316"/>
-                <line x1="20" y1="20" x2="80" y2="80" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/>
-            </svg>
-        </div>
+        <!-- أنيميشن Lottie -->
+        <dotlottie-wc src="https://lottie.host/64274ba3-2047-4c43-b326-9beed6d442e8/SVmGWA4MFM.lottie" autoplay loop></dotlottie-wc>
 
         <h2>انقطع الاتصال بالإنترنت!</h2>
         <p>يرجى التأكد من تشغيل الواي فاي أو بيانات الهاتف والمحاولة مرة أخرى.</p>
         
-        <button class="btn" onclick="checkOnline()">إعادة المحاولة 🔄</button>
+        <button class="btn" onclick="checkOnline()">إعادة المحاولة</button>
     </div>
 
     <script>

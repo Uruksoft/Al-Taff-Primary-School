@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>دليل منصة مدرسة الطف</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -28,18 +28,22 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html, body {
+            height: 100dvh;
+            min-height: 100dvh;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-main);
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             overflow: hidden;
             position: relative;
-            padding: 20px 15px;
+            padding: calc(15px + env(safe-area-inset-top)) 15px calc(20px + env(safe-area-inset-bottom)) 15px;
         }
 
         .skip-header {
@@ -74,6 +78,7 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
+            overflow: hidden;
         }
 
         .slide {
@@ -95,24 +100,24 @@
         }
 
         dotlottie-player {
-            width: clamp(280px, 80vw, 360px) !important;
-            height: clamp(280px, 80vw, 360px) !important;
-            margin-bottom: 20px;
+            width: clamp(180px, 42vh, 300px) !important;
+            height: clamp(180px, 42vh, 300px) !important;
+            margin-bottom: 10px;
             display: block;
         }
 
         .slide-title {
             color: var(--primary);
-            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            font-size: clamp(1.2rem, 4.5vw, 1.7rem);
             font-weight: 900;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .slide-desc {
             color: var(--text-muted);
-            font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+            font-size: clamp(0.85rem, 3.4vw, 1.05rem);
             font-weight: 600;
-            line-height: 1.65;
+            line-height: 1.5;
             max-width: 450px;
             padding: 0 10px;
         }
@@ -127,9 +132,10 @@
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            padding-bottom: 10px;
+            gap: 12px;
+            padding-bottom: 5px;
             z-index: 10;
+            touch-action: manipulation;
         }
 
         .dots-container {
@@ -160,7 +166,7 @@
 
         .btn {
             flex: 1;
-            padding: 14px 20px;
+            padding: 12px 18px;
             border-radius: var(--radius);
             font-family: 'Cairo', sans-serif;
             font-size: 1rem;
@@ -294,7 +300,6 @@
             updateSlide(currentSlide);
         }
 
-        // عند الانتهاء أو التخطي: يحفظ في ذاكرة المتصفح ويحول للرئيسية
         function finishIntro() {
             localStorage.setItem('hasSeenOnboarding', 'true');
             window.location.replace('home.html');

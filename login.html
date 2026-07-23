@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>دخول الكادر - مدرسة الطف</title>
     
-    <!-- خطوط جوجل ومكتبة الأيقونات (FontAwesome) -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -14,17 +13,15 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
     
-    <!-- مكتبة Lottie للأنيميشن -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
-    <!-- مكتبة Supabase الرسمية -->
+    <!-- مشغل Lottie الجديد والمحدث -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --primary: #0ea5e9;    /* أزرق سماوي */
-            --accent: #f6ad55;     /* برتقالي هادئ */
-            --bg-light: #f8fafc;   /* خلفية فاتحة نظيفة */
+            --primary: #0ea5e9;
+            --accent: #f6ad55;
+            --bg-light: #f8fafc;
             --text-main: #334155;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
@@ -42,8 +39,6 @@
             align-items: center; justify-content: center; min-height: 100vh; 
         }
 
-        /* تم إزالة الهيدر بالكامل */
-
         .login-wrapper { 
             display: flex; align-items: center; justify-content: center; 
             width: 100%; max-width: 900px; padding: 20px; 
@@ -58,11 +53,16 @@
             order: 1; 
         }
 
-        /* حاوية الأنيميشن */
         .animation-container {
             flex: 1; max-width: 350px; text-align: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             order: 2; 
+        }
+
+        dotlottie-wc {
+            width: 280px !important;
+            height: 280px !important;
+            display: block;
         }
 
         .login-box h2 { margin-top: 5px; color: var(--text-main); font-weight: 800; font-size: 1.4rem; }
@@ -75,7 +75,6 @@
         .input-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
         
         .input-group .icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; pointer-events: none; }
-        
         .eye-btn { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0; outline: none; }
 
         .options-row { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); cursor: pointer; }
@@ -94,12 +93,11 @@
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--danger); color: white; text-align: center; border-radius: 8px; padding: 14px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: var(--shadow); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
-        /* تعديلات الموبايل: الأنيميشن يصغر ويبقى ظاهر فوق الصندوق */
         @media (max-width: 768px) {
             .login-wrapper { flex-direction: column; gap: 15px; padding: 10px; }
             .animation-container { max-width: 220px; }
-            .animation-container h3, .animation-container p { display: none; } /* إخفاء النصوص الزائدة بالموبايل ليبقى الأنيميشن مرتب ومرئي */
-            #login-lottie-anim { width: 180px !important; height: 180px !important; }
+            .animation-container h3, .animation-container p { display: none; }
+            dotlottie-wc { width: 180px !important; height: 180px !important; }
         }
     </style>
 </head>
@@ -113,7 +111,6 @@
             <h3 style="color: var(--text-main); font-size: 1.1rem;">جاري التحقق من الهوية...</h3>
         </div>
 
-        <!-- صندوق تسجيل الدخول (على اليمين) -->
         <div class="login-box" id="login-ui">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
                 <img src="https://b.top4top.io/p_3738g1q971.png" style="width: 40px; height: 40px; object-fit: contain;">
@@ -148,30 +145,27 @@
             <button class="btn-login" id="login-btn" onclick="handleLogin()">تسجيل الدخول</button>
             
             <div class="login-footer">
-                <a href="index.html"><i class="fa-solid fa-house"></i> العودة للصفحة الرئيسية</a>
+                <a href="home.html"><i class="fa-solid fa-house"></i> العودة للصفحة الرئيسية</a>
             </div>
         </div>
 
-        <!-- قسم الأنيميشن (على اليسار بالشاشات الكبيرة وفوق الصندوق بالموبايل) -->
+        <!-- أنيميشن تسجيل الدخول الجديد -->
         <div class="animation-container">
-            <div id="login-lottie-anim" style="width: 100%; max-width: 320px; height: 320px;"></div>
+            <dotlottie-wc src="https://lottie.host/a7722a60-a8c8-4757-8a57-b1358eee8bd8/0NctHm9jKz.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
             <h3 style="color: var(--primary); font-weight: 800; margin-top: 10px;">بوابة الكادر التدريسي</h3>
             <p style="color: var(--text-muted); font-size: 0.9rem;">إدارة الواجبات، الأوائل، والأنشطة المدرسية بكل سهولة.</p>
         </div>
     </div>
 
     <script>
-        try {
-            lottie.loadAnimation({
-                container: document.getElementById('login-lottie-anim'),
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                path: 'animations/login-anim.json'
-            });
-        } catch(e) {
-            console.log("خطأ في تشغيل الأنيميشن:", e);
+        // التحقق التلقائي من الاتصال بالإنترنت
+        function checkConnection() {
+            if (!navigator.onLine) {
+                window.location.replace("offline.html");
+            }
         }
+        window.addEventListener('offline', checkConnection);
+        checkConnection();
 
         const supabaseUrl = 'https://poqswuntarhyjobwfkbl.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
@@ -196,6 +190,15 @@
             toggleBtn.innerHTML = type === 'text' ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
         });
 
+        function getDeviceId() {
+            let devId = localStorage.getItem('altaf_device_id');
+            if (!devId) {
+                devId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+                localStorage.setItem('altaf_device_id', devId);
+            }
+            return devId;
+        }
+
         _supabase.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
                 loadingUi.style.display = "flex";
@@ -207,7 +210,7 @@
                     } else { 
                         window.location.replace("dashboard.html"); 
                     }
-                }, 1500);
+                }, 1200);
             } else {
                 loginUi.style.display = "block";
                 loadingUi.style.display = "none";
@@ -233,7 +236,20 @@
                 });
 
                 if (error) throw error;
-            } catch (error) {
+
+                const currentDeviceId = getDeviceId();
+                const isTeacher = (email !== 'admin1@altaf.com' && email !== 'admin@altaf.com');
+
+                if (isTeacher && data.user) {
+                    await _supabase.from('app_data').delete().eq('type', 'active_session').eq('user_id', data.user.id);
+                    await _supabase.from('app_data').insert([{
+                        type: 'active_session',
+                        user_id: data.user.id,
+                        content: { device_id: currentDeviceId, user_email: email, updated_at: new Date().toISOString() }
+                    }]);
+                }
+
+            } catch (error) { 
                 loginBtn.innerText = "تسجيل الدخول"; 
                 loginBtn.disabled = false;
                 alert("عذراً، البريد الإلكتروني أو كلمة المرور غير صحيحة");

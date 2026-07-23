@@ -12,15 +12,11 @@
     <meta name="apple-mobile-web-app-title" content="مدرسة الطف">
     <link rel="apple-touch-icon" href="https://b.top4top.io/p_3738g1q971.png">
 
-    <!-- خط كايرو ومكتبة الأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
-    <!-- مكتبات التحريك الحديثة (Confetti + AutoAnimate) -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.1/index.min.js"></script>
-
-    <!-- 🛡️ إضافة مكتبة Supabase الرسمية -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -34,7 +30,6 @@
             --shadow-hover: 0 25px 50px -12px rgba(37, 99, 235, 0.15);
         }
 
-        /* تحسين جودة العرض وتنعيم الخطوط للشاشات عالية الدقة */
         html { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         
         body { 
@@ -44,7 +39,6 @@
             background-attachment: fixed; padding-bottom: 90px;
         }
 
-        /* الهيدر الزجاجي الثابت (Glass Header) */
         header { 
             position: sticky; top: 0; background: rgba(255, 255, 255, 0.75); 
             backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -55,7 +49,6 @@
 
         .header-wrapper { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
-        /* زر الرجوع الملكي الحديث */
         .btn-back-home {
             display: inline-flex; align-items: center; gap: 8px;
             background: var(--primary); color: white; padding: 8px 20px;
@@ -70,11 +63,10 @@
         .header-title { display: flex; align-items: center; gap: 12px; }
         .header-title img { width: 48px; height: 48px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
         .header-title h1 { margin: 0; font-size: 1.4rem; color: var(--primary); font-weight: 900; letter-spacing: -0.5px; }
-        .header-spacer { width: 105px; } /* لضمان توسط العنوان برمجياً */
+        .header-spacer { width: 105px; }
 
         main { flex: 1; padding: 25px 15px; max-width: 850px; margin: 0 auto; width: 100%; box-sizing: border-box; }
 
-        /* حاويات الكروت بنظام Glassmorphism */
         .search-container, .result-container { 
             background: var(--card-glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             padding: 35px 30px; border-radius: 24px; box-shadow: var(--shadow-soft); 
@@ -112,7 +104,6 @@
         
         .grades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 14px; }
         
-        /* كروت الدرجات بتصميم (iOS Widgets) */
         .grade-card { 
             background: rgba(255, 255, 255, 0.9); padding: 20px 12px; border-radius: 20px; 
             text-align: center; border: 1px solid rgba(255, 255, 255, 0.8); 
@@ -139,7 +130,6 @@
         #error-msg { color: #ef4444; background: #fef2f2; padding: 12px; border-radius: 12px; border: 1px solid #fca5a5; } 
         #loading-msg { color: var(--accent); }
 
-        /* شريط PWA الذكي أسفل الهاتف */
         .pwa-banner { 
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 420px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);
@@ -155,19 +145,16 @@
         .btn-install-app:hover { background: #0284c7; color: white; }
         @keyframes slideUp { from { bottom: -100px; opacity: 0; } to { bottom: 20px; opacity: 1; } }
 
-        /* تنسيق جدول كشف السنة التراكمي */
         #overview-table th, #overview-table td { padding: 14px 10px; border-bottom: 1px solid rgba(203, 213, 225, 0.6); font-size: 1rem; font-weight: 800; text-align: center; }
         #overview-table th { font-weight: 900; background: rgba(241, 245, 249, 0.8); color: var(--primary); font-size: 1.05rem; }
         #overview-table tr:hover td { background: white; }
 
         footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; font-weight: 700; margin-top: auto; }
 
-        /* التوافق التام مع شاشات الهواتف (iPhone / Android) */
         @media (max-width: 600px) { 
             .header-spacer { display: none; }
             .header-title h1 { font-size: 1.15rem; }
             .header-title img { width: 38px; height: 38px; }
-            /* تحويل زر الرجوع إلى أيقونة دائرية ذكية في الموبايل */
             .btn-back-home span { display: none; }
             .btn-back-home { padding: 10px; border-radius: 50%; width: 42px; height: 42px; justify-content: center; }
             .btn-back-home i { font-size: 1.4rem; }
@@ -181,7 +168,6 @@
 </head>
 <body>
 
-    <!-- الهيدر التفاعلي مع زر الرجوع الملكي -->
     <header>
         <div class="header-wrapper">
             <a href="index.html" class="btn-back-home" title="العودة للصفحة الرئيسية">
@@ -189,7 +175,6 @@
                 <span>الرئيسية</span>
             </a>
             <div class="header-title">
-                <!-- استدعاء آمن: يبحث عن logo.png محلياً، وإذا لم يجده يشغل رابط توب فور توب فوراً -->
                 <img src="logo.png" onerror="this.src='https://b.top4top.io/p_3738g1q971.png'" alt="شعار المدرسة">
                 <h1>بوابة أولياء الأمور</h1>
             </div>
@@ -273,8 +258,16 @@
     <footer>إدارة مدرسة الطف | نظام متابعة التلميذ الإلكتروني © 2026</footer>
 
     <script type="module">
-        // استدعاء مكتبة Supabase الرسمية بدل فايربيس
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        // فحص التوجيه الفوري لصفحة الخطأ عند انقطاع الإنترنت
+        function checkNetworkStatus() {
+            if (!navigator.onLine) {
+                window.location.replace("offline.html");
+            }
+        }
+        window.addEventListener('offline', checkNetworkStatus);
+        checkNetworkStatus();
 
         const SUPABASE_URL = 'https://poqswuntarhyjobwfkbl.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
@@ -283,7 +276,6 @@
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }
 
-        // تفعيل التحريك التلقائي الناعم (AutoAnimate) على الحاويات
         if (typeof autoAnimate === 'function') {
             autoAnimate(document.getElementById('result-section'));
             autoAnimate(document.getElementById('grades-display-area'));
@@ -389,7 +381,6 @@
             });
         };
 
-        // تعديل البحث عبر جدول students في Supabase
         document.getElementById('search-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const id = document.getElementById('student-id').value.trim(); const resSec = document.getElementById('result-section'); const err = document.getElementById('error-msg'); const load = document.getElementById('loading-msg');
             resSec.style.display = 'none'; err.style.display = 'none'; load.style.display = 'block';

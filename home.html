@@ -176,7 +176,6 @@
             .main-footer { padding: 25px 15px; padding-bottom: 85px !important; } 
         }
 
-        /* الوضع الليلي */
         html.dark-mode body { --bg-light: #0f172a; --text-main: #f8fafc; background-color: var(--bg-light); color: var(--text-main); }
         html.dark-mode .main-header { background-color: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
         html.dark-mode .logo h1 { color: #f8fafc; }
@@ -425,6 +424,15 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
+        // فحص التوجيه الفوري لصفحة الخطأ عند انقطاع الإنترنت
+        function checkNetworkStatus() {
+            if (!navigator.onLine) {
+                window.location.replace("offline.html");
+            }
+        }
+        window.addEventListener('offline', checkNetworkStatus);
+        checkNetworkStatus();
+
         const SUPABASE_URL = 'https://poqswuntarhyjobwfkbl.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
         
@@ -475,13 +483,72 @@
         renderNotificationsUI();
 
         window.alert = function(msg) { const toast = document.getElementById('custom-toast'); if(!toast) return; toast.innerText = msg; toast.style.opacity = '1'; toast.style.top = '20px'; toast.style.visibility = 'visible'; setTimeout(() => { toast.style.opacity = '0'; toast.style.top = '-100px'; setTimeout(()=> {toast.style.visibility = 'hidden';}, 400); }, 4000); };
-        function formatFullDate(dateStr) { if(!dateStr) return "غير محدد"; const date = new Date(dateStr); const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]; const dayName = days[date.getDay()]; const dateNum = date.toLocaleDateString('ar-IQ', { year: 'numeric', month: 'numeric', day: 'numeric' }); const timeStr = date.toLocaleTimeString('ar-IQ', { hour: 'numeric', minute: '2-digit', hour12: true }); return `${dayName} - ${dateNum} - ${timeStr}`; }
-        function timeAgo(dateStr) { const date = new Date(dateStr); const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 3600; if (interval >= 1) return Math.floor(interval) + " ساعة"; interval = seconds / 60; if (interval >= 1) return Math.floor(interval) + " دقيقة"; return "لحظات"; }
+        function formatFullDate(dateStr) { if(!dateStr) return "غير محدد"; const date = new Date(dateStr); const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]; const dayName = days[date.getDay()]; const dateNum = date.toLocaleDateString('ar-IQ', { year: 'numeric', month: 'numeric', day: 'numeric' }); return `${dayName} - ${dateNum}`; }
+
+        function timeAgo(dateStr) {
+            if(!dateStr) return "غير محدد";
+            const date = new Date(dateStr);
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return "منذ لحظات";
+            
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) {
+                if (minutes === 1) return "منذ دقيقة";
+                if (minutes === 2) return "منذ دقيقتين";
+                if (minutes >= 3 && minutes <= 10) return `منذ ${minutes} دقائق`;
+                return `منذ ${minutes} دقيقة`;
+            }
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) {
+                if (hours === 1) return "منذ ساعة";
+                if (hours === 2) return "منذ ساعتين";
+                if (hours >= 3 && hours <= 10) return `منذ ${hours} ساعات`;
+                return `منذ ${hours} ساعة`;
+            }
+            
+            const days = Math.floor(hours / 24);
+            if (days < 30) {
+                if (days === 1) return "منذ يوم";
+                if (days === 2) return "منذ يومين";
+                if (days >= 3 && days <= 10) return `منذ ${days} أيام`;
+                return `منذ ${days} يوماً`;
+            }
+            
+            const months = Math.floor(days / 30);
+            if (months < 12) {
+                if (months === 1) return "منذ شهر";
+                if (months === 2) return "منذ شهرين";
+                if (months >= 3 && months <= 10) return `منذ ${months} أشهر`;
+                return `منذ ${months} شهراً`;
+            }
+            
+            const years = Math.floor(days / 365);
+            if (years === 1) return "منذ سنة";
+            if (years === 2) return "منذ سنتين";
+            if (years >= 3 && years <= 10) return `منذ ${years} سنوات`;
+            return `منذ ${years} سنة`;
+        }
 
         function renderFilteredData(type) { if (type === 'hw') { const list = document.getElementById('homeworks-list'); list.innerHTML = ""; let data = window.appData.hw; if (window.currentView.hw.active) { data = data.filter(d => d.class && d.class.includes(window.currentView.hw.keyword)); } if (data.length === 0) { list.innerHTML = "<p style='font-size:1rem; font-weight:700; color:#64748b;'>لا توجد واجبات مسجلة حالياً لهذا الصف.</p>"; return; } data.forEach(d => { const dateString = formatFullDate(d.timestamp); list.innerHTML += `<div class="card card-hw" id="${d.id}"><h3><i class='bx bx-edit'></i> ${d.subject}</h3><div class="card-details">${d.details}</div><div class="post-meta"><span class="meta-badge" style="color: #2c3e50;"><i class='bx bx-user'></i> الناشر: ${d.publisher || 'المعلم'}</span><span class="meta-badge" style="color: #27ae60;"><i class='bx bx-time'></i> ${dateString}</span></div></div>`; }); } }
 
         window.filterAttendance = function(grade, btnEl) { window.currentAttendanceFilter = grade; document.querySelectorAll('#tab-attendance .filter-btn').forEach(b => b.classList.remove('active')); if(btnEl) btnEl.classList.add('active'); renderAttendanceUI(); };
-        function renderAttendanceUI() { const list = document.getElementById('attendance-list'); if (!list) return; list.innerHTML = ""; let data = window.appData.attendance; if (window.currentAttendanceFilter !== 'الكل') { data = data.filter(d => d.class && d.class.includes(window.currentAttendanceFilter)); } if (data.length === 0) { list.innerHTML = "<div class='card' style='grid-column: 1/-1; text-align:center; padding: 30px;'><p style='margin:0; font-weight:700; color:#64748b;'>لا توجد غيابات مسجلة لهذا اليوم</p></div>"; return; } data.forEach(d => { const dateString = new Date(d.timestamp).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'short', day: 'numeric' }); list.innerHTML += `<div class="card" id="${d.id}" style="border-right: 4px solid var(--orange);"><h3 style="color: var(--orange); margin-bottom: 5px;"><i class='bx bx-user'></i> ${d.studentName}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">السبب / التبرير:</strong> <span style="color:#475569;">${d.reason || 'بدون عذر مبين'}</span></div><div class="post-meta"><span class="meta-badge" style="color:var(--orange);"><i class='bx bx-calendar'></i> التاريخ: ${dateString}</span></div></div>`; }); }
+        
+        function renderAttendanceUI() { 
+            const list = document.getElementById('attendance-list'); if (!list) return; list.innerHTML = ""; 
+            let data = window.appData.attendance; 
+            if (window.currentAttendanceFilter !== 'الكل') { 
+                data = data.filter(d => d.class && d.class.includes(window.currentAttendanceFilter)); 
+            } 
+            if (data.length === 0) { 
+                list.innerHTML = "<div class='card' style='grid-column: 1/-1; text-align:center; padding: 30px;'><p style='margin:0; font-weight:700; color:#64748b;'>لا توجد غيابات مسجلة لهذا اليوم</p></div>"; 
+                return; 
+            } 
+            data.forEach(d => { 
+                const dateString = new Date(d.timestamp).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'short', day: 'numeric' }); 
+                list.innerHTML += `<div class="card" id="${d.id}" style="border-right: 4px solid var(--orange);"><h3 style="color: var(--orange); margin-bottom: 5px;"><i class='bx bx-user'></i> ${d.studentName}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">الأسماء:</strong> <span style="color:#475569;">${d.absentNames || d.reason || 'غياب يومي'}</span></div><div class="post-meta"><span class="meta-badge" style="color:var(--orange);"><i class='bx bx-calendar'></i> التاريخ: ${dateString}</span></div></div>`; 
+            }); 
+        }
 
         window.sendParentMsg = async () => { 
             const n = document.getElementById('parent-name').value; 
@@ -507,9 +574,9 @@
         window.loadMoreExhibit = () => { exhibitLimit += 6; fetchExhibit(); };
 
         async function fetchNews() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(newsLimit);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").in('type', ['school_news', 'announcements']).order('created_at', { ascending: false }).limit(newsLimit);
             if (error) console.error("خطأ جلب الأخبار:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'school_news' || d.type === 'announcements') : [];
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, ...item.content })) : [];
             const list = document.getElementById('school-news-list'); const more = document.getElementById('news-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد أخبار حالياً.</p>"; return; }
@@ -518,42 +585,102 @@
         }
 
         async function fetchHomeworks() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(100);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'homeworks').order('created_at', { ascending: false }).limit(100);
             if (error) console.error("خطأ جلب الواجبات:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'homeworks') : [];
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, ...item.content })) : [];
             if (data) { window.appData.hw = data; if(window.currentView.hw.active) renderFilteredData('hw'); }
         }
 
         async function fetchExams() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'exams').order('created_at', { ascending: false }).limit(50);
             if (error) console.error("خطأ جلب الامتحانات:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'exams') : [];
+            
             const list = document.getElementById('exams-list'); if (!list) return; list.innerHTML = "";
-            if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
-            data.forEach(d => { const examDate = new Date(d.details); const daysLeft = Math.ceil((examDate - new Date()) / 864e5); let statusHtml = daysLeft > 0 ? `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>` : (daysLeft === 0 ? `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>` : `<span class="meta-badge">✅ انتهى</span>`); list.innerHTML += `<div class="card card-exam" id="${d.id}"><h3><i class='bx bx-calendar'></i> ${d.subject}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">الموعد:</strong> <span style="color:#e74c3c; font-weight:800;">${d.details}</span><div style="margin-top:12px;">${statusHtml}</div></div><div class="post-meta"><span class="meta-badge" style="color: var(--primary);"><i class='bx bx-user'></i> الناشر: ${d.publisher || 'الإدارة'}</span><span class="meta-badge" style="color: #e74c3c;"><i class='bx bx-time'></i> وقت النشر: ${formatFullDate(d.timestamp)}</span></div></div>`; });
+            if (!rawData || rawData.length === 0) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
+            
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const expiredIdsToDelete = [];
+
+            rawData.forEach(item => {
+                const d = item.content || {};
+                const rawExamDateStr = d.details ? d.details.split('T')[0] : '';
+                if (!rawExamDateStr) return;
+
+                const examDate = new Date(rawExamDateStr + 'T23:59:59');
+                const diffTime = now - examDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 7) {
+                    expiredIdsToDelete.push(item.id);
+                    return;
+                }
+
+                let statusHtml = '';
+                if (rawExamDateStr < todayStr) {
+                    statusHtml = `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">الامتحان منتهي</span>`;
+                } else if (rawExamDateStr === todayStr) {
+                    statusHtml = `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>`;
+                } else {
+                    const daysLeft = Math.ceil((examDate - now) / 864e5);
+                    statusHtml = `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>`;
+                }
+
+                list.innerHTML += `<div class="card card-exam" id="${item.id}">
+                    <h3><i class='bx bx-calendar'></i> ${d.subject || 'امتحان'}</h3>
+                    <div class="card-details">
+                        <strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class || ''}</span><br>
+                        <strong style="color:var(--primary);">التاريخ:</strong> <span style="color:#e74c3c; font-weight:800;">${rawExamDateStr}</span>
+                        <div style="margin-top:12px;">${statusHtml}</div>
+                    </div>
+                    <div class="post-meta">
+                        <span class="meta-badge" style="color: var(--primary);"><i class='bx bx-user'></i> الناشر: ${d.publisher || 'الإدارة'}</span>
+                    </div>
+                </div>`;
+            });
+
+            if (expiredIdsToDelete.length > 0) {
+                try { await supabase.from('app_data').delete().in('id', expiredIdsToDelete); } catch(e){}
+            }
         }
 
         async function fetchHonorRoll() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'honor_roll').order('created_at', { ascending: false }).limit(50);
             if (error) console.error("خطأ جلب لوحة الشرف:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'honor_roll') : [];
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, ...item.content })) : [];
             const list = document.getElementById('honor-list'); if (!list) return; list.innerHTML = "";
             let hasRecords = false; const now = new Date();
-            if (data && data.length > 0) { data.forEach(d => { if ((now - new Date(d.timestamp)) <= 7 * 24 * 60 * 60 * 1000) { hasRecords = true; let badgeIcon = "<i class='bx bx-star'></i>"; if(d.badge === "بطل الواجبات") badgeIcon = "<i class='bx bx-edit'></i>"; else if(d.badge === "نجم الأسبوع") badgeIcon = "<i class='bx bx-medal'></i>"; else if(d.badge === "صديق البيئة") badgeIcon = "<i class='bx bx-leaf'></i>"; else if(d.badge === "المبدع") badgeIcon = "<i class='bx bx-bulb'></i>"; list.innerHTML += `<div class="card" id="${d.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid var(--orange);"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#ffedd5; color:var(--orange); padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`; } }); }
+            if (data && data.length > 0) { 
+                data.forEach(d => { 
+                    if ((now - new Date(d.timestamp)) <= 7 * 24 * 60 * 60 * 1000) { 
+                        hasRecords = true; let badgeIcon = "<i class='bx bx-star'></i>"; 
+                        if(d.badge === "بطل الواجبات") badgeIcon = "<i class='bx bx-edit'></i>"; 
+                        else if(d.badge === "نجم الأسبوع") badgeIcon = "<i class='bx bx-medal'></i>"; 
+                        else if(d.badge === "صديق البيئة") badgeIcon = "<i class='bx bx-leaf'></i>"; 
+                        else if(d.badge === "المبدع") badgeIcon = "<i class='bx bx-bulb'></i>"; 
+                        list.innerHTML += `<div class="card" id="${d.id}" style="flex-direction: row; align-items: center; gap: 15px; border-right: 4px solid var(--orange);"><div class="honor-badge">${badgeIcon}</div><div><strong style="font-size:1.1rem; color:inherit; display:block; margin-bottom:3px;">${d.name}</strong> <span class="meta-badge" style="background:#ffedd5; color:var(--orange); padding: 2px 8px; font-size: 0.8rem;">${d.badge || 'متميز'}</span><div style="color:#64748b; font-weight:600; margin-top:6px; font-size: 0.85rem;">${d.class}</div></div></div>`; 
+                    } 
+                }); 
+            }
             if (!hasRecords) list.innerHTML = "<p>لا يوجد أبطال لهذا الأسبوع..</p>";
         }
 
         async function fetchAttendance() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(50);
+            const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            try { await supabase.from('app_data').delete().eq('type', 'attendance').lt('created_at', yesterday); } catch(e){}
+
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'attendance').gte('created_at', yesterday).order('created_at', { ascending: false });
             if (error) console.error("خطأ جلب الغيابات:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), studentName: item.content?.studentName || item.content?.absentNames, ...item.content })) : [];
-            if (data) { window.appData.attendance = data; renderAttendanceUI(); }
+            
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, studentName: item.content?.studentName || item.content?.absentNames, ...item.content })) : [];
+            window.appData.attendance = data; 
+            renderAttendanceUI();
         }
 
         async function fetchLibrary() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(libLimit);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'library').order('created_at', { ascending: false }).limit(libLimit);
             if (error) console.error("خطأ جلب المكتبة:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'library') : [];
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, ...item.content })) : [];
             const list = document.getElementById('library-list'); const more = document.getElementById('lib-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>قيد التجهيز للمكتبة..</p>"; return; }
@@ -562,9 +689,9 @@
         }
 
         async function fetchExhibit() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false }).limit(exhibitLimit);
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'exhibition').order('created_at', { ascending: false }).limit(exhibitLimit);
             if (error) console.error("خطأ جلب المعرض:", error);
-            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type || (item.content ? item.content.type : ''), ...item.content })).filter(d => d.type === 'exhibition') : [];
+            const data = rawData ? rawData.map(item => ({ id: item.id, timestamp: item.created_at, type: item.type, ...item.content })) : [];
             const list = document.getElementById('exhibit-list'); const more = document.getElementById('exhibit-more-btn-container');
             if (!list) return; list.innerHTML = ""; more.innerHTML = "";
             if (!data || data.length === 0) { list.innerHTML = "<p>لا توجد صور في المعرض حالياً.</p>"; return; }
@@ -573,9 +700,9 @@
         }
 
         async function fetchSettings() {
-            const { data: rawData, error } = await supabase.from('app_data').select("*").order('created_at', { ascending: false });
+            const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'emergency_alert').order('created_at', { ascending: false });
             if (error) console.error("خطأ جلب التنبيه:", error);
-            const alertItem = rawData ? rawData.find(item => (item.type === 'emergency_alert' || item.content?.type === 'emergency_alert')) : null;
+            const alertItem = rawData && rawData.length > 0 ? rawData[0] : null;
             const data = alertItem ? { id: alertItem.id, timestamp: alertItem.created_at, ...alertItem.content } : null;
             const banner = document.getElementById('emergency-banner'); const textEl = document.getElementById('emergency-text');
             if (data && data.active) { textEl.innerText = data.text; banner.style.display = 'flex'; } else { banner.style.display = 'none'; }
@@ -590,7 +717,7 @@
                 else if (type === 'homeworks') { pushPersistentNotification(newItem.id, `واجب بيتي جديد لمادة ${content.subject} - ${content.class}`, 'hw', newItem.id, content.class); fetchHomeworks(); } 
                 else if (type === 'exams') { pushPersistentNotification(newItem.id, `جدول موعد امتحان: ${content.subject} - ${content.class}`, 'exams', newItem.id); fetchExams(); } 
                 else if (type === 'honor_roll') { pushPersistentNotification(newItem.id, `طالب متميز جديد: ${content.name}`, 'honor', newItem.id); fetchHonorRoll(); } 
-                else if (type === 'attendance') { pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الطالب (${content.studentName || content.absentNames})`, 'attendance', ''); fetchAttendance(); } 
+                else if (type === 'attendance') { pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الصف (${content.class})`, 'attendance', ''); fetchAttendance(); } 
                 else if (type === 'library') { pushPersistentNotification(newItem.id, `ملزمة جديدة متاحة للتحميل: ${content.subject}`, 'library', newItem.id); fetchLibrary(); } 
                 else if (type === 'exhibition') { pushPersistentNotification(newItem.id, `تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', newItem.id); fetchExhibit(); } 
                 else if (type === 'emergency_alert') { fetchSettings(); if (content.active) pushPersistentNotification('emergency_' + Date.now(), 'تنبيه إداري عاجل منشور بالرئيسية!', 'news', ''); }
