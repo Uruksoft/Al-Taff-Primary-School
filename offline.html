@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لا يوجد اتصال - مدرسة الطف</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .icon-box {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px auto;
+        }
+
+        .icon-box svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        h2 {
+            color: #0ea5e9;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0 0 25px 0;
+            font-weight: 600;
+        }
+
+        .btn {
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+            transition: 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        /* أنيميشن نبض خفيف لإشارة الواي فاي */
+        @keyframes wifiPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: wifiPulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- رسم الواي فاي المقطوع أوفلاين 100% -->
+        <div class="icon-box">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="pulse" d="M15 35 C35 15, 65 15, 85 35" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+                <path d="M28 48 C40 33, 60 33, 72 48" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+                <path d="M41 62 C46 54, 54 54, 59 62" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="50" cy="75" r="5" fill="#f97316"/>
+                <line x1="20" y1="20" x2="80" y2="80" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <h2>انقطع الاتصال بالإنترنت!</h2>
+        <p>يرجى التأكد من تشغيل الواي فاي أو بيانات الهاتف والمحاولة مرة أخرى.</p>
+        
+        <button class="btn" onclick="checkOnline()">إعادة المحاولة 🔄</button>
+    </div>
+
+    <script>
+        function checkOnline() {
+            if (navigator.onLine) {
+                window.location.replace('index.html');
+            } else {
+                alert('ما زلت غير متصل بالإنترنت!');
+            }
+        }
+
+        // تحويل تلقائي فور عودة النت
+        window.addEventListener('online', () => {
+            window.location.replace('index.html');
+        });
+    </script>
+</body>
+</html>

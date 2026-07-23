@@ -2,96 +2,226 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مرحباً بك في منصة مدرسة الطف</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- مكتبة Lottie للأنيميشن -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
     <style>
         :root {
-            --primary: #0ea5e9;
+            --primary-blue: #0369a1;
+            --accent-blue: #0284c7;
+            --orange: #f97316;
             --bg-light: #f8fafc;
-            --text-main: #334155;
+            --text-dark: #1e293b;
             --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08);
-            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            user-select: none;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; overflow: hidden;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
         }
 
-        .welcome-wrapper {
-            width: 100%; max-width: 500px;
-            background: #ffffff;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            padding: 40px 30px;
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(249, 115, 22, 0.08) 60%, transparent 80%);
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: 1;
+        }
+
+        .splash-card {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            margin: 15px;
-            animation: fadeIn 0.6s ease-out;
+            padding: 10px 20px;
+            max-width: 450px;
+            width: 90%;
+            margin: auto 0;
         }
 
-        .lottie-container {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 5px auto;
+        .lottie-box {
+            width: 300px;
+            height: 260px;
+            margin-bottom: 5px;
         }
 
-        .loading-text {
-            color: var(--text-muted);
-            font-size: 1rem;
+        .lottie-box svg {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .brand-title {
+            color: var(--primary-blue);
+            font-size: 1.9rem;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
+
+        .brand-subtitle {
+            color: var(--orange);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .counter-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .counter-badge {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+            background: #ffffff;
+            padding: 6px 26px;
+            border-radius: 50px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(3, 105, 161, 0.1);
+        }
+
+        .counter-num {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--orange));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .counter-percent {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--orange);
+            margin-right: 4px;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
             font-weight: 700;
-            margin-bottom: 20px;
-            animation: pulseText 1.5s infinite ease-in-out;
+            color: var(--text-muted);
+            min-height: 24px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .splash-footer {
+            position: relative;
+            z-index: 10;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-align: center;
+            padding-bottom: 15px;
         }
 
-        @keyframes pulseText {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+        .splash-footer span {
+            color: var(--orange);
+            font-weight: 800;
         }
     </style>
 </head>
 <body>
 
-    <div class="welcome-wrapper">
-        <!-- حاوية الأنيميشن -->
-        <div id="lottieAnimation" class="lottie-container"></div>
-        
-        <!-- النص المطلوب تحت الأنيميشن -->
-        <div class="loading-text">جاري تحميل بيانات منصة مدرسة الطف</div>
+    <div class="ambient-glow"></div>
+
+    <div class="splash-card">
+        <div id="lottieContainer" class="lottie-box"></div>
+
+        <h1 class="brand-title">مدرسة الطَّف الابتدائية</h1>
+        <div class="brand-subtitle">المنصة الرقمية للبنين</div>
+
+        <div class="counter-wrapper">
+            <div class="counter-badge">
+                <span class="counter-num" id="counterNum">0</span>
+                <span class="counter-percent">%</span>
+            </div>
+            <div class="status-text" id="statusText">جاري الاتصال بالمنصة...</div>
+        </div>
     </div>
 
-   <script>
-        // اختبار بأنيميشن جاهز من الإنترنت
-        lottie.loadAnimation({
-            container: document.getElementById('lottieAnimation'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json' // رابط أنيميشن شغال 100%
-        });
+    <div class="splash-footer">
+        تم تطوير المنصة بواسطة <span>مرتضى حسين</span>
+    </div>
 
-        setTimeout(function() {
-            if (localStorage.getItem('altaf_onboarding_shown') === 'true') {
-                window.location.replace('index.html');
-            } else {
-                window.location.replace('onboarding.html');
-            }
-        }, 3000);
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // تحميل الأنيميشن مباشرة باستخدام السيرفر المحلي لـ VS Code (Live Server) لتفادي حظر الملفات المحلية
+            lottie.loadAnimation({
+                container: document.getElementById('lottieContainer'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: './assets/lottie/reading-boy.json' 
+            });
+
+            // العداد الرقمي
+            const totalDuration = 5000;
+            const intervalTime = 40;
+            const totalSteps = totalDuration / intervalTime;
+            let currentStep = 0;
+
+            const counter = document.getElementById('counterNum');
+            const statusText = document.getElementById('statusText');
+
+            const statusPhrases = [
+                { pct: 0, text: "جاري الاتصال بالمنصة..." },
+                { pct: 30, text: "تحديث جدول الواجبات والدروس..." },
+                { pct: 65, text: "تهيئة بيانات التلاميذ الكرام..." },
+                { pct: 90, text: "أهلاً بك في مدرسة الطف!..." }
+            ];
+
+            const timer = setInterval(() => {
+                currentStep++;
+                const progress = Math.min(Math.round((currentStep / totalSteps) * 100), 100);
+                counter.innerText = progress;
+
+                for (let i = statusPhrases.length - 1; i >= 0; i--) {
+                    if (progress >= statusPhrases[i].pct) {
+                        statusText.innerText = statusPhrases[i].text;
+                        break;
+                    }
+                }
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        if (localStorage.getItem('altaf_onboarding_shown') === 'true') {
+                            window.location.replace('index.html');
+                        } else {
+                            window.location.replace('onboarding.html');
+                        }
+                    }, 300);
+                }
+            }, intervalTime);
+        });
     </script>
+</body>
+</html>
