@@ -66,7 +66,6 @@
         .main-nav ul { list-style: none; display: flex; gap: 12px; align-items: center; margin: 0; padding: 0;}
         .main-nav a { text-decoration: none; color: #334155; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;}
         .btn-login { background-color: var(--accent); color: #fff !important; cursor: pointer; user-select: none; }
-        .btn-header-contact { background-color: var(--orange); color: #fff !important; box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3); cursor: pointer; }
         
         .notif-container { position: relative; display: flex; align-items: center; }
         .bell-btn { font-size: 1.4rem; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; text-decoration: none; color: var(--orange); animation: gentle-ring 3s infinite; }
@@ -167,7 +166,6 @@
         .lightbox-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
         .lightbox-btn:hover { background: var(--accent); transform: scale(1.1); box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
 
-        /* تنسيق قسم من نحن HD الكريستالي */
         .about-wrapper {
             display: flex;
             flex-direction: column;
@@ -297,7 +295,6 @@
         </div>
     </div>
 
-    <!-- نافذة تأمين وحماية زر دخول الكادر -->
     <div class="modal-overlay" id="staff-lock-modal" onclick="if(event.target === this) this.style.display='none'">
         <div class="modal-box" onclick="event.stopPropagation()" style="text-align: center;">
             <div style="font-size: 2.8rem; color: var(--primary); margin-bottom: 8px;"><i class='bx bxs-lock-alt'></i></div>
@@ -306,20 +303,6 @@
             <div style="display: flex; gap: 10px;">
                 <button onclick="window.location.href='login.html'" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">متابعة للدخول <i class='bx bx-right-arrow-alt'></i></button>
                 <button onclick="document.getElementById('staff-lock-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="contact-modal" onclick="if(event.target === this) this.style.display='none'">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <h3 style="color: #e74c3c; margin-top:0; font-weight: 800; font-size: 1.3rem; text-align: center;">إرسال رسالة للإدارة</h3>
-            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px; text-align: center;">رسالتك ستصل مباشرة وبسرية إلى مكتب السيد المدير.</p>
-            <input type="text" id="parent-name" placeholder="اسم ولي الأمر (أو الطالب)">
-            <input type="tel" id="parent-phone" placeholder="رقم الهاتف للتواصل">
-            <textarea id="parent-msg" rows="4" placeholder="اكتب استفسارك أو شكواك هنا..."></textarea>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="sendParentMsg()" style="background: var(--orange); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;"><i class='bx bx-send'></i> إرسال</button>
-                <button onclick="document.getElementById('contact-modal').style.display='none'" style="background: #e2e8f0; color: #334155; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 800; font-size: 0.95rem; flex: 1; transition: 0.3s;">إلغاء</button>
             </div>
         </div>
     </div>
@@ -344,9 +327,7 @@
             <a onclick="showTab('library', this); closeSideMenu();" class="side-item"><i class='bx bx-library'></i> المكتبة الرقمية</a>
             <a onclick="showTab('exhibit', this); closeSideMenu();" class="side-item"><i class='bx bx-images'></i> معرض الصور</a>
             <a onclick="showTab('about', this); closeSideMenu();" class="side-item"><i class='bx bx-info-circle'></i> من نحن</a>
-            <a onclick="document.getElementById('contact-modal').style.display='flex'; closeSideMenu();" class="side-item" style="color: #e74c3c;"><i class='bx bx-envelope'></i> تواصل مع الإدارة</a>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <!-- تعديل: إزالة closeSideMenu() المباشرة لكي يتسنى للمستخدم الضغط الضغطة الثانية بدون اختفاء القائمة -->
             <a href="javascript:void(0)" onclick="handleStaffLoginClick(event)" class="side-item" style="color:var(--accent); justify-content: center; font-size: 1.1rem; font-weight: bold;"><i class='bx bx-log-in'></i> دخول الكادر</a>
         </div>
     </div>
@@ -380,7 +361,6 @@
                             <div id="notif-list" class="notif-list"></div>
                         </div>
                     </li>
-                    <li><a onclick="document.getElementById('contact-modal').style.display='flex'" class="btn-header-contact"><i class='bx bx-envelope'></i> تواصل معنا</a></li>
                     <li><a href="javascript:void(0)" onclick="handleStaffLoginClick(event)" class="btn-login"><i class='bx bx-log-in'></i> دخول الكادر</a></li>
                 </ul>
             </nav>
@@ -407,7 +387,6 @@
         <a onclick="openSideMenu()" class="nav-item"><i class='bx bx-menu'></i><span>المزيد</span></a>
     </div>
 
-    <!-- الهيدر الترحيبي المصغر -->
     <section class="hero">
         <div class="container">
             <h2>مرحباً بكم في منصة مدرسة الطف الإلكترونية</h2>
@@ -417,7 +396,6 @@
 
     <div class="container" style="padding-top: 5px; flex-grow: 1; padding-bottom: 40px;">
 
-        <!-- شريط التنبيه الإداري العاجل بتصميم مميز وأنيق -->
         <div id="emergency-banner">
             <i class='bx bx-alarm-exclamation'></i>
             <div>
@@ -486,7 +464,6 @@
             <div id="exhibit-more-btn-container" style="text-align: center; margin-top: 25px;"></div>
         </div>
 
-        <!-- قسم من نحن المحدث بمكون dotlottie-player ذو العرض المتجه الحاد SVG -->
         <div id="tab-about" class="main-tab">
             <div class="about-wrapper">
                 <dotlottie-player src="https://lottie.host/7b0463c3-e44c-4025-8542-5e072e8255d4/3njYmLuzyv.lottie" autoplay loop renderer="svg"></dotlottie-player>
@@ -544,7 +521,6 @@
             document.getElementById('staff-lock-modal').style.display = 'flex';
         };
 
-        // تعديل: النقر المزدوج يعمل بسلاسة على الهواتف والآيباد وتُغلق القائمة فقط بعد إكمال الضغطتين
         let lastStaffClick = 0;
         window.handleStaffLoginClick = function(e) {
             if(e) e.preventDefault();
@@ -665,25 +641,6 @@
                 list.innerHTML += `<div class="card" id="${d.id}" style="border-right: 4px solid var(--orange);"><h3 style="color: var(--orange); margin-bottom: 5px;"><i class='bx bx-user'></i> ${d.studentName}</h3><div class="card-details"><strong style="color:var(--primary);">الصف:</strong> <span style="color:#64748b;">${d.class}</span><br><strong style="color:var(--primary);">الأسماء:</strong> <span style="color:#475569;">${d.absentNames || d.reason || 'غياب يومي'}</span></div><div class="post-meta"><span class="meta-badge" style="color:var(--orange);"><i class='bx bx-calendar'></i> التاريخ: ${dateString}</span></div></div>`; 
             }); 
         }
-
-        window.sendParentMsg = async () => { 
-            const n = document.getElementById('parent-name').value.trim(); 
-            const p = document.getElementById('parent-phone').value.trim(); 
-            const m = document.getElementById('parent-msg').value.trim(); 
-            if(!n || !m) return alert("الرجاء كتابة الاسم والرسالة بشكل صحيح."); 
-            try { 
-                const { error } = await supabase.from('app_data').insert([{
-                    type: 'messages',
-                    content: { name: n, phone: p, message: m }
-                }]);
-                if (error) throw error;
-                alert("تم إرسال رسالتك للإدارة بنجاح ✔️"); 
-                document.getElementById('contact-modal').style.display = 'none'; 
-                document.getElementById('parent-name').value = ''; 
-                document.getElementById('parent-phone').value = ''; 
-                document.getElementById('parent-msg').value = ''; 
-            } catch (e) { alert("حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى."); } 
-        };
 
         let isInitialLoad = true; setTimeout(() => { isInitialLoad = false; }, 4000); 
 
@@ -829,17 +786,46 @@
 
         fetchNews(); fetchHomeworks(); fetchExams(); fetchHonorRoll(); fetchAttendance(); fetchLibrary(); fetchExhibit(); fetchSettings();
 
-        supabase.channel('school-live-updates').on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
-                const newItem = payload.new; if (!newItem || isInitialLoad) return;
-                const content = newItem.content || {}; const type = newItem.type || content.type;
-                if (type === 'school_news' || type === 'announcements') { pushPersistentNotification(newItem.id, `تم نشر خبر مدرسة جديد: ${content.title || content.subject || 'خبر عاجل'}`, 'news', newItem.id); fetchNews(); } 
-                else if (type === 'homeworks') { pushPersistentNotification(newItem.id, `واجب بيتي جديد لمادة ${content.subject} - ${content.class}`, 'hw', newItem.id, content.class); fetchHomeworks(); } 
-                else if (type === 'exams') { pushPersistentNotification(newItem.id, `جدول موعد امتحان: ${content.subject} - ${content.class}`, 'exams', newItem.id); fetchExams(); } 
-                else if (type === 'honor_roll') { pushPersistentNotification(newItem.id, `طالب متميز جديد: ${content.name}`, 'honor', newItem.id); fetchHonorRoll(); } 
-                else if (type === 'attendance') { pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الصف (${content.class})`, 'attendance', ''); fetchAttendance(); } 
-                else if (type === 'library') { pushPersistentNotification(newItem.id, `ملزمة جديدة متاحة للتحميل: ${content.subject}`, 'library', newItem.id); fetchLibrary(); } 
-                else if (type === 'exhibition') { pushPersistentNotification(newItem.id, `تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', newItem.id); fetchExhibit(); } 
-                else if (type === 'emergency_alert') { fetchSettings(); if (content.active) pushPersistentNotification('emergency_' + Date.now(), 'تنبيه إداري عاجل منشور بالرئيسية!', 'news', ''); }
+        // تفعيل الاستماع اللحظي الفوري للتحديث الأوتوماتيكي بدون تحميل الصفحة
+        supabase.channel('school-live-updates')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                const newItem = payload.new; 
+                if (!newItem || isInitialLoad) return;
+                const content = newItem.content || {}; 
+                const type = newItem.type;
+
+                if (type === 'school_news' || type === 'announcements') { 
+                    pushPersistentNotification(newItem.id, `تم نشر خبر مدرسة جديد: ${content.title || content.subject || 'خبر عاجل'}`, 'news', newItem.id); 
+                    fetchNews(); 
+                } 
+                else if (type === 'homeworks') { 
+                    pushPersistentNotification(newItem.id, `واجب بيتي جديد لمادة ${content.subject} - ${content.class}`, 'hw', newItem.id, content.class); 
+                    fetchHomeworks(); 
+                } 
+                else if (type === 'exams') { 
+                    pushPersistentNotification(newItem.id, `جدول موعد امتحان: ${content.subject} - ${content.class}`, 'exams', newItem.id); 
+                    fetchExams(); 
+                } 
+                else if (type === 'honor_roll') { 
+                    pushPersistentNotification(newItem.id, `طالب متميز جديد: ${content.name}`, 'honor', newItem.id); 
+                    fetchHonorRoll(); 
+                } 
+                else if (type === 'attendance') { 
+                    pushPersistentNotification(newItem.id, `تنبيه غيابات: تم تسجيل غياب الصف (${content.class})`, 'attendance', ''); 
+                    fetchAttendance(); 
+                } 
+                else if (type === 'library') { 
+                    pushPersistentNotification(newItem.id, `ملزمة جديدة متاحة للتحميل: ${content.subject}`, 'library', newItem.id); 
+                    fetchLibrary(); 
+                } 
+                else if (type === 'exhibition') { 
+                    pushPersistentNotification(newItem.id, `تم إضافة صور جديدة في معرض المدرسة`, 'exhibit', newItem.id); 
+                    fetchExhibit(); 
+                } 
+                else if (type === 'emergency_alert') { 
+                    fetchSettings(); 
+                    if (content.active) pushPersistentNotification('emergency_' + Date.now(), 'تنبيه إداري عاجل منشور بالرئيسية!', 'news', ''); 
+                }
             }).subscribe();
     </script>
 </body>

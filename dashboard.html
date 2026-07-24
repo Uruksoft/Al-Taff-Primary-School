@@ -446,7 +446,6 @@
     </div>
 
     <script>
-        // فحص التوجيه الفوري لصفحة الخطأ عند انقطاع الإنترنت
         function checkNetworkStatus() {
             if (!navigator.onLine) {
                 window.location.replace("offline.html");
@@ -493,10 +492,18 @@
             }
         });
 
+        // حظر الأجهزة المتعددة ومنع فتح الحساب من جهازين في نفس الوقت
         async function checkSingleDeviceSession() {
             if (!currentUser) return;
             const myDevId = getDeviceId();
-            const { data } = await _supabase.from('app_data').select('*').eq('type', 'active_session').eq('user_id', currentUser.id).maybeSingle();
+            const { data } = await _supabase
+                .from('app_data')
+                .select('*')
+                .eq('type', 'active_session')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
             
             if (data && data.content && data.content.device_id && data.content.device_id !== myDevId) {
                 alert("تنبيه أمني: جرى فتح هذا الحساب من جهاز آخر! تم تسجيل الخروج تلقائياً.");
@@ -504,6 +511,9 @@
                 window.location.replace("login.html");
             }
         }
+
+        // فحص تلقائي كل 5 ثوانٍ لحظر الجهاز الثاني فوراً
+        setInterval(checkSingleDeviceSession, 5000);
 
         const doLogout = async () => {
             try { await _supabase.auth.signOut(); } catch(e){}
@@ -559,7 +569,7 @@
 
         window.customConfirm = (msg, onYes) => {
             const modal = document.getElementById('custom-confirm'); document.getElementById('confirm-msg').innerText = msg; modal.style.display = 'flex';
-            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); }; document.getElementById('btn-confirm-no').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('btn-confirm-yes').onclick = () => { modal.style.display = 'none'; onYes(); }; document.getElementById('btn-modal-no').onclick = () => { modal.style.display = 'none'; };
         };
 
         window.customPrompt = (msg, oldVal, onSave) => {
