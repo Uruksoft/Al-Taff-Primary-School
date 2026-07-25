@@ -430,7 +430,6 @@
     </div>
 
     <script>
-        // فحص التوجيه الفوري لصفحة الخطأ عند انقطاع الإنترنت
         function checkNetworkStatus() {
             if (!navigator.onLine) {
                 window.location.replace("offline.html");
@@ -514,11 +513,16 @@
         };
 
         let currentUser = null;
-        _supabase.auth.onAuthStateChange((event, session) => {
+
+        // تهيئة الدخول الخاصة بالأدمن بشكل مستقر بدون تضارب
+        async function initAdminAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
             if (session && session.user) {
-                if (session.user.email === 'admin1@altaf.com' || session.user.email === 'admin@altaf.com') {
+                const userEmail = (session.user.email || '').toLowerCase();
+                if (userEmail === 'admin1@altaf.com' || userEmail === 'admin@altaf.com') {
                     currentUser = session.user;
                     document.getElementById('admin-status').innerText = 'متصل كمدير عام';
+                    enableAdminRealtime();
                     loadStats(); loadLogs(); loadHonorRollAdmin(); loadInbox(); loadStaffMessages();
                 } else {
                     window.location.replace("dashboard.html");
@@ -526,7 +530,36 @@
             } else {
                 window.location.replace("login.html");
             }
+        }
+        initAdminAuth();
+
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                window.location.replace("login.html");
+            }
         });
+
+        function enableAdminRealtime() {
+            _supabase.channel('admin-live-updates')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                    const type = payload.new ? payload.new.type : (payload.old ? payload.old.type : null);
+                    
+                    if (type === 'messages') {
+                        loadInbox();
+                        const notifySound = document.getElementById('notify-sound');
+                        if (notifySound) notifySound.play().catch(() => {});
+                    } else if (type === 'staff_messages') {
+                        loadStaffMessages();
+                    } else if (type === 'activity_logs') {
+                        loadLogs();
+                    } else if (type === 'honor_roll') {
+                        loadHonorRollAdmin();
+                    }
+                    
+                    loadStats();
+                })
+                .subscribe();
+        }
 
         window.publishSchoolNews = async () => {
             const title = window.sanitizeHTML(document.getElementById('news-title-input').value);

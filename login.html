@@ -94,7 +94,6 @@
         #custom-toast { visibility: hidden; min-width: 250px; background-color: var(--danger); color: white; text-align: center; border-radius: 8px; padding: 14px; position: fixed; z-index: 999999; left: 50%; top: -100px; transform: translateX(-50%); font-family: 'Cairo'; box-shadow: var(--shadow); opacity: 0; transition: top 0.4s ease, opacity 0.4s ease; font-weight: bold; }
         #custom-toast.show { visibility: visible; top: 20px; opacity: 1; }
 
-        /* حل تناسق الأنيميشن التام في شاشات الجوال */
         @media (max-width: 768px) {
             .login-wrapper { flex-direction: column; gap: 15px; padding: 15px 10px; justify-content: center; }
             .animation-container { order: -1; width: 100%; max-width: 240px; margin: 0 auto; }
@@ -152,7 +151,6 @@
             </div>
         </div>
 
-        <!-- أنيميشن تسجيل الدخول -->
         <div class="animation-container">
             <dotlottie-wc src="https://lottie.host/a7722a60-a8c8-4757-8a57-b1358eee8bd8/0NctHm9jKz.lottie" autoplay loop></dotlottie-wc>
             <h3 style="color: var(--primary); font-weight: 800; margin-top: 10px;">بوابة الكادر التدريسي</h3>
@@ -176,6 +174,7 @@
         const loginUi = document.getElementById('login-ui');
         const loadingUi = document.getElementById('loading-ui');
         const loginBtn = document.getElementById('login-btn');
+        let isNavigating = false;
 
         window.alert = function(msg) {
             const toast = document.getElementById('custom-toast');
@@ -201,26 +200,35 @@
             return devId;
         }
 
-        _supabase.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                loadingUi.style.display = "flex";
-                loginUi.style.display = "none";
-                document.querySelector('.animation-container').style.display = "none";
-                setTimeout(() => {
-                    if(session.user.email === 'admin1@altaf.com' || session.user.email === 'admin@altaf.com') { 
+        // فحص وجود جلسة مسجلة سابقاً بطريقة متزامنة ومضمونة عند بداية التصفح
+        async function checkExistingSession() {
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                if (session && session.user && !isNavigating) {
+                    loadingUi.style.display = "flex";
+                    loginUi.style.display = "none";
+                    const animContainer = document.querySelector('.animation-container');
+                    if(animContainer) animContainer.style.display = "none";
+
+                    const userEmail = (session.user.email || '').toLowerCase();
+                    if(userEmail === 'admin1@altaf.com' || userEmail === 'admin@altaf.com') { 
                         window.location.replace("admin.html"); 
                     } else { 
                         window.location.replace("dashboard.html"); 
                     }
-                }, 1200);
-            } else {
+                } else {
+                    loginUi.style.display = "block";
+                    loadingUi.style.display = "none";
+                }
+            } catch(e) {
                 loginUi.style.display = "block";
                 loadingUi.style.display = "none";
             }
-        });
+        }
+        checkExistingSession();
 
         window.handleLogin = async () => {
-            const email = document.getElementById('email').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = passInput.value;
 
             if (!email || !pass) { 
@@ -228,8 +236,13 @@
                 return; 
             }
 
+            isNavigating = true;
             loginBtn.innerText = "جاري التحقق..."; 
             loginBtn.disabled = true;
+            loadingUi.style.display = "flex";
+            loginUi.style.display = "none";
+            const animContainer = document.querySelector('.animation-container');
+            if(animContainer) animContainer.style.display = "none";
 
             try {
                 const { data, error } = await _supabase.auth.signInWithPassword({
@@ -237,23 +250,39 @@
                     password: pass,
                 });
 
-                if (error) throw error;
+                if (error || !data || !data.user) {
+                    throw (error || new Error("بيانات الدخول غير صحيحة"));
+                }
 
                 const currentDeviceId = getDeviceId();
                 const isTeacher = (email !== 'admin1@altaf.com' && email !== 'admin@altaf.com');
 
-                if (isTeacher && data.user) {
-                    await _supabase.from('app_data').delete().eq('type', 'active_session').eq('user_id', data.user.id);
-                    await _supabase.from('app_data').insert([{
-                        type: 'active_session',
-                        user_id: data.user.id,
-                        content: { device_id: currentDeviceId, user_email: email, updated_at: new Date().toISOString() }
-                    }]);
+                if (isTeacher) {
+                    try {
+                        await _supabase.from('app_data').delete().eq('type', 'active_session').eq('user_id', data.user.id);
+                        await _supabase.from('app_data').insert([{
+                            type: 'active_session',
+                            user_id: data.user.id,
+                            content: { device_id: currentDeviceId, user_email: email, updated_at: new Date().toISOString() }
+                        }]);
+                    } catch (sessErr) {
+                        console.warn("تنويه أمني ثانوي للجلسة:", sessErr);
+                    }
+                }
+
+                if (email === 'admin1@altaf.com' || email === 'admin@altaf.com') {
+                    window.location.replace("admin.html");
+                } else {
+                    window.location.replace("dashboard.html");
                 }
 
             } catch (error) { 
+                isNavigating = false;
                 loginBtn.innerText = "تسجيل الدخول"; 
                 loginBtn.disabled = false;
+                loadingUi.style.display = "none";
+                loginUi.style.display = "block";
+                if(animContainer) animContainer.style.display = "flex";
                 alert("عذراً، البريد الإلكتروني أو كلمة المرور غير صحيحة");
             }
         };

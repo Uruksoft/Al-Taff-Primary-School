@@ -475,45 +475,89 @@
         }
 
         let currentUser = null;
-        _supabase.auth.onAuthStateChange((event, session) => {
+
+        // تهيئة التحقق من الجلسة بشكل متزامن وبدون تعارض مع تسجيل الدخول
+        async function initDashboardAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
             if (session && session.user) {
                 currentUser = session.user;
                 const userName = currentUser.email.split('@')[0];
                 document.getElementById('teacher-name').innerText = "الحساب: " + currentUser.email;
                 
                 checkSingleDeviceSession();
+                enableTeacherRealtime();
                 loadStatistics();
                 loadStaffMessages();
                 loadHonorRoll();
                 
-                if(!sessionStorage.getItem('welcomed')) { alert("أهلاً بك يا أستاذ " + userName); sessionStorage.setItem('welcomed', 'true'); }
+                if(!sessionStorage.getItem('welcomed')) { 
+                    alert("أهلاً بك يا أستاذ " + userName); 
+                    sessionStorage.setItem('welcomed', 'true'); 
+                }
             } else { 
                 window.location.replace("login.html"); 
             }
+        }
+        initDashboardAuth();
+
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                window.location.replace("login.html");
+            }
         });
 
-        // حظر الأجهزة المتعددة ومنع فتح الحساب من جهازين في نفس الوقت
+        // حظر الدخول المزدوج وطرد الجهاز القديم فوراً بالـ Realtime
         async function checkSingleDeviceSession() {
             if (!currentUser) return;
             const myDevId = getDeviceId();
-            const { data } = await _supabase
-                .from('app_data')
-                .select('*')
-                .eq('type', 'active_session')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .maybeSingle();
             
-            if (data && data.content && data.content.device_id && data.content.device_id !== myDevId) {
-                alert("تنبيه أمني: جرى فتح هذا الحساب من جهاز آخر! تم تسجيل الخروج تلقائياً.");
-                await _supabase.auth.signOut();
-                window.location.replace("login.html");
-            }
+            const verifyCurrentDev = async () => {
+                try {
+                    const { data } = await _supabase
+                        .from('app_data')
+                        .select('content')
+                        .eq('type', 'active_session')
+                        .eq('user_id', currentUser.id)
+                        .order('created_at', { ascending: false })
+                        .limit(1)
+                        .maybeSingle();
+                    
+                    if (data && data.content && data.content.device_id && data.content.device_id !== myDevId) {
+                        alert("تنبيه أمني: جرى فتح هذا الحساب من جهاز آخر! تم تسجيل الخروج تلقائياً.");
+                        await _supabase.auth.signOut();
+                        window.location.replace("login.html");
+                    }
+                } catch(e){}
+            };
+
+            setTimeout(verifyCurrentDev, 2000);
+
+            _supabase.channel(`single-session-${currentUser.id}`)
+                .on('postgres_changes', { 
+                    event: '*', 
+                    schema: 'public', 
+                    table: 'app_data',
+                    filter: `user_id=eq.${currentUser.id}`
+                }, payload => {
+                    if (payload.new && payload.new.type === 'active_session') {
+                        verifyCurrentDev();
+                    }
+                })
+                .subscribe();
         }
 
-        // فحص تلقائي كل 5 ثوانٍ لحظر الجهاز الثاني فوراً
-        setInterval(checkSingleDeviceSession, 5000);
+        function enableTeacherRealtime() {
+            _supabase.channel('teacher-live-updates')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, payload => {
+                    if (payload.new && payload.new.type === 'staff_messages') {
+                        loadStaffMessages();
+                        const notifySound = document.getElementById('notify-sound');
+                        if (notifySound) notifySound.play().catch(() => {});
+                        alert("📩 وصلتك توجيهات جديدة من الإدارة العامة!");
+                    }
+                })
+                .subscribe();
+        }
 
         const doLogout = async () => {
             try { await _supabase.auth.signOut(); } catch(e){}

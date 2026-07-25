@@ -85,9 +85,57 @@
         .top-navbar a:hover { color: white; background: rgba(255,255,255,0.1); }
         .top-navbar a.active { background: var(--orange); color: white; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); border-color: #ea580c;}
         
-        .hero { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 16px 12px; text-align: center; margin-bottom: 18px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
-        .hero h2 { margin: 0 0 4px 0; font-weight: 800; font-size: 1.25rem;}
-        .hero p { margin: 0; font-size: 0.88rem; opacity: 0.92; }
+        .hero-slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 18px auto;
+            border-radius: 0 0 16px 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            background: #f8fafc;
+            display: block;
+        }
+
+        .slider-track-wrapper {
+            display: flex;
+            width: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .slide-item-img {
+            min-width: 100%;
+            max-height: 320px;
+            height: clamp(160px, 30vh, 320px);
+            object-fit: cover;
+            display: block;
+        }
+
+        .slider-dots-nav {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .slider-dot-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider-dot-btn.active {
+            background: var(--orange);
+            width: 26px;
+            border-radius: 12px;
+        }
 
         #emergency-banner {
             display: none;
@@ -387,11 +435,15 @@
         <a onclick="openSideMenu()" class="nav-item"><i class='bx bx-menu'></i><span>المزيد</span></a>
     </div>
 
-    <section class="hero">
-        <div class="container">
-            <h2>مرحباً بكم في منصة مدرسة الطف الإلكترونية</h2>
-            <p>نواكب التطور لنقدم لأبنائنا أفضل تجربة تعليمية رقمية.</p>
+    <section class="hero-slider-container" id="heroSlider">
+        <div class="slider-track-wrapper" id="sliderTrack">
+            <img src="images/1.png" class="slide-item-img" alt="إعلان مدرسة الطف 1">
+            <img src="images/2.png" class="slide-item-img" alt="إعلان مدرسة الطف 2">
+            <img src="images/3.png" class="slide-item-img" alt="إعلان مدرسة الطف 3">
+            <img src="images/4.png" class="slide-item-img" alt="إعلان مدرسة الطف 4">
+            <img src="images/5.png" class="slide-item-img" alt="إعلان مدرسة الطف 5">
         </div>
+        <div class="slider-dots-nav" id="sliderDots"></div>
     </section>
 
     <div class="container" style="padding-top: 5px; flex-grow: 1; padding-bottom: 40px;">
@@ -517,6 +569,36 @@
         window.currentView = { hw: { active: false, keyword: "" } };
         window.currentAttendanceFilter = 'الكل';
 
+        (function initHeaderSlider() {
+            const track = document.getElementById('sliderTrack');
+            const dotsContainer = document.getElementById('sliderDots');
+            if (!track) return;
+            const slides = track.querySelectorAll('.slide-item-img');
+            if (slides.length <= 1) return;
+
+            let currentIndex = 0;
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.classList.add('slider-dot-btn');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.slider-dot-btn');
+
+            function goToSlide(index) {
+                currentIndex = index;
+                track.style.transform = `translateX(${currentIndex * 100}%)`;
+                dots.forEach((d, i) => d.classList.toggle('active', i === index));
+            }
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                goToSlide(currentIndex);
+            }, 4000);
+        })();
+
         window.openStaffLockModal = function() {
             document.getElementById('staff-lock-modal').style.display = 'flex';
         };
@@ -562,7 +644,21 @@
         window.closeLightbox = function() { document.getElementById('lightbox-overlay').style.display = 'none'; if (!document.getElementById('mobile-sidebar').classList.contains('open')) { document.body.style.overflow = ''; } };
         window.openSideMenu = function() { document.getElementById('mobile-sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; };
         window.closeSideMenu = function() { document.getElementById('mobile-sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); document.body.style.overflow = ''; };
-        window.showTab = function(tabId, el) { document.querySelectorAll('.main-tab').forEach(tab => tab.style.display = 'none'); document.getElementById('tab-' + tabId).style.display = 'block'; document.querySelectorAll('.top-navbar a, .nav-item, .side-item').forEach(a => a.classList.remove('active')); document.querySelectorAll(`[onclick*="'${tabId}'"]`).forEach(a => { if(!a.classList.contains('bell-btn')) a.classList.add('active'); }); window.scrollTo({top: 0, behavior: 'smooth'}); };
+        
+        window.showTab = function(tabId, el) { 
+            document.querySelectorAll('.main-tab').forEach(tab => tab.style.display = 'none'); 
+            document.getElementById('tab-' + tabId).style.display = 'block'; 
+            
+            const heroSlider = document.getElementById('heroSlider');
+            if (heroSlider) {
+                heroSlider.style.display = (tabId === 'news') ? 'block' : 'none';
+            }
+
+            document.querySelectorAll('.top-navbar a, .nav-item, .side-item').forEach(a => a.classList.remove('active')); 
+            document.querySelectorAll(`[onclick*="'${tabId}'"]`).forEach(a => { if(!a.classList.contains('bell-btn')) a.classList.add('active'); }); 
+            window.scrollTo({top: 0, behavior: 'smooth'}); 
+        };
+
         window.openClassView = function(type, gradeKeyword, gradeTitle) { document.getElementById(type + '-classes').style.display = 'none'; document.getElementById(type + '-details').style.display = 'block'; document.getElementById(type + '-class-title').innerText = gradeTitle; window.currentView[type] = { active: true, keyword: gradeKeyword }; renderFilteredData(type); };
         window.closeClassView = function(type) { document.getElementById(type + '-classes').style.display = 'grid'; document.getElementById(type + '-details').style.display = 'none'; window.currentView[type] = { active: false, keyword: "" }; };
 
@@ -667,6 +763,7 @@
             if (data) { window.appData.hw = data; if(window.currentView.hw.active) renderFilteredData('hw'); }
         }
 
+        // دالة جلب وحساب الأيام المتبقية للامتحانات المعدلة بدقة
         async function fetchExams() {
             const { data: rawData, error } = await supabase.from('app_data').select("*").eq('type', 'exams').order('created_at', { ascending: false }).limit(50);
             if (error) console.error("خطأ جلب الامتحانات:", error);
@@ -675,6 +772,8 @@
             if (!rawData || rawData.length === 0) { list.innerHTML = "<p>لا توجد امتحانات قادمة.</p>"; return; }
             
             const now = new Date();
+            // تصفير الساعات للحصول على التاريخ التقويمي فقط لليوم
+            const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const todayStr = now.toISOString().split('T')[0];
             const expiredIdsToDelete = [];
 
@@ -683,8 +782,10 @@
                 const rawExamDateStr = d.details ? d.details.split('T')[0] : '';
                 if (!rawExamDateStr) return;
 
-                const examDate = new Date(rawExamDateStr + 'T23:59:59');
-                const diffTime = now - examDate;
+                const [y, m, dayNum] = rawExamDateStr.split('-').map(Number);
+                const examZero = new Date(y, m - 1, dayNum);
+
+                const diffTime = now - new Date(rawExamDateStr + 'T23:59:59');
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
                 if (diffDays >= 7) {
@@ -698,8 +799,10 @@
                 } else if (rawExamDateStr === todayStr) {
                     statusHtml = `<span class="meta-badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">🔥 اليوم</span>`;
                 } else {
-                    const daysLeft = Math.ceil((examDate - now) / 864e5);
-                    statusHtml = `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ باقي ${daysLeft} يوم</span>`;
+                    // الحساب التقويمي الصحيح للفارق بين الأيام
+                    const daysLeft = Math.round((examZero - todayZero) / (1000 * 60 * 60 * 24));
+                    const daysText = (daysLeft === 1) ? 'غداً' : `باقي ${daysLeft} يوم`;
+                    statusHtml = `<span class="meta-badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">⏳ ${daysText}</span>`;
                 }
 
                 list.innerHTML += `<div class="card card-exam" id="${item.id}">
