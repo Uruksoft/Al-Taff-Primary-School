@@ -23,7 +23,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* الألوان الموحدة للمنصة بالكامل */
         :root { 
             --primary: #0369a1;      /* أزرق سماوي رئيسي */
             --accent: #0284c7;       /* أزرق فاتح */
@@ -49,7 +48,6 @@
             background-color: var(--bg-light); padding-bottom: 40px;
         }
 
-        /* الهيدر الرئيسي الموحد مع باقي المنصة */
         header.main-header { 
             position: sticky; top: 0; background: #ffffff; 
             border-bottom: 2px solid var(--accent);
@@ -59,7 +57,6 @@
 
         .header-wrapper { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
-        /* زر العودة للرئيسية المتناسق */
         .btn-back-home {
             display: inline-flex; align-items: center; gap: 8px;
             background: var(--primary); color: white; padding: 8px 20px;
@@ -77,7 +74,6 @@
 
         main { flex: 1; padding: 25px 15px; max-width: 850px; margin: 0 auto; width: 100%; box-sizing: border-box; }
 
-        /* حاويات البحث والنتائج بتنسيق الكروت الجديد */
         .search-container, .result-container { 
             background: #ffffff;
             padding: 30px 25px; border-radius: var(--radius); box-shadow: var(--shadow-soft); 
@@ -123,7 +119,6 @@
         
         .grades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
         
-        /* كروت الدرجات بنفس هوية الداشبورد والمنصة */
         .grade-card { 
             background: #ffffff; padding: 18px 10px; border-radius: 14px; 
             text-align: center; border: 1px solid var(--border-color); 
@@ -165,12 +160,10 @@
         .btn-install-app:hover { background: #0284c7; color: white; }
         @keyframes slideUp { from { bottom: -100px; opacity: 0; } to { bottom: 20px; opacity: 1; } }
 
-        /* الجدول التراكمي للسنة المحدث بالتصميم الأزرق السماوي */
         #overview-table th, #overview-table td { padding: 12px 8px; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; font-weight: 700; text-align: center; }
         #overview-table th { font-weight: 800; background: #f0f9ff; color: var(--primary); font-size: 1rem; }
         #overview-table tr:hover td { background: #f8fafc; }
 
-        /* الفوتر الموحد للمنصة */
         footer.main-footer { 
             background-color: var(--primary); color: #cbd5e1; 
             padding: 25px 15px; text-align: center; 
@@ -196,7 +189,6 @@
 </head>
 <body>
 
-    <!-- الهيدر الموحد المربوط مباشرة بالصفحة الرئيسية home.html -->
     <header class="main-header">
         <div class="header-wrapper">
             <a href="home.html" class="btn-back-home" title="العودة للصفحة الرئيسية">
@@ -213,7 +205,6 @@
 
     <main>
         <div class="search-container">
-            <!-- أنيميشن Lottie التفاعلي المختار للبوابة -->
             <dotlottie-wc src="https://lottie.host/b4239881-f3a3-47f3-96f2-6927d2733c08/Ul1a88uHL4.lottie" autoplay loop></dotlottie-wc>
             <h2 style="text-align: center;"><i class='bx bx-search-alt'></i> الاستعلام عن المستوى الأكاديمي</h2>
             <p style="color: var(--text-muted); margin-bottom: 0; font-weight: 600; text-align: center;">أدخل الكود السري الخاص بالتلميذ الممنوح من الإدارة</p>
@@ -221,7 +212,7 @@
                 <input type="text" id="student-id" placeholder="أدخل الكود المكون من 6 أرقام..." autocomplete="off" required autofocus>
                 <button type="submit" class="search-btn"><i class='bx bx-check'></i> استعراض السجل</button>
             </form>
-            <div id="loading-msg"><i class='bx bx-loader-alt bx-spin'></i> جاري جلب السجلات المشفرة...</div>
+            <div id="loading-msg"><i class='bx bx-loader-alt bx-spin'></i> جاري الاتصال بالسيرفر...</div>
             <div id="error-msg"><i class='bx bx-error-circle'></i> عذراً، الكود غير صحيح أو التلميذ غير مسجل.</div>
         </div>
 
@@ -286,34 +277,26 @@
         <button id="pwa-install-btn" class="btn-install-app">تثبيت الآن</button>
     </div>
 
-    <!-- الفوتر الموحد للمنصة -->
     <footer class="main-footer">
         © 2026 مدرسة الطف الابتدائية للبنين | تم التطوير بواسطة <a href="https://uruksoft.github.io/URUK-SOFT/" target="_blank">اوروك سوفت - مرتضى حسين</a>
     </footer>
 
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
-        // فحص الاتصال بالشبكة تلقائياً والتوجيه لأوفلاين عند الانقطاع
-        function checkNetworkStatus() {
-            if (!navigator.onLine) {
-                window.location.replace("offline.html");
-            }
-        }
-        window.addEventListener('offline', checkNetworkStatus);
-        checkNetworkStatus();
-
-        const SUPABASE_URL = 'https://poqswuntarhyjobwfkbl.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcXN3dW50YXJoeWpvYndma2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjAwNDEsImV4cCI6MjEwMDE5NjA0MX0.Jo3aOtmYey-BVb2EAk0Aa-55jpfbZFHkNVujo4Rqtzs';
+    <script>
+        // الربط المباشر بسيرفر منصة الإدارة الخاصة بك حصراً
+        const SUPABASE_URL = "https://kdwfrdfggtprytovnmss.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2ZyZGZnZ3Rwcnl0b3ZubXNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5MTU4MzIsImV4cCI6MjEwMDQ5MTgzMn0.8uNaJYOejQ1OvSWDBpmo5OA-Hb2NF38ysHiE81sIcQM";
         
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }
 
         if (typeof autoAnimate === 'function') {
-            autoAnimate(document.getElementById('result-section'));
-            autoAnimate(document.getElementById('grades-display-area'));
-            autoAnimate(document.getElementById('grades-grid'));
+            const resSecEl = document.getElementById('result-section');
+            const grAreaEl = document.getElementById('grades-display-area');
+            const grGridEl = document.getElementById('grades-grid');
+            if (resSecEl) autoAnimate(resSecEl);
+            if (grAreaEl) autoAnimate(grAreaEl);
+            if (grGridEl) autoAnimate(grGridEl);
         }
 
         const Curricula = {
@@ -321,108 +304,200 @@
             grades5to6: ["التربية الإسلامية", "اللغة العربية", "اللغة الإنكليزية", "الرياضيات", "الاجتماعيات", "العلوم", "الفنية", "الرياضة"]
         };
 
-        let currentStudentData = null; let isOverviewMode = false;
+        let currentStudentData = null; 
+        let isOverviewMode = false;
 
-        const getSafeScore = (gradesObj, formalSubject) => { if(!gradesObj) return ''; if(gradesObj[formalSubject] !== undefined) return gradesObj[formalSubject]; return ''; };
+        const getSafeScore = (gradesObj, formalSubject) => { 
+            if(!gradesObj) return ''; 
+            if(gradesObj[formalSubject] !== undefined) return gradesObj[formalSubject]; 
+            return ''; 
+        };
 
-        const triggerConfettiCelebration = () => { if (typeof confetti === 'function') { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); } };
+        const triggerConfettiCelebration = () => { 
+            if (typeof confetti === 'function') { 
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); 
+            } 
+        };
 
         const renderParentView = () => {
-            const std = currentStudentData; document.getElementById('res-name').textContent = std.name;
-            document.getElementById('res-class').textContent = `${std.class} (شعبة ${std.section || '-'})`;
-            document.getElementById('res-advisor').textContent = std.advisor || 'غير محدد'; document.getElementById('res-principal').textContent = std.principal || 'غير محدد';
-            const dropdown = document.getElementById('month-dropdown'); const monthDiv = document.getElementById('month-selector-div'); const noEvalMsg = document.getElementById('no-eval-msg'); const gradesArea = document.getElementById('grades-display-area');
+            const std = currentStudentData; 
+            document.getElementById('res-name').textContent = std.name || '---';
+            document.getElementById('res-class').textContent = `${std.class || '---'} (شعبة ${std.section || '-'})`;
+            document.getElementById('res-advisor').textContent = std.advisor || 'غير محدد'; 
+            document.getElementById('res-principal').textContent = std.principal || 'غير محدد';
+            
+            const dropdown = document.getElementById('month-dropdown'); 
+            const monthDiv = document.getElementById('month-selector-div'); 
+            const noEvalMsg = document.getElementById('no-eval-msg'); 
+            const gradesArea = document.getElementById('grades-display-area');
 
-            dropdown.innerHTML = ''; let safeEvaluations = {};
+            dropdown.innerHTML = ''; 
+            let safeEvaluations = {};
             if (std.evaluations && typeof std.evaluations === 'object') safeEvaluations = { ...std.evaluations };
-            Object.keys(std).forEach(k => { if(k.startsWith('evaluations.')) safeEvaluations[k.replace('evaluations.', '')] = std[k]; });
-            std.evaluations = safeEvaluations; const availableMonths = Object.keys(safeEvaluations);
+            
+            Object.keys(std).forEach(k => { 
+                if(k.startsWith('evaluations.')) safeEvaluations[k.replace('evaluations.', '')] = std[k]; 
+            });
+            std.evaluations = safeEvaluations; 
+            
+            const availableMonths = Object.keys(safeEvaluations);
 
             if (availableMonths.length > 0) {
-                noEvalMsg.style.display = 'none'; monthDiv.style.display = 'flex'; 
+                noEvalMsg.style.display = 'none'; 
+                monthDiv.style.display = 'flex'; 
                 if(!isOverviewMode) gradesArea.style.display = 'block';
-                availableMonths.forEach(m => dropdown.innerHTML += `<option value="${m}">${m}</option>`); renderGradesGrid();
-            } else { monthDiv.style.display = 'none'; gradesArea.style.display = 'none'; noEvalMsg.style.display = 'block'; document.getElementById('result-status-banner').style.display = 'none'; }
+                availableMonths.forEach(m => dropdown.innerHTML += `<option value="${m}">${m}</option>`); 
+                renderGradesGrid();
+            } else { 
+                monthDiv.style.display = 'none'; 
+                gradesArea.style.display = 'none'; 
+                noEvalMsg.style.display = 'block'; 
+                document.getElementById('result-status-banner').style.display = 'none'; 
+            }
         };
 
         const renderGradesGrid = () => {
-            const month = document.getElementById('month-dropdown').value; const evalObj = currentStudentData.evaluations[month];
-            const grid = document.getElementById('grades-grid'); const noteSec = document.getElementById('teacher-note-sec'); 
-            const statusBanner = document.getElementById('result-status-banner'); const badgeLbl = document.getElementById('banner-badge-lbl'); const motTxt = document.getElementById('banner-motivation-txt');
+            const month = document.getElementById('month-dropdown').value; 
+            const evalObj = currentStudentData.evaluations[month];
+            const grid = document.getElementById('grades-grid'); 
+            const noteSec = document.getElementById('teacher-note-sec'); 
+            const statusBanner = document.getElementById('result-status-banner'); 
+            const badgeLbl = document.getElementById('banner-badge-lbl'); 
+            const motTxt = document.getElementById('banner-motivation-txt');
             
-            grid.innerHTML = ''; if(!evalObj) return;
+            grid.innerHTML = ''; 
+            if(!evalObj) return;
+            
             const isUpper = (currentStudentData.class === "الخامس" || currentStudentData.class === "السادس"); 
-            const targetCurriculum = isUpper ? Curricula.grades5to6 : Curricula.grades1to4; const failLimit = isUpper ? 49 : 4;
+            const targetCurriculum = isUpper ? Curricula.grades5to6 : Curricula.grades1to4; 
+            const failLimit = isUpper ? 49 : 4;
 
             let failingSubjectsCount = 0;
 
             targetCurriculum.forEach(subName => {
-                const val = getSafeScore(evalObj.grades, subName); const numVal = parseFloat(val);
-                const isFailing = (val !== "" && !isNaN(numVal) && numVal <= failLimit) || (val === "ضعيف"); const isWarning = (val === "مقبول");
+                const val = getSafeScore(evalObj.grades, subName); 
+                const numVal = parseFloat(val);
+                const isFailing = (val !== "" && !isNaN(numVal) && numVal <= failLimit) || (val === "ضعيف"); 
+                const isWarning = (val === "مقبول");
+                
                 if(isFailing) failingSubjectsCount++;
                 grid.innerHTML += `<div class="grade-card ${isFailing ? 'fail-card' : ''} ${isWarning ? 'warning-card' : ''}"><span class="subject">${subName}</span><span class="score">${val || '-'}</span></div>`;
             });
 
-            let statusName = "ناجح"; let bColor = "#166534"; let bgBanner = "#f0fdf4"; let borderBanner = "#bbf7d0";
+            let statusName = "ناجح"; 
+            let bColor = "#166534"; 
+            let bgBanner = "#f0fdf4"; 
+            let borderBanner = "#bbf7d0";
             let motivationText = "🌟 بطل حقيقي! استمر بهذا الإبداع والتفوق المطلق.";
 
             if (failingSubjectsCount === 0) {
-                statusName = "ناجح"; bColor = "#166534"; bgBanner = "#f0fdf4"; borderBanner = "#bbf7d0"; motivationText = "🌟 بطل حقيقي! استمر بهذا الإبداع والتفوق المطلق.";
+                statusName = "ناجح"; bColor = "#166534"; bgBanner = "#f0fdf4"; borderBanner = "#bbf7d0"; 
+                motivationText = "🌟 بطل حقيقي! استمر بهذا الإبداع والتفوق المطلق.";
                 if(month === "نصف السنة" || month === "آخر السنة" || month === "الدور الثاني") triggerConfettiCelebration();
             } else if (failingSubjectsCount === 1) {
-                statusName = "مكمل (بدرس واحد)"; bColor = "#d97706"; bgBanner = "#fffbeb"; borderBanner = "#fde68a"; motivationText = "💪 فرصة ذهبية للتعويض يا بطل! ركّز قليلاً وستتجاوز هذا الدرس بسهولة.";
+                statusName = "مكمل (بدرس واحد)"; bColor = "#d97706"; bgBanner = "#fffbeb"; borderBanner = "#fde68a"; 
+                motivationText = "💪 فرصة ذهبية للتعويض يا بطل! ركّز قليلاً وستتجاوز هذا الدرس بسهولة.";
             } else if (failingSubjectsCount === 2) {
-                statusName = "مكمل (بدرسين)"; bColor = "#d97706"; bgBanner = "#fffbeb"; borderBanner = "#fde68a"; motivationText = "⚡ لا تقلق، بتركيز ومتابعة منزلية ستجتاز هذين الدرسين في الدور الثاني.";
+                statusName = "مكمل (بدرسين)"; bColor = "#d97706"; bgBanner = "#fffbeb"; borderBanner = "#fde68a"; 
+                motivationText = "⚡ لا تقلق، بتركيز ومتابعة منزلية ستجتاز هذين الدرسين في الدور الثاني.";
             } else {
-                statusName = `راسب (${failingSubjectsCount} دروس)`; bColor = "#dc2626"; bgBanner = "#fef2f2"; borderBanner = "#fca5a5"; motivationText = "⏳ لا تيأس، الفشل هو أول خطوة للنجاح. تحتاج إلى تنظيم وقتك ومتابعة مكثفة.";
+                statusName = `راسب (${failingSubjectsCount} دروس)`; bColor = "#dc2626"; bgBanner = "#fef2f2"; borderBanner = "#fca5a5"; 
+                motivationText = "⏳ لا تيأس، الفشل هو أول خطوة للنجاح. تحتاج إلى تنظيم وقتك ومتابعة مكثفة.";
             }
 
-            statusBanner.style.backgroundColor = bgBanner; statusBanner.style.border = `1px solid ${borderBanner}`;
-            badgeLbl.textContent = statusName; badgeLbl.style.backgroundColor = bColor;
-            motTxt.textContent = motivationText; motTxt.style.color = bColor; statusBanner.style.display = 'flex';
+            statusBanner.style.backgroundColor = bgBanner; 
+            statusBanner.style.border = `1px solid ${borderBanner}`;
+            badgeLbl.textContent = statusName; 
+            badgeLbl.style.backgroundColor = bColor;
+            motTxt.textContent = motivationText; 
+            motTxt.style.color = bColor; 
+            statusBanner.style.display = 'flex';
 
-            if (evalObj.note && evalObj.note.trim() !== '') { document.getElementById('res-note').textContent = evalObj.note; noteSec.style.display = 'block'; } else { noteSec.style.display = 'none'; }
+            if (evalObj.note && evalObj.note.trim() !== '') { 
+                document.getElementById('res-note').textContent = evalObj.note; 
+                noteSec.style.display = 'block'; 
+            } else { 
+                noteSec.style.display = 'none'; 
+            }
         };
 
-        const toggleBtn = document.getElementById('toggle-overview-btn'); const singleArea = document.getElementById('grades-display-area'); const yearlyArea = document.getElementById('yearly-overview-area');
+        const toggleBtn = document.getElementById('toggle-overview-btn'); 
+        const singleArea = document.getElementById('grades-display-area'); 
+        const yearlyArea = document.getElementById('yearly-overview-area');
         
         toggleBtn.addEventListener('click', () => {
-            isOverviewMode = !isOverviewMode; const btnTxt = document.getElementById('overview-btn-txt');
+            isOverviewMode = !isOverviewMode; 
+            const btnTxt = document.getElementById('overview-btn-txt');
             if(isOverviewMode) {
-                singleArea.style.display = 'none'; yearlyArea.style.display = 'block';
-                btnTxt.textContent = 'العودة للبطاقات 🃏'; toggleBtn.style.background = 'var(--primary)'; buildYearlyOverviewTable();
+                singleArea.style.display = 'none'; 
+                yearlyArea.style.display = 'block';
+                btnTxt.textContent = 'العودة للبطاقات 🃏'; 
+                toggleBtn.style.background = 'var(--primary)'; 
+                buildYearlyOverviewTable();
             } else {
-                singleArea.style.display = 'block'; yearlyArea.style.display = 'none';
-                btnTxt.textContent = 'نظرة عامة للسنة 📅'; toggleBtn.style.background = 'var(--accent)';
+                singleArea.style.display = 'block'; 
+                yearlyArea.style.display = 'none';
+                btnTxt.textContent = 'نظرة عامة للسنة 📅'; 
+                toggleBtn.style.background = 'var(--accent)';
             }
         });
 
         const buildYearlyOverviewTable = () => {
-            const std = currentStudentData; const isUpper = (std.class === "الخامس" || std.class === "السادس");
-            const targetCurriculum = isUpper ? Curricula.grades5to6 : Curricula.grades1to4; const failLim = isUpper ? 49 : 4;
+            const std = currentStudentData; 
+            const isUpper = (std.class === "الخامس" || std.class === "السادس");
+            const targetCurriculum = isUpper ? Curricula.grades5to6 : Curricula.grades1to4; 
+            const failLim = isUpper ? 49 : 4;
             const recMonths = Object.keys(std.evaluations || {});
-            const thead = document.getElementById('overview-thead'); const tbody = document.getElementById('overview-tbody');
-            let hHtml = `<tr><th style="text-align:right;">المادة</th>`; recMonths.forEach(m => hHtml += `<th>${m}</th>`); hHtml += `</tr>`; thead.innerHTML = hHtml;
+            
+            const thead = document.getElementById('overview-thead'); 
+            const tbody = document.getElementById('overview-tbody');
+            
+            let hHtml = `<tr><th style="text-align:right;">المادة</th>`; 
+            recMonths.forEach(m => hHtml += `<th>${m}</th>`); 
+            hHtml += `</tr>`; 
+            thead.innerHTML = hHtml;
 
             tbody.innerHTML = '';
             targetCurriculum.forEach(sub => {
                 let rHtml = `<td style="font-weight:800; text-align:right; background:#f8fafc; color:var(--primary);">${sub}</td>`;
                 recMonths.forEach(m => {
-                    const scObj = std.evaluations[m]?.grades || {}; const val = getSafeScore(scObj, sub); let isF = false;
-                    if(val !== "") { const n = parseFloat(val); if(!isNaN(n) && n <= failLim) isF=true; else if(val==="ضعيف") isF=true; }
+                    const scObj = std.evaluations[m]?.grades || {}; 
+                    const val = getSafeScore(scObj, sub); 
+                    let isF = false;
+                    if(val !== "") { 
+                        const n = parseFloat(val); 
+                        if(!isNaN(n) && n <= failLim) isF = true; 
+                        else if(val === "ضعيف") isF = true; 
+                    }
                     rHtml += `<td style="${isF ? 'color:#dc2626; font-weight:900; background:#fef2f2;' : 'font-weight:700; color:var(--text-main);'}">${val || '-'}</td>`;
-                }); tbody.innerHTML += `<tr>${rHtml}</tr>`;
+                }); 
+                tbody.innerHTML += `<tr>${rHtml}</tr>`;
             });
         };
 
+        // دالة الاستعلام التي تجلب البيانات من سيرفر الإدارة الرئيسي
         document.getElementById('search-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); const id = document.getElementById('student-id').value.trim(); const resSec = document.getElementById('result-section'); const err = document.getElementById('error-msg'); const load = document.getElementById('loading-msg');
-            resSec.style.display = 'none'; err.style.display = 'none'; load.style.display = 'block';
+            e.preventDefault(); 
+            const id = document.getElementById('student-id').value.trim(); 
+            const resSec = document.getElementById('result-section'); 
+            const err = document.getElementById('error-msg'); 
+            const load = document.getElementById('loading-msg');
+            
+            resSec.style.display = 'none'; 
+            err.style.display = 'none'; 
+            load.style.display = 'block';
+            
             if(isOverviewMode) toggleBtn.click();
 
             try { 
-                const { data, error } = await supabase.from('students').select('*').eq('id', id).single();
+                const { data, error } = await supabaseClient
+                    .from('students')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
                 if (error || !data) throw error;
+                
                 currentStudentData = data; 
                 renderParentView(); 
                 resSec.style.display = 'block'; 
@@ -433,18 +508,37 @@
             }
         });
 
-        document.getElementById('month-dropdown').addEventListener('change', () => { if(isOverviewMode) toggleBtn.click(); renderGradesGrid(); });
+        document.getElementById('month-dropdown').addEventListener('change', () => { 
+            if(isOverviewMode) toggleBtn.click(); 
+            renderGradesGrid(); 
+        });
 
-        let deferredPrompt; const pwaBanner = document.getElementById('pwa-install-prompt'); const pwaBtn = document.getElementById('pwa-install-btn');
+        let deferredPrompt; 
+        const pwaBanner = document.getElementById('pwa-install-prompt'); 
+        const pwaBtn = document.getElementById('pwa-install-btn');
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         if (!isStandalone) {
-            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; pwaBanner.style.display = 'flex'; });
-            pwaBtn.addEventListener('click', async () => {
-                if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') pwaBanner.style.display = 'none'; deferredPrompt = null; } 
-                else { alert("لتثبيت التطبيق على الآيفون إتبع الخطوات التالية:\n\n1. اضغط على زر المشاركة [ 🜋 ] في أسفل المتصفح.\n2. اسحب القائمة للأسفل واختر 'إضافة إلى الصفحة الرئيسية' (Add to Home Screen)."); }
+            window.addEventListener('beforeinstallprompt', (e) => { 
+                e.preventDefault(); 
+                deferredPrompt = e; 
+                pwaBanner.style.display = 'flex'; 
             });
-            const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) && !window.MSStream; if (isIOS) { pwaBanner.style.display = 'flex'; pwaBtn.textContent = 'طريقة التثبيت'; }
+            pwaBtn.addEventListener('click', async () => {
+                if (deferredPrompt) { 
+                    deferredPrompt.prompt(); 
+                    const { outcome } = await deferredPrompt.userChoice; 
+                    if (outcome === 'accepted') pwaBanner.style.display = 'none'; 
+                    deferredPrompt = null; 
+                } else { 
+                    alert("لتثبيت التطبيق على الآيفون إتبع الخطوات التالية:\n\n1. اضغط على زر المشاركة [ 🜋 ] في أسفل المتصفح.\n2. اسحب القائمة للأسفل واختر 'إضافة إلى الصفحة الرئيسية' (Add to Home Screen)."); 
+                }
+            });
+            const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent)) && !window.MSStream; 
+            if (isIOS) { 
+                pwaBanner.style.display = 'flex'; 
+                pwaBtn.textContent = 'طريقة التثبيت'; 
+            }
         }
     </script>
 </body>
